@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { decodeBouquet, encodeBouquet } from '@/lib/encode'
+import { decodeBouquet, encodeBouquet } from '@/lib/sharing'
 import type { BouquetState } from '@/lib/types'
 
 const sampleState: BouquetState = {

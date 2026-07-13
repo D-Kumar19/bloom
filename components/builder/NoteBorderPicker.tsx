@@ -4,7 +4,7 @@ import {
   DEFAULT_NOTE_BORDER,
   NOTE_BORDER_COLOR_OPTIONS,
   NOTE_BORDER_STYLE_OPTIONS,
-} from '@/lib/noteBorder'
+} from '@/lib/cards'
 import type { NoteBorder, NoteBorderStyle } from '@/lib/types'
 
 type NoteBorderPickerProps = {

@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-import { encodeBouquet } from '@/lib/encode'
+import { encodeBouquet } from '@/lib/sharing'
 import { GUIDES } from '@/lib/guides'
 
 const EXAMPLES = [

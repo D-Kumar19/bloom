@@ -5,9 +5,9 @@ import { useEffect, useState } from 'react'
 import { BouquetComposition } from '@/components/bouquet/BouquetComposition'
 import { MessageCard } from '@/components/cards/MessageCard'
 import { Button } from '@/components/ui/Button'
-import { decodeBouquet } from '@/lib/encode'
+import { decodeBouquet } from '@/lib/sharing'
 import { PHOTO_CARD_ID } from '@/lib/cards'
-import { getFlowerCountMeaning } from '@/lib/meanings'
+import { getFlowerCountMeaning } from '@/lib/flowers'
 import type { BouquetState } from '@/lib/types'
 
 type ViewerState = {

@@ -9,8 +9,8 @@ import { FLOWERS } from '@/lib/flowers'
 import {
   getFlowerQuantity,
   getTotalFlowerCount,
-} from '@/lib/flowerSelection'
-import { getFlowerCountMeaning } from '@/lib/meanings'
+} from '@/lib/flowers'
+import { getFlowerCountMeaning } from '@/lib/flowers'
 import { SUPPORT_EMAIL } from '@/lib/site'
 import type { Flower } from '@/lib/types'
 import { MAX_FLOWERS, MIN_FLOWERS } from '@/lib/types'

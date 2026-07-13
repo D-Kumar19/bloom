@@ -4,8 +4,8 @@ import Image from 'next/image'
 
 import { FormattedMessageBody } from '@/components/cards/FormattedMessageBody'
 import { FEATURED_CARD_ID, PHOTO_CARD_ID } from '@/lib/cards'
-import { getNoteBorderStyle } from '@/lib/noteBorder'
-import { getNoteSurfaceClass } from '@/lib/noteSurfaces'
+import { getNoteBorderStyle } from '@/lib/cards'
+import { getNoteSurfaceClass } from '@/lib/cards'
 import type { MessageFormat, NoteBorder } from '@/lib/types'
 
 type PhotoCardProps = {

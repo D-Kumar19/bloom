@@ -1,5 +1,5 @@
 import { buildShareUrl } from './encode'
-import type { BouquetState } from './types'
+import type { BouquetState } from '../types'
 
 export function buildShareMessage(state: BouquetState): string {
   const url = buildShareUrl(state)

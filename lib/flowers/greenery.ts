@@ -1,4 +1,4 @@
-import type { Greenery } from './types'
+import type { Greenery } from '../types'
 
 export const GREENERY: Greenery[] = [
   {

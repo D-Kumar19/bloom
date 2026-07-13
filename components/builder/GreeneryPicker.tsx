@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { FlowerArtwork } from '@/components/builder/FlowerArtwork'
 import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
-import { GREENERY } from '@/lib/greenery'
+import { GREENERY } from '@/lib/flowers'
 import { SUPPORT_EMAIL } from '@/lib/site'
 import type { Greenery } from '@/lib/types'
 

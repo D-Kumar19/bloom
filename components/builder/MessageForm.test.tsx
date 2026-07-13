@@ -2,8 +2,8 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 
 import { MessageForm } from '@/components/builder/MessageForm'
-import { DEFAULT_MESSAGE_FORMAT } from '@/lib/messageRichText'
-import { DEFAULT_NOTE_BORDER } from '@/lib/noteBorder'
+import { DEFAULT_MESSAGE_FORMAT } from '@/lib/message'
+import { DEFAULT_NOTE_BORDER } from '@/lib/cards'
 
 function renderMessageForm(overrides: Partial<Parameters<typeof MessageForm>[0]> = {}) {
   const props = {

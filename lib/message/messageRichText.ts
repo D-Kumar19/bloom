@@ -1,4 +1,4 @@
-import type { MessageFormat } from './types'
+import type { MessageFormat } from '../types'
 import { getMessageFontFamily, MESSAGE_FONT_OPTIONS } from './messageFonts'
 
 export { MESSAGE_FONT_OPTIONS } from './messageFonts'

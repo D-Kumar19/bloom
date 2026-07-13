@@ -1,7 +1,7 @@
 import LZString from 'lz-string'
 
-import { MIN_FLOWERS } from './types'
-import type { BouquetState } from './types'
+import { MIN_FLOWERS } from '../types'
+import type { BouquetState } from '../types'
 
 export function encodeBouquet(state: BouquetState): string {
   const json = JSON.stringify(state)

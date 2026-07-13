@@ -4,7 +4,7 @@ import { useRef, useState } from 'react'
 
 import { MessageCard } from '@/components/cards/MessageCard'
 import { useToast } from '@/components/ui/Toast'
-import { compressImageFile } from '@/lib/compressImage'
+import { compressImageFile } from '@/lib/sharing'
 import {
   CARD_STYLES,
   FEATURED_CARD_STYLE,

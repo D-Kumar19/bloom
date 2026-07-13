@@ -8,8 +8,8 @@ import { MessageCard } from '@/components/cards/MessageCard'
 import { PetalRain } from '@/components/ui/PetalRain'
 import { Button } from '@/components/ui/Button'
 import { useToast } from '@/components/ui/Toast'
-import { buildShareMessage } from '@/lib/share'
-import { buildShareUrl } from '@/lib/encode'
+import { buildShareMessage } from '@/lib/sharing'
+import { buildShareUrl } from '@/lib/sharing'
 import type { BouquetState } from '@/lib/types'
 
 export default function ResultPage() {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { formatCharactersLeft } from '@/lib/messageCounter'
+import { formatCharactersLeft } from '@/lib/message'
 
 describe('formatCharactersLeft', () => {
   it('uses the warm copy when there is room to spare', () => {

@@ -1,4 +1,4 @@
-import type { Flower } from './types'
+import type { Flower } from '../types'
 
 export const FLOWERS: Flower[] = [
   {

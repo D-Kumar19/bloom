@@ -9,9 +9,9 @@ import {
 } from '@/components/builder/RichMessageEditor'
 import { MessageCard } from '@/components/cards/MessageCard'
 import { getDisplayCardLabel, PHOTO_CARD_ID } from '@/lib/cards'
-import { INSPIRATION_PROMPTS } from '@/lib/inspiration'
-import { formatCharactersLeft } from '@/lib/messageCounter'
-import { plainTextToMessageHtml, stripMessageHtml } from '@/lib/messageRichText'
+import { INSPIRATION_PROMPTS } from '@/lib/message'
+import { formatCharactersLeft } from '@/lib/message'
+import { plainTextToMessageHtml, stripMessageHtml } from '@/lib/message'
 import { SUPPORT_EMAIL } from '@/lib/site'
 import type { MessageFormat, NoteBorder } from '@/lib/types'
 

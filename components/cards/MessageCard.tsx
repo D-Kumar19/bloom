@@ -1,8 +1,8 @@
 import type { CardStyle, MessageFormat, NoteBorder } from '@/lib/types'
 
 import { PHOTO_CARD_ID } from '@/lib/cards'
-import { getNoteBorderStyle } from '@/lib/noteBorder'
-import { getNoteSurfaceClass } from '@/lib/noteSurfaces'
+import { getNoteBorderStyle } from '@/lib/cards'
+import { getNoteSurfaceClass } from '@/lib/cards'
 import { PhotoCard } from '@/components/cards/PhotoCard'
 import { FormattedMessageBody } from '@/components/cards/FormattedMessageBody'
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { getFlowerCountMeaning } from '@/lib/meanings'
+import { getFlowerCountMeaning } from '@/lib/flowers'
 
 describe('getFlowerCountMeaning', () => {
   it('prompts to pick at least 3 for counts 1-2', () => {

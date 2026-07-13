@@ -1,5 +1,5 @@
-import type { BouquetState } from './types'
-import { MAX_FLOWERS } from './types'
+import type { BouquetState } from '../types'
+import { MAX_FLOWERS } from '../types'
 
 /** Count how many times each flower id appears in the bouquet. */
 export function countFlowersById(flowers: string[]): Map<string, number> {

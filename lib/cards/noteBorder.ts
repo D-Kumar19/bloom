@@ -1,4 +1,4 @@
-import type { NoteBorder, NoteBorderStyle } from './types'
+import type { NoteBorder, NoteBorderStyle } from '../types'
 
 export const NOTE_BORDER_STYLE_OPTIONS: { id: NoteBorderStyle; label: string }[] = [
   { id: 'solid', label: 'Solid' },

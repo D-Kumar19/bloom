@@ -14,8 +14,8 @@ import { StepIndicator } from '@/components/builder/StepIndicator'
 import { ThemePicker } from '@/components/builder/ThemePicker'
 import { Button } from '@/components/ui/Button'
 import { useBouquetState } from '@/hooks/useBouquetState'
-import { DEFAULT_MESSAGE_FORMAT } from '@/lib/messageRichText'
-import { DEFAULT_NOTE_BORDER } from '@/lib/noteBorder'
+import { DEFAULT_MESSAGE_FORMAT } from '@/lib/message'
+import { DEFAULT_NOTE_BORDER } from '@/lib/cards'
 import { FEATURED_CARD_ID } from '@/lib/cards'
 
 export default function CreatePage() {

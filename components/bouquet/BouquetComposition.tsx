@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { useEffect, useState } from 'react'
 
 import { getFlowerById } from '@/lib/flowers'
-import { getGreeneryById } from '@/lib/greenery'
+import { getGreeneryById } from '@/lib/flowers'
 import { assignFlowersToSlots } from '@/lib/composition'
 import { getThemeById } from '@/lib/themes'
 import type { BouquetState } from '@/lib/types'

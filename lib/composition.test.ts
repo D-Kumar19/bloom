@@ -5,7 +5,7 @@ import {
   adjustFlowerQuantity,
   countFlowersById,
   getTotalFlowerCount,
-} from '@/lib/flowerSelection'
+} from '@/lib/flowers'
 
 describe('assignFlowersToSlots', () => {
   it('assigns a slot for every flower', () => {

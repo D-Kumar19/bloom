@@ -1,4 +1,4 @@
-import type { BouquetState, CardStyle } from './types'
+import type { BouquetState, CardStyle } from '../types'
 
 export const FEATURED_CARD_ID = 'classic-cream'
 export const PHOTO_CARD_ID = 'photo-card'

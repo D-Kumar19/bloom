@@ -5,7 +5,7 @@ import {
   isRichMessage,
   sanitizeMessageHtml,
   stripMessageHtml,
-} from '@/lib/messageRichText'
+} from '@/lib/message'
 
 describe('sanitizeMessageHtml', () => {
   it('keeps non-breaking spaces so the editor can store trailing spaces', () => {

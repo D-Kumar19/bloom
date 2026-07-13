@@ -24,7 +24,13 @@ Open [http://localhost:3000](http://localhost:3000).
 ```
 app/           → pages and API routes
 components/    → React components by domain
-lib/           → business logic, data, utilities
+hooks/         → React state hooks
+lib/
+  flowers/     → flower & greenery data and selection
+  cards/       → note styles, borders, surfaces
+  message/     → rich text, fonts, inspiration
+  sharing/     → URL encoding, share copy, image compression
+  types.ts     → shared TypeScript types
 public/        → static assets (flower/greenery PNGs)
 ```
 

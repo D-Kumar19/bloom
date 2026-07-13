@@ -6,7 +6,7 @@ import {
   plainTextToMessageHtml,
   resolveNoteTextColor,
   sanitizeMessageHtml,
-} from '@/lib/messageRichText'
+} from '@/lib/message'
 
 type FormattedMessageBodyProps = {
   message: string

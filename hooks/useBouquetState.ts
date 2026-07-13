@@ -2,11 +2,11 @@
 
 import { useCallback, useEffect, useState } from 'react'
 
-import { decodeBouquet } from '@/lib/encode'
+import { decodeBouquet } from '@/lib/sharing'
 import { FEATURED_CARD_ID, PHOTO_CARD_ID } from '@/lib/cards'
-import { adjustFlowerQuantity } from '@/lib/flowerSelection'
-import { DEFAULT_NOTE_BORDER } from '@/lib/noteBorder'
-import { DEFAULT_MESSAGE_FORMAT, truncateMessageHtml } from '@/lib/messageRichText'
+import { adjustFlowerQuantity } from '@/lib/flowers'
+import { DEFAULT_NOTE_BORDER } from '@/lib/cards'
+import { DEFAULT_MESSAGE_FORMAT, truncateMessageHtml } from '@/lib/message'
 import {
   MAX_MESSAGE_LENGTH,
   MIN_FLOWERS,

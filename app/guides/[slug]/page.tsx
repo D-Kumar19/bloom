@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 
 import { Button } from '@/components/ui/Button'
 import { GUIDE_MAP } from '@/lib/guides'
-import { encodeBouquet } from '@/lib/encode'
+import { encodeBouquet } from '@/lib/sharing'
 
 type GuidePageProps = {
   params: Promise<{ slug: string }>

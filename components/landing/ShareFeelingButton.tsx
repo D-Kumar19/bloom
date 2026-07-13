@@ -3,7 +3,7 @@
 import { useState } from 'react'
 
 import { useToast } from '@/components/ui/Toast'
-import { buildSiteShareMessage } from '@/lib/share'
+import { buildSiteShareMessage } from '@/lib/sharing'
 import { Button } from '@/components/ui/Button'
 
 export function ShareFeelingButton() {

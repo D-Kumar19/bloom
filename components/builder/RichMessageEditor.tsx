@@ -3,7 +3,7 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
 
 import type { MessageFormat, MessageFontFamily } from '@/lib/types'
-import { getMessageFontFamily, MESSAGE_FONT_OPTIONS } from '@/lib/messageFonts'
+import { getMessageFontFamily, MESSAGE_FONT_OPTIONS } from '@/lib/message'
 import {
   editorNeedsDomCleanup,
   MESSAGE_COLOR_OPTIONS,
@@ -12,7 +12,7 @@ import {
   sanitizeMessageHtml,
   stripMessageHtml,
   truncateMessageHtml,
-} from '@/lib/messageRichText'
+} from '@/lib/message'
 
 type RichMessageEditorProps = {
   message: string
