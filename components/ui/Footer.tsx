@@ -4,6 +4,8 @@ import { FooterBrand } from '@/components/ui/FooterBrand'
 import { getBouquetCount } from '@/lib/counter'
 import { COPYRIGHT_LINE, PRE_RELEASE_PATH } from '@/lib/site'
 
+export const dynamic = 'force-dynamic'
+
 const footerLinkClass = 'text-bloom-ink/70 hover:text-brand-pink'
 
 export async function Footer() {
