@@ -3,13 +3,16 @@
 import { useCallback, useEffect, useState } from 'react'
 
 import { decodeBouquet } from '@/lib/sharing'
-import { FEATURED_CARD_ID, PHOTO_CARD_ID } from '@/lib/cards'
-import { adjustFlowerQuantity } from '@/lib/flowers'
+import { BUILDER_STEPS } from '@/lib/builder/steps'
+import { restoreShareDraftIfPresent, clearBuilderDraft } from '@/lib/builder/draftSession'
+import { DEFAULT_BOUQUET_ID } from '@/lib/bouquets'
+import { FEATURED_CARD_ID } from '@/lib/cards'
 import { DEFAULT_NOTE_BORDER } from '@/lib/cards'
 import { DEFAULT_MESSAGE_FORMAT, truncateMessageHtml } from '@/lib/message'
+import { canProceedMessageStep } from '@/lib/message'
+import { applyMoodPreset, isMoodId } from '@/lib/moods'
 import {
   MAX_MESSAGE_LENGTH,
-  MIN_FLOWERS,
   type BouquetState,
   type BuilderStep,
   type MessageFormat,
@@ -17,57 +20,50 @@ import {
 } from '@/lib/types'
 
 const DEFAULT_STATE: BouquetState = {
-  flowers: [],
-  greenery: 'leafy',
+  bouquetId: DEFAULT_BOUQUET_ID,
   cardStyle: FEATURED_CARD_ID,
-  photoNoteStyle: FEATURED_CARD_ID,
   messageFormat: DEFAULT_MESSAGE_FORMAT,
   noteBorder: DEFAULT_NOTE_BORDER,
   to: '',
   message: '',
   from: '',
   theme: 'warm',
+  soundtrack: 'none',
 }
 
 export function useBouquetState() {
   const [state, setState] = useState<BouquetState>(DEFAULT_STATE)
-  const [step, setStep] = useState<BuilderStep>('pick')
+  const [step, setStep] = useState<BuilderStep>('bouquet')
 
   useEffect(() => {
     queueMicrotask(() => {
       const params = new URLSearchParams(window.location.search)
       const preset = params.get('preset')
-      if (!preset) {
+      const moodParam = params.get('mood')
+
+      if (preset) {
+        const decoded = decodeBouquet(preset)
+        if (decoded) {
+          setState((current) => ({ ...current, ...decoded }))
+        }
         return
       }
-      const decoded = decodeBouquet(preset)
-      if (decoded) {
-        setState(decoded)
+
+      if (moodParam && isMoodId(moodParam)) {
+        setState((current) => applyMoodPreset(current, moodParam))
+        return
       }
+
+      restoreShareDraftIfPresent(setState, setStep)
     })
   }, [])
 
-  const onAdjustFlowerQuantity = useCallback((flowerId: string, delta: number) => {
-    setState((current) => ({
-      ...current,
-      flowers: adjustFlowerQuantity(current.flowers, flowerId, delta),
-    }))
-  }, [])
-
-  const setGreenery = useCallback((greenery: string) => {
-    setState((current) => ({ ...current, greenery }))
+  const setBouquet = useCallback((bouquetId: string) => {
+    setState((current) => ({ ...current, bouquetId }))
   }, [])
 
   const setCardStyle = useCallback((cardStyle: string) => {
-    setState((current) => ({
-      ...current,
-      cardStyle,
-      ...(cardStyle !== PHOTO_CARD_ID ? { photoNoteStyle: cardStyle } : {}),
-    }))
-  }, [])
-
-  const setPhotoCardImage = useCallback((photoCardImage: string | undefined) => {
-    setState((current) => ({ ...current, photoCardImage }))
+    setState((current) => ({ ...current, cardStyle }))
   }, [])
 
   const setMessageFormat = useCallback((messageFormat: MessageFormat) => {
@@ -97,63 +93,65 @@ export function useBouquetState() {
     setState((current) => ({ ...current, theme }))
   }, [])
 
+  const setSoundtrack = useCallback((soundtrack: string) => {
+    setState((current) => ({ ...current, soundtrack }))
+  }, [])
+
   const canProceed =
-    (step === 'pick' && state.flowers.length >= MIN_FLOWERS) ||
-    (step === 'greenery' && Boolean(state.greenery)) ||
-    (step === 'card' &&
-      Boolean(state.cardStyle) &&
-      (state.cardStyle !== PHOTO_CARD_ID || Boolean(state.photoCardImage))) ||
-    step === 'message' ||
+    (step === 'bouquet' && Boolean(state.bouquetId)) ||
+    (step === 'card' && Boolean(state.cardStyle)) ||
+    (step === 'message' && canProceedMessageStep(state.to, state.from, state.message)) ||
     (step === 'theme' && Boolean(state.theme))
 
   const goNext = useCallback(() => {
-    const order: BuilderStep[] = [
-      'pick',
-      'greenery',
-      'card',
-      'message',
-      'theme',
-      'result',
-    ]
     setStep((current) => {
-      const index = order.indexOf(current)
-      return order[Math.min(index + 1, order.length - 1)]
+      const index = BUILDER_STEPS.indexOf(current)
+      return BUILDER_STEPS[Math.min(index + 1, BUILDER_STEPS.length - 1)]
     })
   }, [])
 
   const goBack = useCallback(() => {
-    const order: BuilderStep[] = [
-      'pick',
-      'greenery',
-      'card',
-      'message',
-      'theme',
-      'result',
-    ]
     setStep((current) => {
-      const index = order.indexOf(current)
-      return order[Math.max(index - 1, 0)]
+      const index = BUILDER_STEPS.indexOf(current)
+      return BUILDER_STEPS[Math.max(index - 1, 0)]
     })
+  }, [])
+
+  const goToStep = useCallback((target: BuilderStep) => {
+    setStep((current) => {
+      const currentIndex = BUILDER_STEPS.indexOf(current)
+      const targetIndex = BUILDER_STEPS.indexOf(target)
+      if (targetIndex < 0 || targetIndex >= currentIndex) {
+        return current
+      }
+      return target
+    })
+  }, [])
+
+  const startNewBouquet = useCallback(() => {
+    clearBuilderDraft()
+    setState(DEFAULT_STATE)
+    setStep('bouquet')
   }, [])
 
   return {
     state,
     step,
     setStep,
-    onAdjustFlowerQuantity,
-    setGreenery,
+    setBouquet,
     setCardStyle,
-    setPhotoCardImage,
     setMessageFormat,
     setNoteBorder,
     setTo,
     setMessage,
     setFrom,
     setTheme,
+    setSoundtrack,
     canProceed,
     goNext,
     goBack,
-    minFlowers: MIN_FLOWERS,
+    goToStep,
+    startNewBouquet,
     maxMessageLength: MAX_MESSAGE_LENGTH,
   }
 }

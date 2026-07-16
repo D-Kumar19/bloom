@@ -1,4 +1,5 @@
 import type { BouquetState } from './types'
+import { DEFAULT_BOUQUET_ID } from '@/lib/bouquets'
 
 export type GuidePreset = {
   slug: string
@@ -9,8 +10,7 @@ export type GuidePreset = {
 }
 
 const base = (overrides: Partial<BouquetState>): BouquetState => ({
-  flowers: ['rose', 'peony', 'tulip'],
-  greenery: 'leafy',
+  bouquetId: DEFAULT_BOUQUET_ID,
   cardStyle: 'classic-cream',
   to: '',
   message: '',
@@ -25,10 +25,9 @@ export const GUIDES: GuidePreset[] = [
     title: 'How to Say I Love You with Flowers',
     subtitle: 'A love letter in petals',
     paragraph:
-      'Seven roses whisper what words sometimes cannot. Pair them with deep greenery and a midnight card for a message that feels intimate and true.',
+      'Crimson roses and ivory accents say what words sometimes cannot. Pair with a midnight card for a message that feels intimate and true.',
     state: base({
-      flowers: ['rose', 'rose', 'rose', 'peony', 'tulip', 'orchid', 'lily'],
-      greenery: 'leafy',
+      bouquetId: 'crimson-and-cream',
       cardStyle: 'midnight',
       theme: 'midnight',
     }),
@@ -38,10 +37,9 @@ export const GUIDES: GuidePreset[] = [
     title: 'Birthday Bouquets That Mean Something',
     subtitle: 'Celebrate the day they arrived',
     paragraph:
-      'Bright, joyful flowers for someone who lights up every room. Golden tones and a garden card keep it celebratory without feeling generic.',
+      'Golden sunflowers and wild greenery for someone who lights up every room. A garden card keeps it celebratory without feeling generic.',
     state: base({
-      flowers: ['daisy', 'tulip', 'peony', 'camellia'],
-      greenery: 'fern',
+      bouquetId: 'sunflower-burst',
       cardStyle: 'garden',
       theme: 'sunset',
     }),
@@ -51,10 +49,9 @@ export const GUIDES: GuidePreset[] = [
     title: 'Flowers That Say Thank You Better Than Words',
     subtitle: 'Gratitude, gently expressed',
     paragraph:
-      'Soft peonies and daisies feel warm and sincere. Eucalyptus greenery and kraft paper keep the tone honest and grounded.',
+      'Soft blush peonies feel warm and sincere. Kraft paper and a blush backdrop keep the tone honest and grounded.',
     state: base({
-      flowers: ['peony', 'daisy', 'daisy', 'lily'],
-      greenery: 'eucalyptus',
+      bouquetId: 'blush-peony-cloud',
       cardStyle: 'kraft',
       theme: 'blush',
     }),
@@ -64,10 +61,9 @@ export const GUIDES: GuidePreset[] = [
     title: 'Sending Strength Through Flowers',
     subtitle: 'Comfort for hard days',
     paragraph:
-      'Lilies and lotus carry calm and resilience. Willow greenery and watercolor tones feel gentle, like a quiet hand on the shoulder.',
+      'White lilies carry calm and resilience. Watercolor tones feel gentle, like a quiet hand on the shoulder.',
     state: base({
-      flowers: ['lily', 'lotus', 'lotus', 'orchid'],
-      greenery: 'willow',
+      bouquetId: 'white-lily-still',
       cardStyle: 'watercolor',
       theme: 'sage',
     }),
@@ -77,10 +73,9 @@ export const GUIDES: GuidePreset[] = [
     title: "When Words Aren't Enough",
     subtitle: 'A softer way to say sorry',
     paragraph:
-      'White-toned blooms and quiet lavender create space for humility and care. Keep the message simple. Sincerity is the point.',
+      'White roses and eucalyptus create space for humility and care. Keep the message simple. Sincerity is the point.',
     state: base({
-      flowers: ['lily', 'daisy', 'orchid', 'camellia'],
-      greenery: 'eucalyptus',
+      bouquetId: 'eucalyptus-and-white',
       cardStyle: 'classic-cream',
       theme: 'lavender',
     }),
@@ -90,10 +85,9 @@ export const GUIDES: GuidePreset[] = [
     title: 'No Occasion Needed',
     subtitle: 'Because they crossed your mind',
     paragraph:
-      'Sometimes the most meaningful bouquets arrive on an ordinary Tuesday. Playful flowers, leafy greenery, and an ocean-calm theme.',
+      'Sometimes the most meaningful bouquets arrive on an ordinary Tuesday. Cheerful daisies and an ocean-calm theme.',
     state: base({
-      flowers: ['daisy', 'tulip', 'peony', 'camellia'],
-      greenery: 'leafy',
+      bouquetId: 'cheerful-daisy-mix',
       cardStyle: 'garden',
       theme: 'ocean',
     }),

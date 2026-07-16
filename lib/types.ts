@@ -21,14 +21,37 @@ export type CardStyle = {
   name: string
   tagline: string
   featured?: boolean
-  special?: boolean
 }
+
+export type BackdropLightPosition = 'top' | 'top-left' | 'center' | 'bottom'
+
+export type BackdropEffect = 'grain' | 'vignette' | 'petals' | 'stars' | 'pollen'
+
+export type BackdropMotion =
+  | 'breathe'
+  | 'glow-drift'
+  | 'wave-shift'
+  | 'blur-pulse'
+  | 'twinkle'
+  | 'pollen-float'
+  | 'none'
 
 export type Theme = {
   id: string
   name: string
   tagline: string
   className: string
+  description: string
+  mood: string
+  perfectFor: string
+  lightPosition?: BackdropLightPosition
+  lightTint?: string
+  accentTint?: string
+  accentAt?: 'bottom-left' | 'bottom-right' | 'top-right' | 'center'
+  effects?: BackdropEffect[]
+  motion?: BackdropMotion
+  dark?: boolean
+  /** Legacy flag; prefer isThemeAnimated() which also checks motion and particle effects. */
   animated?: boolean
 }
 
@@ -58,40 +81,22 @@ export type NoteBorder = {
 }
 
 export type BouquetState = {
-  flowers: string[]
-  greenery: string
+  bouquetId: string
   cardStyle: string
-  photoCardImage?: string
-  photoNoteStyle?: string
   messageFormat?: MessageFormat
   noteBorder?: NoteBorder
   to: string
   message: string
   from: string
   theme: string
-}
-
-export type FlowerSlot = {
-  x: number
-  y: number
-  scale: number
-  rotation: number
-  z: number
-}
-
-export type PlacedFlower = {
-  flowerId: string
-  slot: FlowerSlot
+  soundtrack?: string
 }
 
 export type BuilderStep =
-  | 'pick'
-  | 'greenery'
+  | 'bouquet'
   | 'card'
   | 'message'
   | 'theme'
-  | 'result'
+  | 'share'
 
-export const MIN_FLOWERS = 3
-export const MAX_FLOWERS = 20
 export const MAX_MESSAGE_LENGTH = 200

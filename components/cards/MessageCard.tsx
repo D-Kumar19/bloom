@@ -1,9 +1,7 @@
 import type { CardStyle, MessageFormat, NoteBorder } from '@/lib/types'
 
-import { PHOTO_CARD_ID } from '@/lib/cards'
 import { getNoteBorderStyle } from '@/lib/cards'
 import { getNoteSurfaceClass } from '@/lib/cards'
-import { PhotoCard } from '@/components/cards/PhotoCard'
 import { FormattedMessageBody } from '@/components/cards/FormattedMessageBody'
 
 type MessageCardProps = {
@@ -13,15 +11,8 @@ type MessageCardProps = {
   from: string
   messageFormat?: MessageFormat
   noteBorder?: NoteBorder
-  photoImage?: string
-  photoNoteStyleId?: string
   compact?: boolean
   folded?: boolean
-  photoFlipped?: boolean
-  photoStackedPreview?: boolean
-  onPhotoFlip?: () => void
-  onPhotoUploadClick?: () => void
-  showPhotoFlipHint?: boolean
   onClick?: () => void
   className?: string
 }
@@ -41,39 +32,11 @@ export function MessageCard({
   from,
   messageFormat,
   noteBorder,
-  photoImage,
-  photoNoteStyleId,
   compact = false,
   folded = false,
-  photoFlipped = false,
-  photoStackedPreview = false,
-  onPhotoFlip,
-  onPhotoUploadClick,
-  showPhotoFlipHint = false,
   onClick,
   className = '',
 }: MessageCardProps) {
-  if (styleId === PHOTO_CARD_ID) {
-    return (
-      <PhotoCard
-        photoImage={photoImage}
-        to={to}
-        message={message}
-        from={from}
-        messageFormat={messageFormat}
-        noteBorder={noteBorder}
-        noteStyleId={photoNoteStyleId}
-        compact={compact}
-        flipped={photoFlipped}
-        stackedPreview={photoStackedPreview}
-        onFlip={onPhotoFlip}
-        onUploadClick={onPhotoUploadClick}
-        showFlipHint={showPhotoFlipHint}
-        className={className}
-      />
-    )
-  }
-
   const surface = getNoteSurfaceClass(styleId)
   const onDark = styleId === 'midnight'
 
@@ -86,13 +49,14 @@ export function MessageCard({
         onClick={onClick}
         onKeyDown={(event) => {
           if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault()
             onClick?.()
           }
         }}
-        className={`note-card flex min-h-[140px] cursor-pointer flex-col items-center justify-center rounded-3xl border-2 border-dashed border-bloom-rose/30 bg-white/90 p-6 shadow-md transition hover:scale-[1.02] ${className}`}
+        className={`note-card flex min-h-[140px] cursor-pointer flex-col items-center justify-center rounded-3xl border-2 border-dashed border-bloom-rose/40 bg-white p-6 shadow-lg transition hover:scale-[1.02] ${className}`}
       >
-        <p className="text-lg font-semibold text-bloom-ink">Tap card to read</p>
-        <p className="mt-1 text-xs text-bloom-ink/50">A message is waiting inside</p>
+        <p className="text-lg font-semibold text-[#2a2420]">Tap card to read</p>
+        <p className="mt-1 text-xs text-[#2a2420]/70">A message is waiting inside</p>
       </div>
     )
   }
@@ -107,6 +71,7 @@ export function MessageCard({
         onClick
           ? (event) => {
               if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault()
                 onClick()
               }
             }
