@@ -9,7 +9,7 @@ Yes, sending flowers over the internet is a little ridiculous. It also works sur
 - A bouquet for a mood: romantic, celebratory, gentle, or "no reason, I just like you" 💐
 - A handwritten-style note on stationery you actually chose (not a sad default font, we have standards) ✍️
 - A backdrop that feels like morning light, candle glow, cherry petals, or midnight stars 🌅🕯️🌸🌙
-- Optional ambient sound for the person opening it (rain, birds, silence if you're not that extra) 🎵
+- Optional ambient sound for the person opening it (rain, piano, instrumental, silence if you're not that extra) 🎵
 - A link you can text, email, or paste anywhere. No carrier pigeon required 🔗
 
 ## What it feels like for them

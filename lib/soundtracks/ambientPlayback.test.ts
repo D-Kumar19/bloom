@@ -46,7 +46,7 @@ describe('ambientPlayback', () => {
   })
 
   it('starts and stops each soundtrack file', () => {
-    const ids = ['thunderstorm', 'wind', 'piano', 'warm-room', 'cafe'] as const
+    const ids = ['thunderstorm', 'wind', 'piano', 'instrumental', 'warm-room', 'cafe'] as const
 
     ids.forEach((id) => {
       const playback = startAmbientSound(id, 0.15)
