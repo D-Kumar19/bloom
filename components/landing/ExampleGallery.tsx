@@ -37,7 +37,7 @@ export function ExampleGallery() {
           <Link
             key={example.title}
             href={`/bouquet?b=${hash}`}
-            className="rounded-3xl border border-bloom-rose/20 bg-white p-5 text-left shadow-sm transition hover:border-brand-pink/40 hover:shadow-md"
+            className="rounded-3xl border border-bloom-rose/20 bg-surface p-5 text-left shadow-sm transition hover:border-brand-pink/40 hover:shadow-md"
           >
             <p className="text-xs font-medium uppercase tracking-wide text-bloom-rose">
               Example bouquet
