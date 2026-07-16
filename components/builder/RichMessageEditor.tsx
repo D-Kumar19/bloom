@@ -3,21 +3,27 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
 
 import type { MessageFormat, MessageFontFamily } from '@/lib/types'
-import { getMessageFontFamily, MESSAGE_FONT_OPTIONS } from '@/lib/message'
 import {
   editorNeedsDomCleanup,
+  getMessageFontFamily,
   MESSAGE_COLOR_OPTIONS,
+  MESSAGE_FONT_OPTIONS,
   MESSAGE_SIZE_OPTIONS,
   plainTextToMessageHtml,
   sanitizeMessageHtml,
   stripMessageHtml,
   truncateMessageHtml,
+  usesThemeInkColor,
 } from '@/lib/message'
+
+const EDITOR_ZERO_WIDTH_SPACE = '\u200B'
 
 type RichMessageEditorProps = {
   message: string
   messageFormat: MessageFormat
   maxLength: number
+  placeholder?: string
+  invalid?: boolean
   onMessageChange: (html: string) => void
   onMessageFormatChange: (format: MessageFormat) => void
 }
@@ -26,7 +32,7 @@ function toolbarButtonClass(active = false): string {
   return `rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition ${
     active
       ? 'border-brand-pink bg-brand-pink/10 text-brand-pink'
-      : 'border-bloom-rose/20 bg-white text-bloom-ink hover:border-brand-pink/40'
+      : 'border-bloom-rose/20 bg-surface text-bloom-ink hover:border-brand-pink/40'
   }`
 }
 
@@ -39,7 +45,7 @@ function ToolbarSection({
 }) {
   return (
     <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:gap-3">
-      <span className="shrink-0 pt-1 text-[10px] font-semibold uppercase tracking-wide text-bloom-ink/45 sm:w-14">
+      <span className="shrink-0 pt-1 text-[10px] font-semibold uppercase tracking-wide text-bloom-ink/75 sm:w-14">
         {label}
       </span>
       <div className="min-w-0 flex-1">{children}</div>
@@ -68,7 +74,7 @@ function EmphasisButton({
       className={toolbarButtonClass()}
     >
       <span>{label}</span>
-      <span className="ml-1 hidden font-normal text-bloom-ink/50 sm:inline">({hint})</span>
+      <span className="ml-1 hidden font-normal text-bloom-ink/65 sm:inline">({hint})</span>
     </button>
   )
 }
@@ -129,12 +135,21 @@ function setCaretCharacterOffsetWithin(element: HTMLElement, offset: number): vo
   selection.addRange(range)
 }
 
+function isCaretAtEndOfEditor(editor: HTMLElement, range: Range): boolean {
+  const probe = range.cloneRange()
+  probe.selectNodeContents(editor)
+  probe.setStart(range.endContainer, range.endOffset)
+  return probe.toString().length === 0
+}
+
 export const RichMessageEditor = forwardRef<HTMLDivElement, RichMessageEditorProps>(
   function RichMessageEditor(
     {
       message,
       messageFormat,
       maxLength,
+      placeholder = 'Write your message here. Say what you mean.',
+      invalid = false,
       onMessageChange,
       onMessageFormatChange,
     },
@@ -218,10 +233,18 @@ export const RichMessageEditor = forwardRef<HTMLDivElement, RichMessageEditorPro
 
       const range = selection.getRangeAt(0)
       range.deleteContents()
+
       const lineBreak = document.createElement('br')
       range.insertNode(lineBreak)
 
-      range.setStartAfter(lineBreak)
+      if (isCaretAtEndOfEditor(editor, range)) {
+        const anchor = document.createTextNode(EDITOR_ZERO_WIDTH_SPACE)
+        lineBreak.parentNode?.insertBefore(anchor, lineBreak.nextSibling)
+        range.setStart(anchor, 0)
+      } else {
+        range.setStartAfter(lineBreak)
+      }
+
       range.collapse(true)
       selection.removeAllRanges()
       selection.addRange(range)
@@ -230,7 +253,7 @@ export const RichMessageEditor = forwardRef<HTMLDivElement, RichMessageEditorPro
     }
 
     const handleEnter = (event: React.KeyboardEvent<HTMLDivElement>) => {
-      if (event.key !== 'Enter') {
+      if (event.key !== 'Enter' || event.nativeEvent.isComposing) {
         return
       }
 
@@ -327,7 +350,7 @@ export const RichMessageEditor = forwardRef<HTMLDivElement, RichMessageEditorPro
                     className={`truncate rounded-lg border px-2 py-1.5 text-left text-xs transition ${
                       active
                         ? 'border-brand-pink bg-brand-pink/10 text-brand-pink'
-                        : 'border-bloom-rose/20 bg-white text-bloom-ink hover:border-brand-pink/40'
+                        : 'border-bloom-rose/20 bg-surface text-bloom-ink hover:border-brand-pink/40'
                     }`}
                     style={{ fontFamily: option.family }}
                   >
@@ -354,7 +377,7 @@ export const RichMessageEditor = forwardRef<HTMLDivElement, RichMessageEditorPro
                     className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition ${
                       active
                         ? 'border-brand-pink bg-brand-pink/10 text-brand-pink'
-                        : 'border-bloom-rose/20 bg-white text-bloom-ink hover:border-brand-pink/40'
+                        : 'border-bloom-rose/20 bg-surface text-bloom-ink hover:border-brand-pink/40'
                     }`}
                   >
                     {option.label}
@@ -422,23 +445,41 @@ export const RichMessageEditor = forwardRef<HTMLDivElement, RichMessageEditorPro
           </ToolbarSection>
         </div>
 
-        <div
-          ref={editorRef}
-          id="message"
-          role="textbox"
-          aria-multiline="true"
-          contentEditable
-          suppressContentEditableWarning
-          data-testid="message-editor"
-          onInput={handleInput}
-          onBlur={handleBlur}
-          onKeyDown={handleEnter}
-          className="min-h-[9rem] w-full rounded-2xl border border-bloom-rose/20 bg-white px-4 py-3 text-sm leading-relaxed outline-none transition focus:border-brand-pink focus:ring-2 focus:ring-brand-pink/15"
-          style={{
-            fontFamily: getMessageFontFamily(messageFormat.fontFamily),
-            color: messageFormat.color,
-          }}
-        />
+        <div className="relative">
+          {plainLength === 0 ? (
+            <p
+              className="pointer-events-none absolute left-4 top-3 z-10 text-sm text-bloom-ink/45"
+              aria-hidden
+            >
+              {placeholder}
+            </p>
+          ) : null}
+          <div
+            ref={editorRef}
+            id="message"
+            role="textbox"
+            aria-multiline="true"
+            aria-placeholder={placeholder}
+            aria-invalid={invalid}
+            contentEditable
+            suppressContentEditableWarning
+            data-testid="message-editor"
+            onInput={handleInput}
+            onBlur={handleBlur}
+            onKeyDown={handleEnter}
+            className={`relative min-h-[9rem] w-full rounded-2xl border bg-surface px-4 py-3 text-sm leading-relaxed text-bloom-ink outline-none transition focus:ring-2 ${
+              invalid
+                ? 'border-brand-pink/60 focus:border-brand-pink focus:ring-brand-pink/25'
+                : 'border-bloom-rose/20 focus:border-brand-pink focus:ring-brand-pink/15'
+            }`}
+            style={{
+              fontFamily: getMessageFontFamily(messageFormat.fontFamily),
+              ...(usesThemeInkColor(messageFormat.color)
+                ? {}
+                : { color: messageFormat.color }),
+            }}
+          />
+        </div>
 
         <p className="sr-only" aria-live="polite">
           {plainLength} of {maxLength} characters used

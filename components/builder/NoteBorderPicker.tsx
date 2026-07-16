@@ -26,7 +26,7 @@ export function NoteBorderPicker({ noteBorder, onNoteBorderChange }: NoteBorderP
   return (
     <div
       data-testid="note-border-picker"
-      className="rounded-2xl border border-bloom-rose/15 bg-white/80 p-4 shadow-sm"
+      className="pt-3"
     >
       <p className="text-sm font-semibold text-bloom-ink">Note border</p>
       <p className="mt-0.5 text-xs text-bloom-ink/55">Frame your note with a style and color.</p>
@@ -49,7 +49,7 @@ export function NoteBorderPicker({ noteBorder, onNoteBorderChange }: NoteBorderP
                   className={`rounded-lg border px-2.5 py-1 text-xs font-medium transition ${
                     active
                       ? 'border-brand-pink bg-brand-pink/10 text-brand-pink'
-                      : 'border-bloom-rose/20 bg-white text-bloom-ink hover:border-brand-pink/40'
+                      : 'border-bloom-rose/20 bg-surface text-bloom-ink hover:border-brand-pink/40'
                   }`}
                 >
                   {option.label}

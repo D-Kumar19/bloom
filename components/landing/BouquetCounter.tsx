@@ -4,9 +4,10 @@ import { useEffect, useState } from 'react'
 
 type BouquetCounterProps = {
   initialCount: number
+  compact?: boolean
 }
 
-export function BouquetCounter({ initialCount }: BouquetCounterProps) {
+export function BouquetCounter({ initialCount, compact = false }: BouquetCounterProps) {
   const [display, setDisplay] = useState(0)
 
   useEffect(() => {
@@ -28,13 +29,23 @@ export function BouquetCounter({ initialCount }: BouquetCounterProps) {
   const formatted = display.toLocaleString()
 
   return (
-    <p className="mt-6 text-lg text-bloom-ink/80">
-      <span className="inline-block animate-pulse font-display text-2xl text-brand-pink">
+    <p
+      className={
+        compact
+          ? 'text-xs text-bloom-ink/65'
+          : 'mt-6 text-lg text-bloom-ink/80'
+      }
+    >
+      <span
+        className={`inline-block font-display text-brand-pink ${
+          compact ? 'text-base' : 'animate-pulse text-2xl'
+        }`}
+      >
         {formatted}
       </span>{' '}
       {initialCount === 0
         ? 'Be the first to send a bouquet with love'
-        : 'bouquets sent with love'}
+        : 'bouquets sent so far'}
     </p>
   )
 }

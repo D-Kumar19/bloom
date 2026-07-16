@@ -4,6 +4,7 @@ import { useState } from 'react'
 
 import { useToast } from '@/components/ui/Toast'
 import { buildSiteShareMessage } from '@/lib/sharing'
+import { getSiteOrigin } from '@/lib/siteUrl'
 import { Button } from '@/components/ui/Button'
 
 export function ShareFeelingButton() {
@@ -11,7 +12,7 @@ export function ShareFeelingButton() {
   const [copied, setCopied] = useState(false)
 
   const handleShare = async () => {
-    const message = buildSiteShareMessage(window.location.origin)
+    const message = buildSiteShareMessage(getSiteOrigin())
 
     try {
       if (navigator.share) {

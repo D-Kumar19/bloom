@@ -2,22 +2,11 @@
 
 import { useEffect, useRef, useState, type CSSProperties } from 'react'
 
+import {
+  BUILDER_STEP_META,
+  BUILDER_STEP_NOTES,
+} from '@/lib/builder/steps'
 import type { BuilderStep } from '@/lib/types'
-
-const STEPS: { id: BuilderStep; label: string }[] = [
-  { id: 'pick', label: 'Flowers' },
-  { id: 'greenery', label: 'Foliage' },
-  { id: 'card', label: 'Note' },
-  { id: 'message', label: 'Message' },
-  { id: 'theme', label: 'Theme' },
-]
-
-const STEP_NOTES: Partial<Record<BuilderStep, string>> = {
-  pick: 'Your bouquet journey starts here',
-  greenery: 'Every bouquet needs a frame — this is yours',
-  card: 'Every bouquet deserves a love note',
-  message: 'Now say what your heart already knows',
-}
 
 const SPARKLE_OFFSETS = [
   { x: -10, y: -12, delay: 0 },
@@ -28,13 +17,14 @@ const SPARKLE_OFFSETS = [
 
 type StepIndicatorProps = {
   currentStep: BuilderStep
+  onStepClick?: (step: BuilderStep) => void
 }
 
 function stepProgress(index: number): number {
-  if (STEPS.length <= 1) {
+  if (BUILDER_STEP_META.length <= 1) {
     return 0
   }
-  return (index / (STEPS.length - 1)) * 100
+  return (index / (BUILDER_STEP_META.length - 1)) * 100
 }
 
 function StepSparkles({ visible }: { visible: boolean }) {
@@ -91,18 +81,14 @@ function ProgressBurst({ visible }: { visible: boolean }) {
   )
 }
 
-export function StepIndicator({ currentStep }: StepIndicatorProps) {
-  const currentIndex = STEPS.findIndex((s) => s.id === currentStep)
-  const progress = stepProgress(currentIndex)
+export function StepIndicator({ currentStep, onStepClick }: StepIndicatorProps) {
+  const currentIndex = BUILDER_STEP_META.findIndex((step) => step.id === currentStep)
+  const progress = stepProgress(Math.max(currentIndex, 0))
   const [pulseIndex, setPulseIndex] = useState<number | null>(null)
   const [burstActive, setBurstActive] = useState(false)
   const prevIndexRef = useRef(currentIndex)
 
   useEffect(() => {
-    if (currentStep === 'result') {
-      return
-    }
-
     const prev = prevIndexRef.current
     if (currentIndex !== prev) {
       queueMicrotask(() => setPulseIndex(currentIndex))
@@ -116,13 +102,9 @@ export function StepIndicator({ currentStep }: StepIndicatorProps) {
     }
 
     prevIndexRef.current = currentIndex
-  }, [currentIndex, currentStep])
+  }, [currentIndex])
 
-  if (currentStep === 'result') {
-    return null
-  }
-
-  const stepNote = pulseIndex === null ? STEP_NOTES[currentStep] : undefined
+  const stepNote = pulseIndex === null ? BUILDER_STEP_NOTES[currentStep] : undefined
   const progressPercent = Math.round(progress)
 
   return (
@@ -146,7 +128,7 @@ export function StepIndicator({ currentStep }: StepIndicatorProps) {
             aria-hidden
           >
             <span
-              className={`relative block h-2.5 w-2.5 rounded-full bg-white shadow-[0_0_8px_rgba(233,30,140,0.5)] ${
+              className={`relative block h-2.5 w-2.5 rounded-full bg-surface shadow-[0_0_8px_rgba(233,30,140,0.5)] ${
                 currentIndex === 0 && pulseIndex === null
                   ? 'animate-progress-idle'
                   : burstActive
@@ -160,39 +142,63 @@ export function StepIndicator({ currentStep }: StepIndicatorProps) {
           </div>
         </div>
 
-        <ol className="mt-4 grid grid-cols-5 gap-1">
-          {STEPS.map((step, index) => {
+        <ol className="mt-4 grid grid-cols-3 gap-x-1 gap-y-3 sm:grid-cols-6 sm:gap-y-1">
+          {BUILDER_STEP_META.map((step, index) => {
             const isActive = step.id === currentStep
             const isComplete = index < currentIndex
             const isPulsing = pulseIndex === index
+            const canNavigateBack = isComplete && Boolean(onStepClick)
+
+            const badgeClassName = `flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-semibold transition-colors duration-500 ${
+              isActive
+                ? 'bg-brand-pink text-white shadow-md shadow-brand-pink/30'
+                : isComplete
+                  ? 'bg-bloom-sage text-bloom-ink'
+                  : 'bg-surface text-bloom-ink/40 ring-1 ring-bloom-rose/20'
+            } ${isPulsing ? 'animate-step-pulse' : ''}`
+
+            const labelClassName = `text-[10px] font-medium sm:text-xs ${
+              isActive
+                ? 'text-bloom-ink'
+                : isComplete
+                  ? 'text-bloom-ink/70'
+                  : 'text-bloom-ink/40'
+            }`
 
             return (
               <li key={step.id} className="flex flex-col items-center text-center">
-                <span className="relative mb-1 inline-flex">
-                  <span
-                    className={`flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-semibold transition-colors duration-500 ${
-                      isActive
-                        ? 'bg-brand-pink text-white shadow-md shadow-brand-pink/30'
-                        : isComplete
-                          ? 'bg-bloom-sage text-bloom-ink'
-                          : 'bg-white text-bloom-ink/40 ring-1 ring-bloom-rose/20'
-                    } ${isPulsing ? 'animate-step-pulse' : ''}`}
+                {canNavigateBack ? (
+                  <button
+                    type="button"
+                    data-testid={`step-nav-${step.id}`}
+                    aria-label={`Go back to ${step.label}`}
+                    onClick={() => onStepClick?.(step.id)}
+                    className="group flex flex-col items-center rounded-lg px-1 py-0.5 text-center transition hover:bg-bloom-rose/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink/40"
                   >
-                    {isComplete ? '✓' : index + 1}
-                  </span>
-                  <StepSparkles visible={isPulsing} />
-                </span>
-                <span
-                  className={`text-[10px] font-medium sm:text-xs ${
-                    isActive
-                      ? 'text-bloom-ink'
-                      : isComplete
-                        ? 'text-bloom-ink/70'
-                        : 'text-bloom-ink/40'
-                  }`}
-                >
-                  {step.label}
-                </span>
+                    <span className="relative mb-1 inline-flex">
+                      <span className={`${badgeClassName} group-hover:bg-bloom-sage/90`}>
+                        ✓
+                      </span>
+                      <StepSparkles visible={isPulsing} />
+                    </span>
+                    <span className={`${labelClassName} group-hover:text-bloom-ink`}>
+                      {step.label}
+                    </span>
+                  </button>
+                ) : (
+                  <>
+                    <span
+                      className="relative mb-1 inline-flex"
+                      aria-current={isActive ? 'step' : undefined}
+                    >
+                      <span className={badgeClassName}>
+                        {isComplete ? '✓' : index + 1}
+                      </span>
+                      <StepSparkles visible={isPulsing} />
+                    </span>
+                    <span className={labelClassName}>{step.label}</span>
+                  </>
+                )}
               </li>
             )
           })}
@@ -200,7 +206,7 @@ export function StepIndicator({ currentStep }: StepIndicatorProps) {
       </div>
 
       {stepNote ? (
-        <p className="-mt-4 text-center text-sm font-semibold text-black">{stepNote}</p>
+        <p className="-mt-4 text-center text-sm font-semibold text-bloom-ink">{stepNote}</p>
       ) : null}
     </nav>
   )

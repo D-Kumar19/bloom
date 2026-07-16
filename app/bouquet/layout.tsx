@@ -1,11 +1,14 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Someone sent you a bouquet',
-  description: 'Open to see your digital flowers and message',
+  title: {
+    default: 'A bouquet for you',
+    template: '%s | Bloom',
+  },
+  description: 'Open to see your digital bouquet and message',
   openGraph: {
-    title: 'Someone sent you a bouquet',
-    description: 'Open to see your digital flowers and message',
+    title: 'A bouquet for you',
+    description: 'Open to see your digital bouquet and message',
     images: ['/og-image.png'],
   },
 }

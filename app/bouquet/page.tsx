@@ -1,19 +1,31 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { BouquetComposition } from '@/components/bouquet/BouquetComposition'
+import { BackdropLayer } from '@/components/backdrop/BackdropLayer'
+import { BouquetHero } from '@/components/bouquet/BouquetHero'
+import {
+  SoundtrackPlayer,
+  type SoundtrackPlayerHandle,
+} from '@/components/bouquet/SoundtrackPlayer'
 import { MessageCard } from '@/components/cards/MessageCard'
 import { Button } from '@/components/ui/Button'
-import { decodeBouquet } from '@/lib/sharing'
-import { PHOTO_CARD_ID } from '@/lib/cards'
-import { getFlowerCountMeaning } from '@/lib/flowers'
+import { RoundIconButton } from '@/components/ui/RoundIconButton'
+import { useToast } from '@/components/ui/Toast'
+import { getBouquetById } from '@/lib/bouquets'
+import { decodeBouquet, isRecipientPreviewUrl } from '@/lib/sharing'
+import { getBouquetRevealTitle } from '@/lib/bouquet/recipientCopy'
+import { shouldShowNoteCard } from '@/lib/message'
+import { getThemeById } from '@/lib/themes'
 import type { BouquetState } from '@/lib/types'
 
 type ViewerState = {
   status: 'loading' | 'ready' | 'invalid'
   bouquet: BouquetState | null
 }
+
+type RevealBeat = 0 | 1 | 2 | 3
 
 function readBouquetFromUrl(): ViewerState {
   const params = new URLSearchParams(window.location.search)
@@ -31,24 +43,90 @@ function readBouquetFromUrl(): ViewerState {
   return { status: 'ready', bouquet: decoded }
 }
 
+function getRevealTextTone(themeId: string) {
+  const dark = getThemeById(themeId)?.dark ?? false
+
+  return {
+    dark,
+    title: dark ? 'text-white' : 'text-bloom-ink',
+    body: dark ? 'text-white/80' : 'text-bloom-ink/75',
+    muted: dark ? 'text-white/60' : 'text-bloom-ink/55',
+    accent: dark ? 'text-bloom-gold/90' : 'text-brand-pink',
+  }
+}
+
 export default function BouquetViewerPage() {
+  const router = useRouter()
+  const { showToast } = useToast()
   const [viewer, setViewer] = useState<ViewerState>({
     status: 'loading',
     bouquet: null,
   })
-  const [cardRevealed, setCardRevealed] = useState(false)
-  const [photoFlipped, setPhotoFlipped] = useState(false)
+  const [beat, setBeat] = useState<RevealBeat>(0)
   const [saving, setSaving] = useState(false)
+  const [isCreatorPreview, setIsCreatorPreview] = useState(false)
+  const soundtrackRef = useRef<SoundtrackPlayerHandle>(null)
+
+  useEffect(() => {
+    document.body.classList.add('bouquet-immersive')
+    return () => document.body.classList.remove('bouquet-immersive')
+  }, [])
 
   useEffect(() => {
     queueMicrotask(() => {
-      setViewer(readBouquetFromUrl())
+      const preview = isRecipientPreviewUrl(window.location.search)
+      const nextViewer = readBouquetFromUrl()
+      setViewer(nextViewer)
+      setIsCreatorPreview(preview)
+
+      if (preview && nextViewer.status === 'ready' && nextViewer.bouquet) {
+        const showNote = shouldShowNoteCard(nextViewer.bouquet.message)
+        setBeat(showNote ? 2 : 1)
+      }
     })
   }, [])
+
+  useEffect(() => {
+    if (!viewer.bouquet) {
+      return
+    }
+
+    document.title = `${getBouquetRevealTitle(viewer.bouquet.from)} | Bloom`
+  }, [viewer.bouquet])
+
+  const hasNote = useMemo(() => {
+    if (!viewer.bouquet) {
+      return true
+    }
+
+    return shouldShowNoteCard(viewer.bouquet.message)
+  }, [viewer.bouquet])
+
+  const finalBeat: RevealBeat = hasNote ? 3 : 1
+
+  const advance = useCallback(() => {
+    soundtrackRef.current?.startPlayback()
+    setBeat((current) => (current < finalBeat ? ((current + 1) as RevealBeat) : current))
+  }, [finalBeat])
+
+  const handleRevealKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (beat >= finalBeat) {
+        return
+      }
+
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault()
+        advance()
+      }
+    },
+    [advance, beat, finalBeat],
+  )
 
   const handleSaveImage = async () => {
     const element = document.getElementById('bouquet-export')
     if (!element) {
+      showToast('Could not find bouquet to save.', 'warning')
       return
     }
 
@@ -58,11 +136,14 @@ export default function BouquetViewerPage() {
       const canvas = await html2canvas(element, {
         backgroundColor: null,
         scale: 2,
+        useCORS: true,
       })
       const link = document.createElement('a')
       link.download = 'bloom-bouquet.png'
       link.href = canvas.toDataURL('image/png')
       link.click()
+    } catch {
+      showToast('Could not save image. Try again.', 'warning')
     } finally {
       setSaving(false)
     }
@@ -70,21 +151,23 @@ export default function BouquetViewerPage() {
 
   if (viewer.status === 'loading') {
     return (
-      <main className="mx-auto flex min-h-[60vh] max-w-4xl flex-col items-center justify-center px-4 py-12">
-        <div className="h-48 w-full max-w-md animate-pulse rounded-3xl bg-bloom-rose/10" />
-        <p className="mt-4 text-sm text-bloom-ink/60">Unwrapping your bouquet...</p>
+      <main className="flex min-h-dvh items-center justify-center bg-bloom-cream px-4">
+        <div className="w-full max-w-md text-center">
+          <div className="h-48 w-full animate-pulse rounded-3xl bg-bloom-rose/10" />
+          <p className="mt-4 text-sm text-bloom-ink/60">Unwrapping your bouquet...</p>
+        </div>
       </main>
     )
   }
 
   if (viewer.status === 'invalid' || !viewer.bouquet) {
     return (
-      <main className="mx-auto flex min-h-[60vh] max-w-2xl flex-col items-center justify-center px-4 py-12 text-center">
+      <main className="flex min-h-dvh flex-col items-center justify-center bg-bloom-cream px-4 py-12 text-center">
         <h1 className="font-display text-3xl text-bloom-ink">
           This bouquet could not be found
         </h1>
         <p className="mt-3 text-sm text-bloom-ink/70">
-          The link may be broken or expired.
+          The link may be broken or unreadable.
         </p>
         <Button href="/create" className="mt-8">
           Create your own bouquet
@@ -94,59 +177,150 @@ export default function BouquetViewerPage() {
   }
 
   const bouquet = viewer.bouquet
-  const sender = bouquet.from || 'Someone'
-  const count = bouquet.flowers.length
-  const isPhotoCard = bouquet.cardStyle === PHOTO_CARD_ID
+  const sender = bouquet.from.trim() || 'Someone'
+  const revealTitle = getBouquetRevealTitle(bouquet.from)
+  const bouquetMeta = getBouquetById(bouquet.bouquetId)
+  const revealComplete = beat >= finalBeat
+  const showActions = revealComplete
+  const tone = getRevealTextTone(bouquet.theme)
+  const canAdvanceReveal = beat < finalBeat
 
   return (
-    <main className="mx-auto w-full max-w-3xl px-4 py-10 md:py-14">
-      <header className="mb-8 text-center">
-        <p className="text-sm font-medium uppercase tracking-[0.2em] text-bloom-rose">
-          Bloom
-        </p>
-        <h1 className="mt-2 font-display text-4xl text-bloom-ink">
-          Someone sent you a bouquet
-        </h1>
-      </header>
+    <BackdropLayer
+      theme={bouquet.theme}
+      variant={beat === 0 ? 'muted' : 'full'}
+      className="min-h-dvh"
+      data-testid="bouquet-page-backdrop"
+    >
+      <main className="relative mx-auto flex min-h-dvh w-full max-w-3xl flex-col px-4 py-6 md:px-6 md:py-8">
+        {isCreatorPreview ? (
+          <RoundIconButton
+            data-testid="preview-back-button"
+            aria-label="Back to share step"
+            onClick={() => router.push('/create')}
+            className="absolute top-4 left-4 z-40 bg-surface/90 backdrop-blur-sm"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+              <path
+                d="M15 18l-6-6 6-6"
+                stroke="currentColor"
+                strokeWidth="1.75"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </RoundIconButton>
+        ) : null}
 
-      <div id="bouquet-export" className="space-y-6">
-        <BouquetComposition state={bouquet} revealUnwrap animate />
-        <div className="text-center">
-          <MessageCard
-            styleId={bouquet.cardStyle}
-            to={bouquet.to}
-            message={bouquet.message}
-            from={bouquet.from}
-            messageFormat={bouquet.messageFormat}
-            noteBorder={bouquet.noteBorder}
-            photoImage={bouquet.photoCardImage}
-            photoNoteStyleId={bouquet.photoNoteStyle}
-            photoFlipped={photoFlipped}
-            onPhotoFlip={() => setPhotoFlipped(true)}
-            showPhotoFlipHint={isPhotoCard && !photoFlipped}
-            folded={!isPhotoCard && !cardRevealed}
-            onClick={!isPhotoCard ? () => setCardRevealed(true) : undefined}
-          />
+        <SoundtrackPlayer
+          ref={soundtrackRef}
+          soundtrackId={bouquet.soundtrack}
+          autoPlay={isCreatorPreview}
+          className="absolute top-4 right-4 z-40"
+        />
+
+        {beat > 0 ? (
+          <header className="mb-6 pt-10 text-center md:pt-12">
+            <h1 className={`font-display text-3xl md:text-4xl ${tone.title}`}>
+              {revealTitle}
+            </h1>
+          </header>
+        ) : (
+          <div className="pt-12" />
+        )}
+
+        <div
+          data-testid="reveal-stage"
+          role={canAdvanceReveal ? 'button' : undefined}
+          tabIndex={canAdvanceReveal ? 0 : undefined}
+          onClick={canAdvanceReveal ? advance : undefined}
+          onKeyDown={canAdvanceReveal ? handleRevealKeyDown : undefined}
+          className={`flex-1 text-left ${canAdvanceReveal ? 'cursor-pointer' : 'cursor-default'}`}
+          aria-label={canAdvanceReveal ? 'Tap to continue the reveal' : undefined}
+        >
+          <div id="bouquet-export" className="space-y-6">
+            {beat === 0 ? (
+              <div
+                data-testid="reveal-beat-wrap"
+                className={`flex min-h-[50vh] flex-col items-center justify-center rounded-3xl border p-8 backdrop-blur-[2px] ${
+                  tone.dark
+                    ? 'border-white/15 bg-black/20'
+                    : 'border-bloom-rose/15 bg-surface/40'
+                }`}
+              >
+                <div
+                  className={`h-28 w-28 rounded-full border-2 border-dashed ${
+                    tone.dark
+                      ? 'border-white/35 bg-white/10'
+                      : 'border-bloom-rose/40 bg-background/80'
+                  }`}
+                />
+                <p className={`mt-6 font-display text-xl ${tone.title}`}>{revealTitle}</p>
+                <p className={`mt-2 text-sm ${tone.muted}`}>Tap to open</p>
+              </div>
+            ) : null}
+
+            {beat >= 1 ? (
+              <BouquetHero
+                bouquetId={bouquet.bouquetId}
+                theme={bouquet.theme}
+                showBackdrop={false}
+              />
+            ) : null}
+
+            {beat >= 2 && hasNote ? (
+              <div className="text-center">
+                <MessageCard
+                  styleId={bouquet.cardStyle}
+                  to={bouquet.to}
+                  message={beat >= 3 ? bouquet.message : ''}
+                  from={beat >= 3 ? bouquet.from : ''}
+                  messageFormat={bouquet.messageFormat}
+                  noteBorder={bouquet.noteBorder}
+                  folded={beat < 3}
+                  onClick={beat === 2 ? () => setBeat(3) : undefined}
+                />
+              </div>
+            ) : null}
+          </div>
+
+          {canAdvanceReveal && beat > 0 ? (
+            <p className={`mt-4 text-center text-xs ${tone.muted}`}>Tap to continue</p>
+          ) : null}
         </div>
-      </div>
 
-      {cardRevealed || photoFlipped ? (
-        <p className="mt-6 text-center text-sm italic text-bloom-ink/70">
-          This bouquet was made with love, just for you.
-        </p>
-      ) : null}
+        {revealComplete ? (
+          <p className={`mt-6 text-center text-sm italic ${tone.body}`}>
+            This bouquet was made for you, quietly, on purpose.
+          </p>
+        ) : null}
 
-      <p className="mt-4 text-center text-xs text-bloom-ink/50">
-        {sender} chose {count} {count === 1 ? 'flower' : 'flowers'} for you. In
-        the language of flowers, that means: {getFlowerCountMeaning(count)}
-      </p>
+        {revealComplete ? (
+          <p className={`mt-4 text-center text-sm ${tone.body}`}>
+            {sender} sent you{' '}
+            <span className={`font-medium ${tone.title}`}>
+              {bouquetMeta?.name ?? 'a bouquet'}
+            </span>
+            {bouquetMeta ? (
+              <>
+                <span className={`mx-2 ${tone.muted}`}>·</span>
+                <span className="italic">{bouquetMeta.meaning}</span>
+              </>
+            ) : null}
+          </p>
+        ) : null}
 
-      <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-        <Button onClick={handleSaveImage} disabled={saving} variant="secondary">
-          {saving ? 'Saving...' : 'Save as Image'}
-        </Button>
-        <Button href="/create">Send a bouquet back</Button>
-      </div>
-    </main>
+        {showActions && !isCreatorPreview ? (
+          <div className="mt-10 flex flex-col items-center gap-3 pb-6 sm:flex-row sm:justify-center">
+            <Button onClick={handleSaveImage} disabled={saving}>
+              {saving ? 'Saving...' : 'Save as Image'}
+            </Button>
+            <Button href="/create" variant="ghost">
+              Send a bouquet back
+            </Button>
+          </div>
+        ) : null}
+      </main>
+    </BackdropLayer>
   )
 }

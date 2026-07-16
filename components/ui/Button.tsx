@@ -16,6 +16,7 @@ type ButtonAsButton = ButtonBaseProps &
 
 type ButtonAsLink = ButtonBaseProps & {
   href: string
+  onClick?: () => void
 }
 
 type ButtonProps = ButtonAsButton | ButtonAsLink
@@ -44,9 +45,9 @@ export function Button({
   const classes = buttonClassName(variant, className)
 
   if ('href' in props && props.href) {
-    const { href } = props
+    const { href, onClick } = props
     return (
-      <Link href={href} className={classes}>
+      <Link href={href} className={classes} onClick={onClick}>
         {children}
       </Link>
     )

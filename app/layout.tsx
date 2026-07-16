@@ -3,6 +3,7 @@ import {
   Caveat,
   Courier_Prime,
   EB_Garamond,
+  Fraunces,
   Inter,
   Lora,
   Nunito,
@@ -11,8 +12,14 @@ import {
   Sacramento,
 } from 'next/font/google'
 
+import { AppearanceProvider } from '@/components/ui/AppearanceProvider'
 import { Footer } from '@/components/ui/Footer'
+import { FooterGate } from '@/components/layout/FooterGate'
+import { SiteChrome } from '@/components/layout/SiteChrome'
 import { ToastProvider } from '@/components/ui/Toast'
+import { APPEARANCE_STORAGE_KEY, DEFAULT_APPEARANCE } from '@/lib/appearance'
+import { SITE_TITLE } from '@/lib/site'
+import { getSiteMetadataBase } from '@/lib/siteUrl'
 
 import './globals.css'
 
@@ -24,6 +31,12 @@ const inter = Inter({
 const playfair = Playfair_Display({
   variable: '--font-playfair',
   subsets: ['latin'],
+})
+
+const fraunces = Fraunces({
+  variable: '--font-fraunces',
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
 })
 
 const lora = Lora({
@@ -70,6 +83,7 @@ const courierPrime = Courier_Prime({
 
 const fontVariables = [
   inter.variable,
+  fraunces.variable,
   playfair.variable,
   lora.variable,
   ebGaramond.variable,
@@ -81,17 +95,17 @@ const fontVariables = [
 ].join(' ')
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://bloom.app'),
+  metadataBase: getSiteMetadataBase(),
   title: {
-    default: 'Bloom - Send a Digital Bouquet',
+    default: SITE_TITLE,
     template: '%s | Bloom',
   },
   description:
-    'Build a beautiful digital bouquet with a personal card. Free, instant, and private.',
+    'Bloom turns a feeling into a link. Pick a bouquet, write a note, share a private link.',
   openGraph: {
-    title: 'Bloom - Send a Digital Bouquet',
+    title: SITE_TITLE,
     description:
-      'Build a beautiful digital bouquet with a personal card. Free, instant, and private.',
+      'Bloom turns a feeling into a link. Pick a bouquet, write a note, share a private link.',
     images: ['/og-image.png'],
     type: 'website',
   },
@@ -104,13 +118,28 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full" suppressHydrationWarning>
+      <head>
+        <script
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var key=${JSON.stringify(APPEARANCE_STORAGE_KEY)};var fallback=${JSON.stringify(DEFAULT_APPEARANCE)};var mode=localStorage.getItem(key)||fallback;var dark=mode==='dark'||(mode==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.classList.toggle('dark',dark);document.documentElement.dataset.appearance=mode;}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body
-        className={`${fontVariables} flex min-h-full flex-col bg-bloom-cream font-sans text-bloom-ink antialiased`}
+        suppressHydrationWarning
+        className={`${fontVariables} flex min-h-full flex-col bg-background font-sans text-foreground antialiased`}
       >
-        <ToastProvider>
-          <div className="flex flex-1 flex-col">{children}</div>
-          <Footer />
-        </ToastProvider>
+        <AppearanceProvider>
+          <ToastProvider>
+            <SiteChrome>
+              <div className="flex flex-1 flex-col">{children}</div>
+              <FooterGate>
+                <Footer />
+              </FooterGate>
+            </SiteChrome>
+          </ToastProvider>
+        </AppearanceProvider>
       </body>
     </html>
   )

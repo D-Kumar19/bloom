@@ -1,30 +1,30 @@
-import { act, render, screen } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { act, fireEvent, render, screen } from '@testing-library/react'
+import { describe, expect, it, vi } from 'vitest'
 
 import { StepIndicator } from '@/components/builder/StepIndicator'
 
 describe('StepIndicator', () => {
   it('shows a progress burst when moving forward', async () => {
-    const { rerender } = render(<StepIndicator currentStep="pick" />)
+    const { rerender } = render(<StepIndicator currentStep="bouquet" />)
 
     await act(async () => {
-      rerender(<StepIndicator currentStep="greenery" />)
+      rerender(<StepIndicator currentStep="card" />)
       await Promise.resolve()
     })
 
     expect(screen.getByTestId('progress-burst')).toBeInTheDocument()
   })
 
-  it('shows foliage step label', () => {
-    render(<StepIndicator currentStep="greenery" />)
+  it('shows bouquet step label', () => {
+    render(<StepIndicator currentStep="bouquet" />)
 
-    expect(screen.getByText('Foliage')).toBeInTheDocument()
+    expect(screen.getByText('Bouquet')).toBeInTheDocument()
   })
 
-  it('shows step note on foliage step', () => {
-    render(<StepIndicator currentStep="greenery" />)
+  it('shows step note on bouquet step', () => {
+    render(<StepIndicator currentStep="bouquet" />)
 
-    expect(screen.getByText('Every bouquet needs a frame — this is yours')).toBeInTheDocument()
+    expect(screen.getByText('Pick the bouquet that fits the moment')).toBeInTheDocument()
   })
 
   it('shows note step label and journey line', () => {
@@ -34,20 +34,41 @@ describe('StepIndicator', () => {
     expect(screen.getByText('Every bouquet deserves a love note')).toBeInTheDocument()
   })
 
-  it('shows journey note on flowers step', () => {
-    render(<StepIndicator currentStep="pick" />)
-
-    expect(screen.getByText('Your bouquet journey starts here')).toBeInTheDocument()
-  })
-
   it('shows a progress burst when moving backward', async () => {
     const { rerender } = render(<StepIndicator currentStep="card" />)
 
     await act(async () => {
-      rerender(<StepIndicator currentStep="greenery" />)
+      rerender(<StepIndicator currentStep="bouquet" />)
       await Promise.resolve()
     })
 
     expect(screen.getByTestId('progress-burst')).toBeInTheDocument()
+  })
+
+  it('shows share step label', () => {
+    render(<StepIndicator currentStep="share" />)
+
+    expect(screen.getByText('Share')).toBeInTheDocument()
+    expect(screen.getByText('Your bouquet is ready to send')).toBeInTheDocument()
+  })
+
+  it('lets you click completed steps to go back', () => {
+    const onStepClick = vi.fn()
+    render(<StepIndicator currentStep="message" onStepClick={onStepClick} />)
+
+    fireEvent.click(screen.getByTestId('step-nav-bouquet'))
+    fireEvent.click(screen.getByTestId('step-nav-card'))
+
+    expect(onStepClick).toHaveBeenCalledTimes(2)
+    expect(onStepClick).toHaveBeenNthCalledWith(1, 'bouquet')
+    expect(onStepClick).toHaveBeenNthCalledWith(2, 'card')
+  })
+
+  it('does not make the current or future steps clickable', () => {
+    render(<StepIndicator currentStep="message" onStepClick={vi.fn()} />)
+
+    expect(screen.queryByTestId('step-nav-message')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('step-nav-theme')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('step-nav-share')).not.toBeInTheDocument()
   })
 })
