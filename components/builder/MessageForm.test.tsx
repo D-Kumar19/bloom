@@ -11,8 +11,6 @@ function renderMessageForm(overrides: Partial<Parameters<typeof MessageForm>[0]>
     message: '',
     from: '',
     cardStyle: 'midnight',
-    photoCardImage: undefined,
-    photoNoteStyle: 'classic-cream',
     messageFormat: DEFAULT_MESSAGE_FORMAT,
     noteBorder: DEFAULT_NOTE_BORDER,
     maxLength: 200,
@@ -21,6 +19,7 @@ function renderMessageForm(overrides: Partial<Parameters<typeof MessageForm>[0]>
     onFromChange: vi.fn(),
     onMessageFormatChange: vi.fn(),
     onNoteBorderChange: vi.fn(),
+    onCardStyleChange: vi.fn(),
     ...overrides,
   }
 
@@ -31,16 +30,46 @@ function renderMessageForm(overrides: Partial<Parameters<typeof MessageForm>[0]>
 }
 
 describe('MessageForm', () => {
-  it('renders live preview without design pickers', () => {
-    renderMessageForm({ cardStyle: 'midnight', to: 'Sarah', from: 'Dheeraj' })
+  it('renders live preview with change card style link', () => {
+    renderMessageForm({
+      cardStyle: 'midnight',
+      to: 'Sarah',
+      from: 'Dheeraj',
+      message: 'Thinking of you',
+    })
 
     expect(screen.getByTestId('message-form')).toBeInTheDocument()
     expect(screen.getByText('Live preview')).toBeInTheDocument()
     expect(screen.getByTestId('message-card')).toBeInTheDocument()
     expect(screen.getByText('To: Sarah')).toBeInTheDocument()
-    expect(screen.getByText('Midnight')).toBeInTheDocument()
-    expect(screen.queryByTestId('change-card-style')).not.toBeInTheDocument()
-    expect(screen.queryByTestId('photo-note-style-picker')).not.toBeInTheDocument()
+    expect(screen.getByTestId('change-card-style')).toBeInTheDocument()
+  })
+
+  it('shows an empty card preview with To and From placeholders before the message is written', () => {
+    renderMessageForm({ cardStyle: 'classic-cream', to: 'Sarah', from: 'Dheeraj' })
+
+    expect(screen.getByText('Live preview')).toBeInTheDocument()
+    expect(screen.getByTestId('message-card')).toBeInTheDocument()
+    expect(screen.getByText('To: Sarah')).toBeInTheDocument()
+    expect(screen.getByText('With love, Dheeraj')).toBeInTheDocument()
+    expect(screen.getByText('Your message will appear here...')).toBeInTheDocument()
+    expect(screen.queryByText('Classic Cream')).not.toBeInTheDocument()
+  })
+
+  it('shows default To and From placeholders when names are empty', () => {
+    renderMessageForm({ cardStyle: 'classic-cream' })
+
+    expect(screen.getByTestId('message-card')).toBeInTheDocument()
+    expect(screen.getByText('To: You')).toBeInTheDocument()
+    expect(screen.getByText('With love')).toBeInTheDocument()
+  })
+
+  it('opens the quick card style picker from the preview link', () => {
+    renderMessageForm({ cardStyle: 'midnight' })
+
+    fireEvent.click(screen.getByTestId('change-card-style'))
+    expect(screen.getByTestId('card-style-quick-picker')).toBeInTheDocument()
+    expect(screen.getByTestId('quick-card-garden')).toBeInTheDocument()
   })
 
   it('shows warmer character counter copy when there is room', () => {
@@ -64,7 +93,7 @@ describe('MessageForm', () => {
     ).toBeInTheDocument()
   })
 
-  it('fills the message when an inspiration prompt is chosen', () => {
+  it('fills the message and collapses inspiration when a prompt is chosen', () => {
     const onMessageChange = vi.fn()
     renderMessageForm({ onMessageChange })
 
@@ -72,29 +101,57 @@ describe('MessageForm', () => {
     fireEvent.click(screen.getByTestId('inspiration-thank-you'))
 
     expect(onMessageChange).toHaveBeenCalled()
+    expect(screen.queryByTestId('inspiration-thank-you')).not.toBeInTheDocument()
   })
 
-  it('shows organized formatting toolbar and note border picker', () => {
+  it('shows message editor placeholder when empty', () => {
+    renderMessageForm()
+
+    expect(screen.getByText('Write your message here. Say what you mean.')).toBeInTheDocument()
+  })
+
+  it('shows formatting toolbar and hides note border until advanced is opened', () => {
     renderMessageForm()
 
     expect(screen.getByTestId('message-font-inter')).toBeInTheDocument()
     expect(screen.getByTestId('message-font-caveat')).toBeInTheDocument()
     expect(screen.getByTestId('message-size-base')).toBeInTheDocument()
     expect(screen.getByTestId('message-bold')).toHaveAttribute('title', 'Bold')
-    expect(screen.getByTestId('message-smaller-selection')).toHaveAttribute('title', 'Smaller')
+    expect(screen.queryByTestId('note-border-picker')).not.toBeInTheDocument()
+
+    fireEvent.click(screen.getByTestId('advanced-toggle'))
     expect(screen.getByTestId('note-border-picker')).toBeInTheDocument()
     expect(screen.getByTestId('note-border-style-dashed')).toBeInTheDocument()
   })
 
-  it('updates note border when style is selected', () => {
+  it('prompts for required fields when they are empty', () => {
+    renderMessageForm({ message: '', to: '', from: '' })
+
+    expect(screen.getByText('Add who this is for')).toBeInTheDocument()
+    expect(screen.getByText('Add your name so they know who sent this')).toBeInTheDocument()
+    expect(screen.getByText('Write your message before continuing')).toBeInTheDocument()
+  })
+
+  it('updates note border when style is selected in advanced', () => {
     const onNoteBorderChange = vi.fn()
     renderMessageForm({ onNoteBorderChange })
 
+    fireEvent.click(screen.getByTestId('advanced-toggle'))
     fireEvent.click(screen.getByTestId('note-border-style-dotted'))
 
     expect(onNoteBorderChange).toHaveBeenCalledWith({
       style: 'dotted',
       color: DEFAULT_NOTE_BORDER.color,
     })
+  })
+
+  it('switches card style from the quick picker', () => {
+    const onCardStyleChange = vi.fn()
+    renderMessageForm({ cardStyle: 'midnight', onCardStyleChange })
+
+    fireEvent.click(screen.getByTestId('change-card-style'))
+    fireEvent.click(screen.getByTestId('quick-card-garden'))
+
+    expect(onCardStyleChange).toHaveBeenCalledWith('garden')
   })
 })

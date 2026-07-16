@@ -1,4 +1,4 @@
-/** CSS surface classes for note card paper styles (shared by MessageCard and PhotoCard back). */
+/** CSS surface classes for note card paper styles. */
 export const NOTE_SURFACE_CLASSES: Record<string, string> = {
   'classic-cream': 'card-surface-classic-cream text-black',
   vintage: 'card-surface-vintage text-black',

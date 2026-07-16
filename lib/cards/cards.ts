@@ -1,9 +1,8 @@
 import type { BouquetState, CardStyle } from '../types'
 
 export const FEATURED_CARD_ID = 'classic-cream'
-export const PHOTO_CARD_ID = 'photo-card'
 
-/** Nine paper note styles (used for standard cards and photo card backs). */
+/** Nine paper note styles. */
 export const NOTE_CARD_STYLES: CardStyle[] = [
   {
     id: FEATURED_CARD_ID,
@@ -21,25 +20,16 @@ export const NOTE_CARD_STYLES: CardStyle[] = [
   { id: 'linen', name: 'Linen', tagline: 'Clean and calm.' },
 ]
 
-/** Eight pickable styles in the grid (themes 1–8). */
+/** Eight pickable styles in the grid (themes 1-8). */
 export const GRID_CARD_STYLES: CardStyle[] = NOTE_CARD_STYLES.filter(
   (style) => style.id !== FEATURED_CARD_ID,
 )
 
-/** Theme 9 — featured at the top. */
+/** Theme 9: featured at the top. */
 export const FEATURED_CARD_STYLE: CardStyle = NOTE_CARD_STYLES[0]
 
-/** Theme 10 — user photo upload. */
-export const PHOTO_CARD_STYLE: CardStyle = {
-  id: PHOTO_CARD_ID,
-  name: 'Photo Card',
-  tagline: 'Your photo on the front. Your words on the back.',
-  special: true,
-}
+export const CARD_STYLES: CardStyle[] = [...NOTE_CARD_STYLES]
 
-export const CARD_STYLES: CardStyle[] = [...NOTE_CARD_STYLES, PHOTO_CARD_STYLE]
-
-/** Surprise me never picks photo card — upload is required separately. */
 export const SURPRISE_CARD_IDS = NOTE_CARD_STYLES.map((style) => style.id)
 
 export const CARD_STYLE_MAP = new Map(CARD_STYLES.map((c) => [c.id, c]))
@@ -48,19 +38,10 @@ export function getCardStyleById(id: string): CardStyle | undefined {
   return CARD_STYLE_MAP.get(id)
 }
 
-export function getEffectiveNoteStyleId(state: Pick<BouquetState, 'cardStyle' | 'photoNoteStyle'>): string {
-  if (state.cardStyle === PHOTO_CARD_ID) {
-    return state.photoNoteStyle ?? FEATURED_CARD_ID
-  }
-
+export function getEffectiveNoteStyleId(state: Pick<BouquetState, 'cardStyle'>): string {
   return state.cardStyle
 }
 
-export function getDisplayCardLabel(state: Pick<BouquetState, 'cardStyle' | 'photoNoteStyle'>): string {
-  if (state.cardStyle === PHOTO_CARD_ID) {
-    const note = getCardStyleById(state.photoNoteStyle ?? FEATURED_CARD_ID)
-    return `Photo Card · ${note?.name ?? 'Classic Cream'} note`
-  }
-
+export function getDisplayCardLabel(state: Pick<BouquetState, 'cardStyle'>): string {
   return getCardStyleById(state.cardStyle)?.name ?? 'Classic Cream'
 }
