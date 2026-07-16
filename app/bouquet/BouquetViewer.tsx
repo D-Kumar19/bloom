@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { BackdropLayer } from '@/components/backdrop/BackdropLayer'
-import { BouquetExportSnapshot } from '@/components/bouquet/BouquetExportSnapshot'
 import { BouquetHero } from '@/components/bouquet/BouquetHero'
 import {
   SoundtrackPlayer,
@@ -15,8 +14,8 @@ import { Button } from '@/components/ui/Button'
 import { RoundIconButton } from '@/components/ui/RoundIconButton'
 import { useToast } from '@/components/ui/Toast'
 import { getBouquetById } from '@/lib/bouquets'
-import { captureElementImage } from '@/lib/export/captureElementImage'
 import { downloadImageBlob } from '@/lib/export/downloadImageBlob'
+import { renderBouquetImage } from '@/lib/export/renderBouquetImage'
 import { decodeBouquet, isRecipientPreviewUrl } from '@/lib/sharing'
 import { getBouquetRevealTitle, formatBouquetDocumentTitle } from '@/lib/bouquet/recipientCopy'
 import { getRevealTextTone } from '@/lib/bouquet/revealTone'
@@ -115,15 +114,14 @@ export function BouquetViewer() {
   )
 
   const handleSaveImage = async () => {
-    const element = document.getElementById('bouquet-export-snapshot')
-    if (!element) {
+    if (!viewer.bouquet) {
       showToast('Could not find bouquet to save.', 'warning')
       return
     }
 
     setSaving(true)
     try {
-      const blob = await captureElementImage(element)
+      const blob = await renderBouquetImage(viewer.bouquet)
       await downloadImageBlob(blob, 'bloom-bouquet.png')
       showToast('Image saved.', 'success')
     } catch (error) {
@@ -312,7 +310,6 @@ export function BouquetViewer() {
 
         {showActions && !isCreatorPreview ? (
           <>
-            <BouquetExportSnapshot bouquet={bouquet} />
             <div className="mt-10 flex flex-col items-center gap-3 pb-6 sm:flex-row sm:justify-center">
               <Button onClick={handleSaveImage} disabled={saving}>
                 {saving ? 'Saving...' : 'Save as Image'}
