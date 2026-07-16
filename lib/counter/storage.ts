@@ -15,7 +15,7 @@ function getKvConfig(): { url: string; token: string } | null {
   return { url, token }
 }
 
-function useKv(): boolean {
+function hasKvConfig(): boolean {
   return getKvConfig() !== null
 }
 
@@ -69,11 +69,11 @@ async function writeCountToFile(count: number): Promise<void> {
 }
 
 export function counterUsesKv(): boolean {
-  return useKv()
+  return hasKvConfig()
 }
 
 export async function readBouquetCount(): Promise<number> {
-  if (useKv()) {
+  if (hasKvConfig()) {
     return readCountFromKv()
   }
 
@@ -81,7 +81,7 @@ export async function readBouquetCount(): Promise<number> {
 }
 
 export async function incrementBouquetCountValue(): Promise<number> {
-  if (useKv()) {
+  if (hasKvConfig()) {
     return incrementCountInKv()
   }
 

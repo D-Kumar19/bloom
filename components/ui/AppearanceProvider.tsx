@@ -24,6 +24,11 @@ type AppearanceContextValue = {
   setAppearance: (mode: AppearanceMode) => void
 }
 
+type AppearanceState = {
+  appearance: AppearanceMode
+  resolvedDark: boolean
+}
+
 const AppearanceContext = createContext<AppearanceContextValue | null>(null)
 
 function readStoredAppearance(): AppearanceMode {
@@ -35,22 +40,34 @@ function readStoredAppearance(): AppearanceMode {
   return stored && isAppearanceMode(stored) ? stored : DEFAULT_APPEARANCE
 }
 
+function readAppearanceState(): AppearanceState {
+  const appearance = readStoredAppearance()
+
+  if (typeof document === 'undefined') {
+    return {
+      appearance,
+      resolvedDark: resolveDarkMode(appearance),
+    }
+  }
+
+  applyAppearanceMode(appearance)
+
+  return {
+    appearance,
+    resolvedDark: document.documentElement.classList.contains('dark'),
+  }
+}
+
 export function AppearanceProvider({ children }: { children: React.ReactNode }) {
-  const [appearance, setAppearanceState] = useState<AppearanceMode>(readStoredAppearance)
-  const [resolvedDark, setResolvedDark] = useState(() => resolveDarkMode(readStoredAppearance()))
+  const [state, setState] = useState<AppearanceState>(readAppearanceState)
 
   const setAppearance = useCallback((mode: AppearanceMode) => {
-    setAppearanceState(mode)
     localStorage.setItem(APPEARANCE_STORAGE_KEY, mode)
     applyAppearanceMode(mode)
-    setResolvedDark(document.documentElement.classList.contains('dark'))
-  }, [])
-
-  useEffect(() => {
-    const mode = readStoredAppearance()
-    applyAppearanceMode(mode)
-    setAppearanceState(mode)
-    setResolvedDark(document.documentElement.classList.contains('dark'))
+    setState({
+      appearance: mode,
+      resolvedDark: document.documentElement.classList.contains('dark'),
+    })
   }, [])
 
   useEffect(() => {
@@ -61,8 +78,12 @@ export function AppearanceProvider({ children }: { children: React.ReactNode }) 
       if (mode !== 'system') {
         return
       }
+
       applyAppearanceMode('system')
-      setResolvedDark(document.documentElement.classList.contains('dark'))
+      setState({
+        appearance: 'system',
+        resolvedDark: document.documentElement.classList.contains('dark'),
+      })
     }
 
     media.addEventListener('change', onSystemChange)
@@ -71,11 +92,11 @@ export function AppearanceProvider({ children }: { children: React.ReactNode }) 
 
   const value = useMemo(
     () => ({
-      appearance,
-      resolvedDark,
+      appearance: state.appearance,
+      resolvedDark: state.resolvedDark,
       setAppearance,
     }),
-    [appearance, resolvedDark, setAppearance],
+    [setAppearance, state.appearance, state.resolvedDark],
   )
 
   return <AppearanceContext.Provider value={value}>{children}</AppearanceContext.Provider>
