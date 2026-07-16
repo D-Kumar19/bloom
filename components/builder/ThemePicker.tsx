@@ -8,7 +8,6 @@ import { Modal } from '@/components/ui/Modal'
 import { useAmbientSoundtrack } from '@/hooks/useAmbientSoundtrack'
 import { SOUNDTRACK_OPTIONS, type SoundtrackId } from '@/lib/soundtracks'
 import {
-  getAnimatedThemeNames,
   getThemeDecorationDescription,
   getThemeMotionDescription,
   isThemeAnimated,
@@ -52,7 +51,11 @@ function ThemeDetailModal({
   const animated = isThemeAnimated(theme)
 
   return (
-    <Modal open={open} onClose={onClose} title={theme.name}>
+    <Modal
+      open={open}
+      onClose={onClose}
+      title={theme.name}
+    >
       <BackdropPreview theme={theme} decorationDensity="scene" className="mx-auto mb-4 h-40 w-full max-w-sm rounded-2xl" />
       <p className="text-sm italic leading-relaxed text-bloom-ink/80">{theme.tagline}</p>
       <p className="mt-4 text-sm leading-relaxed text-bloom-ink/70">
@@ -98,6 +101,8 @@ export function ThemePicker({
   const [detailTheme, setDetailTheme] = useState<ThemeType | null>(null)
   const { play, stop, isPlaying } = useAmbientSoundtrack({ volume: 0.3 })
 
+  const closeDetail = () => setDetailTheme(null)
+
   const handleSoundtrackClick = (id: SoundtrackId) => {
     onSoundtrackSelect(id)
 
@@ -114,19 +119,13 @@ export function ThemePicker({
     play(id)
   }
 
-  const animatedThemeNames = getAnimatedThemeNames()
-
   return (
     <div className="mx-auto w-full max-w-6xl space-y-10">
       <div>
         <h2 className="font-display text-2xl text-bloom-ink md:text-3xl">Choose your backdrop</h2>
         <p className="mt-1 text-sm text-bloom-ink/60">
-          The light behind your bouquet when someone opens it. Tap a swatch to learn more, then
-          select the atmosphere that fits your note.
-        </p>
-        <p className="mt-2 text-sm text-bloom-ink/60">
-          <span className="font-medium text-bloom-ink">With motion:</span>{' '}
-          {animatedThemeNames.join(', ')}. The rest stay still.
+          The light behind your bouquet when someone opens it. Tap a swatch for details,
+          then select the atmosphere that fits your note.
         </p>
       </div>
 
@@ -151,22 +150,22 @@ export function ThemePicker({
                 onClick={() => setDetailTheme(theme)}
                 className="group block w-full p-2 text-left"
               >
-                <BackdropPreview
-                  theme={theme}
-                  showDecorations={false}
-                  className="h-24 rounded-xl sm:h-28"
-                />
-                {animated ? (
-                  <span
-                    data-testid={`theme-animated-badge-${theme.id}`}
-                    className="mt-1.5 inline-flex rounded-full border border-brand-pink/25 bg-surface px-2.5 py-0.5 text-[10px] font-semibold text-brand-pink shadow-sm md:text-xs"
-                  >
-                    Animated
-                  </span>
-                ) : null}
-                <p className={`px-1 text-xs font-medium text-bloom-ink ${animated ? 'mt-1.5' : 'mt-2'}`}>
-                  {theme.name}
-                </p>
+                <div className="relative isolate overflow-hidden rounded-xl">
+                  <BackdropPreview
+                    theme={theme}
+                    showDecorations
+                    className="h-24 sm:h-28"
+                  />
+                  {animated ? (
+                    <span
+                      data-testid={`theme-animated-badge-${theme.id}`}
+                      className="absolute top-2 left-2 z-20 rounded-full bg-[#fffcf8] px-2.5 py-1 text-[10px] font-semibold tracking-wide text-brand-pink shadow-[0_1px_4px_rgb(42_36_32/0.18)] ring-1 ring-[#2a2420]/10 md:text-xs"
+                    >
+                      Animated
+                    </span>
+                  ) : null}
+                </div>
+                <p className="mt-2 px-1 text-xs font-medium text-bloom-ink">{theme.name}</p>
                 <p className="px-1 pb-1 text-[10px] text-bloom-ink/60 italic">{theme.tagline}</p>
               </button>
               <div className="border-t border-bloom-rose/10 px-2 pb-2">
@@ -233,7 +232,7 @@ export function ThemePicker({
         theme={detailTheme}
         isSelected={detailTheme?.id === selectedId}
         open={detailTheme !== null}
-        onClose={() => setDetailTheme(null)}
+        onClose={closeDetail}
         onSelect={onSelect}
       />
     </div>

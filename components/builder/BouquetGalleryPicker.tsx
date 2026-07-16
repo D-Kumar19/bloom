@@ -35,13 +35,20 @@ function BouquetDetailModal({
     return null
   }
 
+  const moodLabel =
+    BOUQUET_MOODS.find((mood) => mood.id === bouquet.mood)?.label ?? bouquet.mood
+
   const handleSelect = () => {
     onSelect(bouquet.id)
     onClose()
   }
 
   return (
-    <Modal open={open} onClose={onClose} title={bouquet.name}>
+    <Modal
+      open={open}
+      onClose={onClose}
+      title={bouquet.name}
+    >
       <div className="relative mx-auto mb-4 aspect-square w-full max-w-xs overflow-hidden rounded-2xl bg-gradient-to-b from-bloom-cream to-white shadow-md">
         <Image
           src={bouquet.thumbnailImage}
@@ -53,8 +60,21 @@ function BouquetDetailModal({
         />
       </div>
       <p className="text-sm font-medium text-bloom-ink/80">{bouquet.tagline}</p>
-      <p className="mt-4 text-sm italic leading-relaxed text-bloom-ink/75">
-        {bouquet.meaning}
+      <p className="mt-4 text-sm leading-relaxed text-bloom-ink/70">{bouquet.description}</p>
+      <p className="mt-4 text-sm italic leading-relaxed text-bloom-ink/75">{bouquet.meaning}</p>
+      <div className="mt-4 text-sm leading-relaxed text-bloom-ink/70">
+        <p className="font-medium text-bloom-ink">In the bouquet:</p>
+        <ul className="mt-2 list-disc space-y-1.5 pl-5">
+          {bouquet.facts.map((fact) => (
+            <li key={fact}>{fact}</li>
+          ))}
+        </ul>
+      </div>
+      <p className="mt-4 text-sm leading-relaxed text-bloom-ink/70">
+        <span className="font-medium text-bloom-ink">Mood:</span> {moodLabel}
+      </p>
+      <p className="mt-4 text-sm leading-relaxed text-bloom-ink/70">
+        <span className="font-medium text-bloom-ink">Perfect for:</span> {bouquet.perfectFor}
       </p>
       {isSelected ? (
         <p className="mt-5 border-t border-bloom-rose/15 pt-4 text-center text-sm text-bloom-ink/70">
@@ -76,6 +96,8 @@ function BouquetDetailModal({
 export function BouquetGalleryPicker({ selectedId, onSelect }: BouquetGalleryPickerProps) {
   const [activeMood, setActiveMood] = useState<BouquetMood>('romantic')
   const [detailBouquet, setDetailBouquet] = useState<Bouquet | null>(null)
+
+  const closeDetail = () => setDetailBouquet(null)
 
   const visibleBouquets = useMemo(
     () => getBouquetsByMood(activeMood),
@@ -196,7 +218,7 @@ export function BouquetGalleryPicker({ selectedId, onSelect }: BouquetGalleryPic
         bouquet={detailBouquet}
         isSelected={detailBouquet?.id === selectedId}
         open={detailBouquet !== null}
-        onClose={() => setDetailBouquet(null)}
+        onClose={closeDetail}
         onSelect={onSelect}
       />
     </div>

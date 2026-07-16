@@ -1,14 +1,14 @@
 export type ThemeDecoration = 'hearts' | 'leaves' | 'clouds' | 'sparkles' | 'birds'
 
 const THEME_DECORATIONS: Record<string, ThemeDecoration[]> = {
-  warm: ['hearts', 'birds'],
+  warm: [],
   blush: ['hearts'],
-  lavender: ['hearts', 'clouds'],
+  lavender: [],
   sunset: ['hearts', 'birds'],
   cherry: ['hearts', 'leaves'],
   sage: ['leaves', 'birds'],
   ocean: ['clouds', 'birds'],
-  frost: ['clouds', 'leaves'],
+  frost: [],
   overcast: ['clouds', 'birds'],
   candlelight: ['sparkles', 'hearts'],
   midnight: ['sparkles', 'clouds'],
@@ -23,7 +23,7 @@ const DECORATION_LABELS: Record<ThemeDecoration, string> = {
 }
 
 export function getThemeDecorations(themeId: string): ThemeDecoration[] {
-  return THEME_DECORATIONS[themeId] ?? ['hearts']
+  return THEME_DECORATIONS[themeId] ?? []
 }
 
 export function getThemeDecorationDescription(

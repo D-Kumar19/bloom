@@ -5,6 +5,7 @@ import { getThemeDecorations } from '@/lib/themes/decorations'
 import type { BackdropLightPosition, BackdropMotion, Theme } from '@/lib/types'
 
 import { MiniBouquetSilhouette } from './MiniBouquetSilhouette'
+import { CandlelightEffects } from './CandlelightEffects'
 import { PetalFall } from './PetalFall'
 import { ThemeDecorations } from './ThemeDecorations'
 
@@ -26,6 +27,8 @@ type BackdropLayerProps = {
   forceMotion?: boolean
   decorationDensity?: 'backdrop' | 'scene'
   showDecorations?: boolean
+  /** When set, overrides default decoration motion rules. */
+  animateDecorations?: boolean
   className?: string
   children?: React.ReactNode
   'data-testid'?: string
@@ -63,6 +66,7 @@ export function BackdropLayer({
   forceMotion = false,
   decorationDensity,
   showDecorations = true,
+  animateDecorations,
   className = '',
   children,
   'data-testid': dataTestId,
@@ -79,16 +83,20 @@ export function BackdropLayer({
   const accentClass = ACCENT_POSITION_CLASS[resolved.accentAt ?? 'bottom-left']
   const motion = resolved.motion ?? 'none'
   const motionClass = motion !== 'none' ? MOTION_CLASS[motion] : undefined
+  const backdropAnimated = forceMotion || isThemeAnimated(resolved)
   const enableMotion =
-    forceMotion || variant === 'full' || variant === 'preview'
+    backdropAnimated && (variant === 'full' || variant === 'preview')
   const decorationsDensity =
     decorationDensity ?? (variant === 'preview' ? 'backdrop' : 'scene')
-  const animateDecorations = isThemeAnimated(resolved)
+  const decorationMotion =
+    animateDecorations ??
+    (variant === 'preview' ? isThemeAnimated(resolved) : isThemeAnimated(resolved))
 
   return (
     <div
       data-testid={dataTestId ?? `backdrop-layer-${resolved.id}`}
       data-backdrop-variant={variant}
+      data-backdrop-tone={resolved.dark ? 'dark' : 'light'}
       className={`relative overflow-hidden ${resolved.className} ${
         resolved.dark ? 'text-white' : ''
       } ${variant === 'muted' ? 'backdrop-muted' : ''} ${className}`}
@@ -153,12 +161,14 @@ export function BackdropLayer({
         </div>
       ) : null}
 
+      {resolved.id === 'candlelight' ? <CandlelightEffects /> : null}
+
       {showDecorations ? (
         <ThemeDecorations
           decorations={getThemeDecorations(resolved.id)}
           dark={resolved.dark}
           density={decorationsDensity}
-          animate={animateDecorations}
+          animate={decorationMotion}
         />
       ) : null}
 

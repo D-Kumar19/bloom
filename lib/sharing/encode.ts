@@ -65,6 +65,12 @@ export function buildShareUrl(state: BouquetState): string {
   return `${getSiteOrigin()}/bouquet?b=${encoded}`
 }
 
+/** Same-origin path for in-app "preview as recipient" navigation. */
+export function buildRecipientPreviewPath(state: BouquetState): string {
+  const encoded = encodeBouquet(state)
+  return `/bouquet?b=${encoded}&preview=1`
+}
+
 export function buildRecipientPreviewUrl(state: BouquetState): string {
   return `${buildShareUrl(state)}&preview=1`
 }

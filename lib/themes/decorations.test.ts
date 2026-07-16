@@ -6,9 +6,15 @@ import {
 } from '@/lib/themes/decorations'
 
 describe('theme decorations', () => {
+  it('keeps calm backdrops free of floating decorations', () => {
+    expect(getThemeDecorations('warm')).toEqual([])
+    expect(getThemeDecorations('lavender')).toEqual([])
+    expect(getThemeDecorations('frost')).toEqual([])
+  })
+
   it('maps romantic themes to hearts', () => {
     expect(getThemeDecorations('blush')).toContain('hearts')
-    expect(getThemeDecorations('warm')).toContain('hearts')
+    expect(getThemeDecorations('warm')).not.toContain('hearts')
   })
 
   it('maps meadow themes to leaves', () => {
@@ -29,5 +35,6 @@ describe('theme decorations', () => {
     expect(getThemeDecorationDescription('ocean')).toMatch(/clouds and birds/i)
     expect(getThemeDecorationDescription('blush')).toMatch(/hearts/i)
     expect(getThemeDecorationDescription('blush', { animated: false })).toMatch(/rest around/i)
+    expect(getThemeDecorationDescription('warm')).toBeNull()
   })
 })

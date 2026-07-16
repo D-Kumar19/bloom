@@ -5,6 +5,10 @@ import { MessageForm } from '@/components/builder/MessageForm'
 import { DEFAULT_MESSAGE_FORMAT } from '@/lib/message'
 import { DEFAULT_NOTE_BORDER } from '@/lib/cards'
 
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ push: vi.fn() }),
+}))
+
 function renderMessageForm(overrides: Partial<Parameters<typeof MessageForm>[0]> = {}) {
   const props = {
     to: '',

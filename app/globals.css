@@ -25,6 +25,14 @@ body.bouquet-immersive {
   background: transparent;
 }
 
+[data-backdrop-tone='light'] {
+  color: #2a2420;
+}
+
+[data-backdrop-tone='dark'] {
+  color: #ffffff;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -269,6 +277,15 @@ body {
 
 .card-surface-linen {
   background: #faf8f5;
+}
+
+.export-static .card-surface-rose-gold {
+  animation: none;
+  background-position: 0% 50%;
+}
+
+.export-static .card-surface-watercolor::after {
+  display: none;
 }
 
 @keyframes rose-gold-shimmer {
@@ -596,25 +613,131 @@ body {
 }
 
 @keyframes scene-cloud-drift {
-  0%,
-  100% {
-    transform: translateX(0);
-    opacity: 0.35;
+  0% {
+    transform: translateX(-6%) translateY(0);
+    opacity: 0.42;
   }
   50% {
-    transform: translateX(16px);
-    opacity: 0.7;
+    transform: translateX(10%) translateY(-3px);
+    opacity: 0.78;
+  }
+  100% {
+    transform: translateX(-6%) translateY(0);
+    opacity: 0.42;
   }
 }
 
-@keyframes scene-bird-glide {
-  0%,
-  100% {
-    transform: translateX(0) translateY(0);
-    opacity: 0.55;
+@keyframes scene-cloud-drift-slow {
+  0% {
+    transform: translateX(8%) translateY(0) scale(1);
+    opacity: 0.35;
   }
   50% {
-    transform: translateX(18px) translateY(-6px);
+    transform: translateX(-12%) translateY(4px) scale(1.04);
+    opacity: 0.68;
+  }
+  100% {
+    transform: translateX(8%) translateY(0) scale(1);
+    opacity: 0.35;
+  }
+}
+
+@keyframes scene-bird-fly-east {
+  0% {
+    transform: translateX(-12%) translateY(6px);
+    opacity: 0;
+  }
+  8% {
+    opacity: 0.75;
+  }
+  50% {
+    transform: translateX(48%) translateY(-10px);
+    opacity: 0.95;
+  }
+  92% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateX(108%) translateY(4px);
+    opacity: 0;
+  }
+}
+
+@keyframes scene-bird-fly-west {
+  0% {
+    transform: translateX(12%) translateY(4px);
+    opacity: 0;
+  }
+  8% {
+    opacity: 0.75;
+  }
+  50% {
+    transform: translateX(-42%) translateY(-12px);
+    opacity: 0.95;
+  }
+  92% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateX(-102%) translateY(6px);
+    opacity: 0;
+  }
+}
+
+@keyframes bird-glide-bob {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(0.94);
+  }
+}
+
+@keyframes candle-flicker {
+  0%,
+  100% {
+    opacity: 0.72;
+    transform: scale(1);
+  }
+  18% {
+    opacity: 0.95;
+    transform: scale(1.04);
+  }
+  42% {
+    opacity: 0.58;
+    transform: scale(0.97);
+  }
+  63% {
+    opacity: 0.88;
+    transform: scale(1.02);
+  }
+  81% {
+    opacity: 0.64;
+    transform: scale(0.99);
+  }
+}
+
+@keyframes candle-wind {
+  0%,
+  100% {
+    transform: translateX(0);
+    opacity: 0.12;
+  }
+  50% {
+    transform: translateX(10px);
+    opacity: 0.22;
+  }
+}
+
+@keyframes candle-glowworm {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(0.85);
+    opacity: 0.25;
+  }
+  50% {
+    transform: translate(8px, -14px) scale(1.15);
     opacity: 0.95;
   }
 }
@@ -683,11 +806,56 @@ body {
     animation: scene-float-alt 8s ease-in-out infinite;
   }
 
+  .animate-scene-cloud-drift {
+    animation: scene-cloud-drift 42s ease-in-out infinite;
+  }
+
+  .animate-scene-cloud-drift-slow {
+    animation: scene-cloud-drift-slow 54s ease-in-out infinite;
+  }
+
+  .animate-scene-bird-fly-east {
+    animation: scene-bird-fly-east 20s linear infinite;
+  }
+
+  .animate-scene-bird-fly-west {
+    animation: scene-bird-fly-west 24s linear infinite;
+  }
+
+  .bird-glide-bob {
+    transform-origin: center;
+    animation: bird-glide-bob 0.7s ease-in-out infinite;
+  }
+
   .animate-scene-cloud {
-    animation: scene-cloud-drift 12s ease-in-out infinite;
+    animation: scene-cloud-drift 42s ease-in-out infinite;
   }
 
   .animate-scene-bird {
-    animation: scene-bird-glide 14s ease-in-out infinite;
+    animation: scene-bird-fly-east 20s linear infinite;
+  }
+
+  .backdrop-candle-flicker {
+    background: radial-gradient(
+      circle at 50% 58%,
+      rgb(255 200 140 / 0.42),
+      rgb(255 170 90 / 0.12) 38%,
+      transparent 68%
+    );
+    animation: candle-flicker 4.8s ease-in-out infinite;
+  }
+
+  .backdrop-candle-wind {
+    background: linear-gradient(
+      95deg,
+      transparent 0%,
+      rgb(255 220 170 / 0.08) 45%,
+      transparent 90%
+    );
+    animation: candle-wind 9s ease-in-out infinite;
+  }
+
+  .animate-candle-glowworm {
+    animation: candle-glowworm 8s ease-in-out infinite;
   }
 }

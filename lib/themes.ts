@@ -47,7 +47,7 @@ export const THEMES: Theme[] = [
     tagline: 'The feeling of a fresh start',
     className: 'bg-gradient-to-b from-[#F2F7F0] to-[#DDE8D8]',
     description:
-      'Cool green air and open sky. Grounded but light, like stepping outside after a long week indoors.',
+      'Cool green air and open sky. Leaves and birds drift gently while pollen motes float through the meadow light.',
     mood: 'Fresh, calm, quietly optimistic',
     perfectFor: 'New chapters, encouragement, and "you\'ve got this" bouquets',
     lightPosition: 'top',
@@ -79,7 +79,7 @@ export const THEMES: Theme[] = [
     tagline: 'That perfect moment before sunset',
     className: 'bg-gradient-to-b from-[#FFF8EE] to-[#F5DFC4]',
     description:
-      'Warm amber light that makes everything feel a little more precious. The pause before the day turns into evening.',
+      'Warm amber light that makes everything feel a little more precious. Hearts and birds drift slowly across the glow.',
     mood: 'Nostalgic, glowing, bittersweet in a good way',
     perfectFor: 'Milestones, gratitude, and "remember when we..." notes',
     lightPosition: 'top',
@@ -95,7 +95,7 @@ export const THEMES: Theme[] = [
     tagline: 'Calm. Like you.',
     className: 'bg-gradient-to-b from-[#E8F4F8] to-[#B8D4E3]',
     description:
-      'Cool blue air that steadies the heart. Wide and quiet, like looking at the horizon until your shoulders drop.',
+      'Cool blue air that steadies the heart. Soft clouds and distant birds rest around a wide, quiet horizon.',
     mood: 'Peaceful, steady, reassuring',
     perfectFor: 'Comfort, sympathy, and "I\'m here" without saying much',
     lightPosition: 'bottom',
@@ -143,7 +143,7 @@ export const THEMES: Theme[] = [
     tagline: "Beautiful because it doesn't last forever",
     className: 'bg-gradient-to-b from-[#FFF5FA] to-[#F0C4D4]',
     description:
-      'Cool pink with drifting petals. Fleeting on purpose, because some feelings are too lovely to hoard.',
+      'Cool pink with drifting petals and floating hearts. Fleeting on purpose, because some feelings are too lovely to hoard.',
     mood: 'Poetic, fleeting, quietly joyful',
     perfectFor: 'Farewells, spring birthdays, and love you want to savor',
     lightPosition: 'top-left',
@@ -160,7 +160,7 @@ export const THEMES: Theme[] = [
     tagline: 'Close enough to feel the warmth',
     className: 'bg-gradient-to-b from-[#2A2218] to-[#1A1510]',
     description:
-      'A single warm glow at the center, edges falling into shadow. Intimate without feeling ominous.',
+      'A single warm glow at the center with a flickering flame, soft glowworms, and sparks that breathe in and out like wind through a room.',
     mood: 'Cozy, close, unhurried',
     perfectFor: 'Anniversaries at home, apologies, and "I needed you to know"',
     lightPosition: 'center',
@@ -178,7 +178,7 @@ export const THEMES: Theme[] = [
     tagline: 'A secret told under stars',
     className: 'bg-gradient-to-b from-[#1A1A2E] to-[#2D2D44]',
     description:
-      'Deep indigo stillness with just enough light to see the flowers. For words that feel safer in the dark.',
+      'Deep indigo stillness with twinkling stars, drifting clouds, and sparkles that feel like secrets in the dark.',
     mood: 'Mysterious, intimate, hushed',
     perfectFor: 'Confessions, apologies, and messages meant for one person only',
     lightPosition: 'top-left',
@@ -198,22 +198,22 @@ export function getThemeById(id: string): Theme | undefined {
   return THEME_MAP.get(id)
 }
 
-const ANIMATED_EFFECTS = new Set<NonNullable<Theme['effects']>[number]>([
-  'petals',
-  'stars',
-  'pollen',
-])
+export const ANIMATED_THEME_IDS = [
+  'candlelight',
+  'midnight',
+  'cherry',
+  'sage',
+  'sunset',
+] as const
+
+export type AnimatedThemeId = (typeof ANIMATED_THEME_IDS)[number]
+
+export function isAnimatedThemeId(id: string): id is AnimatedThemeId {
+  return (ANIMATED_THEME_IDS as readonly string[]).includes(id)
+}
 
 export function isThemeAnimated(theme: Theme): boolean {
-  if (theme.animated) {
-    return true
-  }
-
-  if (theme.motion && theme.motion !== 'none') {
-    return true
-  }
-
-  return theme.effects?.some((effect) => ANIMATED_EFFECTS.has(effect)) ?? false
+  return isAnimatedThemeId(theme.id)
 }
 
 export function getAnimatedThemeNames(): string[] {
@@ -243,6 +243,13 @@ export function getMotionLabel(motion: Theme['motion']): string | null {
 }
 
 export function getThemeMotionDescription(theme: Theme): string | null {
+  if (!isThemeAnimated(theme)) {
+    return null
+  }
+
+  if (theme.id === 'candlelight') {
+    return 'Flickering candle glow with drifting glowworms and soft sparks.'
+  }
   if (theme.effects?.includes('petals')) {
     return 'Drifting cherry petals on the reveal.'
   }

@@ -9,7 +9,7 @@ type BackdropPreviewProps = {
   className?: string
   /** Larger previews (detail modal) show full decoration density. */
   decorationDensity?: 'backdrop' | 'scene'
-  /** Hide floating hearts/clouds in compact picker swatches. */
+  /** Show floating hearts, clouds, birds, and leaves. */
   showDecorations?: boolean
 }
 
@@ -19,14 +19,17 @@ export function BackdropPreview({
   decorationDensity = 'backdrop',
   showDecorations = true,
 }: BackdropPreviewProps) {
+  const animated = isThemeAnimated(theme)
+
   return (
     <BackdropLayer
       theme={theme}
       variant="preview"
       showMiniBouquet
-      forceMotion={isThemeAnimated(theme)}
+      forceMotion={animated}
       decorationDensity={decorationDensity}
       showDecorations={showDecorations}
+      animateDecorations={animated}
       className={`rounded-xl ${className}`}
     />
   )

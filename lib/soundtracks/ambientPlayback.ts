@@ -6,6 +6,7 @@ export type AmbientPlayback = {
 }
 
 let activeAudio: HTMLAudioElement | null = null
+let activeSoundtrackId: Exclude<SoundtrackId, 'none'> | null = null
 
 function stopActiveAudio(): void {
   if (!activeAudio) {
@@ -15,12 +16,30 @@ function stopActiveAudio(): void {
   activeAudio.pause()
   activeAudio.currentTime = 0
   activeAudio = null
+  activeSoundtrackId = null
 }
 
 export function startAmbientSound(
   id: Exclude<SoundtrackId, 'none'>,
   volume = 0.35,
 ): AmbientPlayback {
+  if (activeAudio && activeSoundtrackId === id && !activeAudio.paused) {
+    const audio = activeAudio
+    return {
+      playPromise: Promise.resolve(),
+      stop: () => {
+        if (activeAudio !== audio) {
+          return
+        }
+
+        audio.pause()
+        audio.currentTime = 0
+        activeAudio = null
+        activeSoundtrackId = null
+      },
+    }
+  }
+
   stopActiveAudio()
 
   const audio = new Audio(getSoundtrackSrc(id))
@@ -33,6 +52,7 @@ export function startAmbientSound(
   })
 
   activeAudio = audio
+  activeSoundtrackId = id
 
   return {
     playPromise: playPromise.then(() => undefined),
@@ -44,6 +64,7 @@ export function startAmbientSound(
       audio.pause()
       audio.currentTime = 0
       activeAudio = null
+      activeSoundtrackId = null
     },
   }
 }

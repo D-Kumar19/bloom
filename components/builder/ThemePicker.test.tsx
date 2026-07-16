@@ -3,6 +3,12 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ThemePicker } from '@/components/builder/ThemePicker'
 
+const push = vi.fn()
+
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ push }),
+}))
+
 const onSelect = vi.fn()
 const onSoundtrackSelect = vi.fn()
 const playAmbient = vi.fn()
@@ -21,6 +27,7 @@ describe('ThemePicker', () => {
     onSelect.mockReset()
     onSoundtrackSelect.mockReset()
     playAmbient.mockReset()
+    push.mockReset()
   })
 
   it('renders the backdrop headline and helper copy', () => {
@@ -35,7 +42,7 @@ describe('ThemePicker', () => {
 
     expect(screen.getByText('Choose your backdrop')).toBeInTheDocument()
     expect(
-      screen.getByText(/Tap a swatch to learn more/i),
+      screen.getByText(/Tap a swatch for details/i),
     ).toBeInTheDocument()
   })
 
@@ -50,6 +57,24 @@ describe('ThemePicker', () => {
     )
 
     expect(screen.queryByTestId('bouquet-composition')).not.toBeInTheDocument()
+  })
+
+  it('shows animated badge only on animated backdrops', () => {
+    render(
+      <ThemePicker
+        selectedId="warm"
+        soundtrackId="none"
+        onSelect={onSelect}
+        onSoundtrackSelect={onSoundtrackSelect}
+      />,
+    )
+
+    expect(screen.queryByText('Tap to learn')).not.toBeInTheDocument()
+    expect(screen.getByTestId('theme-animated-badge-sunset')).toBeInTheDocument()
+    expect(screen.getByTestId('theme-animated-badge-sage')).toBeInTheDocument()
+    expect(screen.queryByTestId('theme-animated-badge-ocean')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('theme-animated-badge-warm')).not.toBeInTheDocument()
+    expect(screen.getAllByTestId('theme-decorations').length).toBeGreaterThan(0)
   })
 
   it('opens a detail modal when a backdrop swatch is tapped', () => {

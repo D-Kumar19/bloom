@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
 import { BackdropLayer } from '@/components/backdrop/BackdropLayer'
@@ -11,7 +12,7 @@ import { useToast } from '@/components/ui/Toast'
 import { saveBuilderDraft } from '@/lib/builder/draftSession'
 import { recordBouquetSentOnce } from '@/lib/counter/recordBouquetSent'
 import { shouldShowNoteCard } from '@/lib/message'
-import { buildRecipientPreviewUrl, buildShareMessage, buildShareUrl, formatShareMessagePreview } from '@/lib/sharing'
+import { buildRecipientPreviewPath, buildShareMessage, buildShareUrl, formatShareMessagePreview } from '@/lib/sharing'
 import { getThemeById } from '@/lib/themes'
 import type { BouquetState } from '@/lib/types'
 
@@ -29,10 +30,22 @@ export function BouquetShareStep({ state, onCreateAnother }: BouquetShareStepPro
   const shareMessage = buildShareMessage(state)
   const shareMessagePreview = formatShareMessagePreview(shareMessage)
   const shareUrl = buildShareUrl(state)
-  const previewUrl = buildRecipientPreviewUrl(state)
+  const previewPath = buildRecipientPreviewPath(state)
   const showNote = shouldShowNoteCard(state.message)
   const onDark = getThemeById(state.theme)?.dark ?? false
-  const toneBody = onDark ? 'text-white/80' : 'text-bloom-ink/75'
+  const previewTone = onDark
+    ? {
+        eyebrow: 'text-white/85',
+        body: 'text-white/95',
+        link: 'text-white font-semibold decoration-white/80 hover:decoration-white',
+        scrim: 'bg-black/45 ring-1 ring-white/15',
+      }
+    : {
+        eyebrow: 'text-[#2a2420]/75',
+        body: 'text-[#2a2420]',
+        link: 'text-[#9a4a50] font-semibold decoration-[#9a4a50]/80 hover:decoration-[#9a4a50]',
+        scrim: 'bg-white/88 ring-1 ring-[#2a2420]/8 shadow-sm',
+      }
 
   useEffect(() => {
     saveBuilderDraft(state, 'share')
@@ -100,7 +113,7 @@ export function BouquetShareStep({ state, onCreateAnother }: BouquetShareStepPro
         data-testid="share-reveal-backdrop"
       >
         <div className="relative flex min-h-[min(72vh,760px)] flex-col px-4 py-8 md:px-8">
-          <p className={`mb-6 text-center text-xs font-medium uppercase tracking-[0.2em] ${onDark ? 'text-white/70' : 'text-bloom-ink/50'}`}>
+          <p className={`mb-6 text-center text-xs font-medium uppercase tracking-[0.2em] ${previewTone.eyebrow}`}>
             Recipient preview
           </p>
 
@@ -127,15 +140,17 @@ export function BouquetShareStep({ state, onCreateAnother }: BouquetShareStepPro
             ) : null}
           </div>
 
-          <p className={`mt-6 text-center text-sm ${toneBody}`}>
+          <p
+            className={`mx-auto mt-6 max-w-md rounded-2xl px-4 py-3 text-center text-sm backdrop-blur-sm ${previewTone.scrim} ${previewTone.body}`}
+          >
             Open the full reveal in{' '}
-            <a
-              href={previewUrl}
+            <Link
+              href={previewPath}
               onClick={handleOpenPreview}
-              className={`font-medium underline underline-offset-2 ${onDark ? 'text-white' : 'text-brand-pink'}`}
+              className={`underline underline-offset-2 ${previewTone.link}`}
             >
               preview as recipient
-            </a>
+            </Link>
           </p>
         </div>
       </BackdropLayer>

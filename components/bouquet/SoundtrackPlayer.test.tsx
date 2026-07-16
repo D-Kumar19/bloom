@@ -52,4 +52,43 @@ describe('SoundtrackPlayer', () => {
     expect(play).toHaveBeenCalledWith('rain')
     expect(screen.getByText(/is playing\. Tap to mute\./i)).toBeInTheDocument()
   })
+
+  it('does not restart playback after the user mutes', () => {
+    const ref = { current: null as SoundtrackPlayerHandle | null }
+
+    render(<SoundtrackPlayer ref={ref} soundtrackId="rain" variant="inline" />)
+
+    act(() => {
+      ref.current?.startPlayback()
+    })
+
+    fireEvent.click(screen.getByTestId('soundtrack-toggle'))
+    expect(stop).toHaveBeenCalled()
+
+    play.mockClear()
+    act(() => {
+      ref.current?.startPlayback()
+    })
+
+    expect(play).not.toHaveBeenCalled()
+    expect(screen.getByText(/is muted\. Tap to play\./i)).toBeInTheDocument()
+  })
+
+  it('does not call play again when startPlayback runs while already playing', () => {
+    const ref = { current: null as SoundtrackPlayerHandle | null }
+
+    render(<SoundtrackPlayer ref={ref} soundtrackId="rain" variant="inline" />)
+
+    act(() => {
+      ref.current?.startPlayback()
+    })
+    expect(play).toHaveBeenCalledTimes(1)
+
+    play.mockClear()
+    act(() => {
+      ref.current?.startPlayback()
+    })
+
+    expect(play).not.toHaveBeenCalled()
+  })
 })

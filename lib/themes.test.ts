@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import {
+  ANIMATED_THEME_IDS,
   getAnimatedThemeNames,
   getThemeById,
   isThemeAnimated,
@@ -9,15 +10,16 @@ import {
 
 describe('isThemeAnimated', () => {
   it('marks still backdrops as not animated', () => {
-    for (const id of ['warm', 'blush', 'lavender', 'overcast', 'frost']) {
+    for (const id of ['warm', 'blush', 'lavender', 'overcast', 'frost', 'ocean']) {
       const theme = getThemeById(id)
       expect(theme, id).toBeDefined()
       expect(isThemeAnimated(theme!)).toBe(false)
     }
   })
 
-  it('marks motion and particle backdrops as animated', () => {
-    for (const id of ['sage', 'sunset', 'ocean', 'cherry', 'candlelight', 'midnight']) {
+  it('marks only the five curated animated backdrops', () => {
+    expect(ANIMATED_THEME_IDS).toEqual(['candlelight', 'midnight', 'cherry', 'sage', 'sunset'])
+    for (const id of ANIMATED_THEME_IDS) {
       const theme = getThemeById(id)
       expect(theme, id).toBeDefined()
       expect(isThemeAnimated(theme!)).toBe(true)
@@ -30,6 +32,8 @@ describe('isThemeAnimated', () => {
       THEMES.filter(isThemeAnimated).map((theme) => theme.name),
     )
     expect(names).toContain('Spring Meadow')
+    expect(names).toContain('Golden Hour')
     expect(names).not.toContain('Morning Light')
+    expect(names).not.toContain('Ocean Breeze')
   })
 })

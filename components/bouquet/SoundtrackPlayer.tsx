@@ -1,6 +1,6 @@
 'use client'
 
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useState } from 'react'
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
 
 import { useAmbientSoundtrack } from '@/hooks/useAmbientSoundtrack'
 import { RoundIconButton } from '@/components/ui/RoundIconButton'
@@ -15,6 +15,7 @@ type SoundtrackPlayerProps = {
   soundtrackId?: string
   autoPlay?: boolean
   variant?: 'fixed' | 'inline'
+  toggleClassName?: string
   className?: string
 }
 
@@ -28,35 +29,41 @@ export const SoundtrackPlayer = forwardRef<SoundtrackPlayerHandle, SoundtrackPla
       soundtrackId,
       autoPlay = false,
       variant = 'fixed',
+      toggleClassName = '',
       className = '',
     },
     ref,
   ) {
   const [muted, setMuted] = useState(!autoPlay)
+  const userMutedRef = useRef(false)
   const id = soundtrackId && isSoundtrackId(soundtrackId) ? soundtrackId : 'none'
   const hasSoundtrack = id !== 'none'
   const { play, stop, isPlaying } = useAmbientSoundtrack({ volume: 0.35 })
   const label = getSoundtrackLabel(id)
 
   const startPlayback = useCallback(() => {
-    if (!hasSoundtrack) {
+    if (!hasSoundtrack || userMutedRef.current) {
+      return
+    }
+
+    if (!muted && isPlaying(id)) {
       return
     }
 
     setMuted(false)
     play(id)
-  }, [hasSoundtrack, id, play])
+  }, [hasSoundtrack, id, isPlaying, muted, play])
 
   useImperativeHandle(ref, () => ({ startPlayback }), [startPlayback])
 
   useEffect(() => {
-    if (!hasSoundtrack || muted) {
+    if (!autoPlay || !hasSoundtrack || userMutedRef.current) {
       return
     }
 
+    setMuted(false)
     play(id)
-    return () => stop()
-  }, [hasSoundtrack, muted, id, play, stop])
+  }, [autoPlay, hasSoundtrack, id, play])
 
   if (!hasSoundtrack) {
     return null
@@ -66,18 +73,22 @@ export const SoundtrackPlayer = forwardRef<SoundtrackPlayerHandle, SoundtrackPla
 
   const handleToggle = () => {
     if (playing) {
+      userMutedRef.current = true
       stop()
       setMuted(true)
       return
     }
 
+    userMutedRef.current = false
     setMuted(false)
+    play(id)
   }
 
   const toggleButton = (
     <RoundIconButton
       data-testid="soundtrack-toggle"
       onClick={handleToggle}
+      className={toggleClassName}
       aria-label={playing ? `Mute ${label}` : `Play ${label}`}
       aria-pressed={playing}
     >

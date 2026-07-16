@@ -26,9 +26,18 @@ type AppearanceContextValue = {
 
 const AppearanceContext = createContext<AppearanceContextValue | null>(null)
 
+function readStoredAppearance(): AppearanceMode {
+  if (typeof window === 'undefined') {
+    return DEFAULT_APPEARANCE
+  }
+
+  const stored = localStorage.getItem(APPEARANCE_STORAGE_KEY)
+  return stored && isAppearanceMode(stored) ? stored : DEFAULT_APPEARANCE
+}
+
 export function AppearanceProvider({ children }: { children: React.ReactNode }) {
-  const [appearance, setAppearanceState] = useState<AppearanceMode>(DEFAULT_APPEARANCE)
-  const [resolvedDark, setResolvedDark] = useState(false)
+  const [appearance, setAppearanceState] = useState<AppearanceMode>(readStoredAppearance)
+  const [resolvedDark, setResolvedDark] = useState(() => resolveDarkMode(readStoredAppearance()))
 
   const setAppearance = useCallback((mode: AppearanceMode) => {
     setAppearanceState(mode)
@@ -38,12 +47,6 @@ export function AppearanceProvider({ children }: { children: React.ReactNode }) 
   }, [])
 
   useEffect(() => {
-    const stored = localStorage.getItem(APPEARANCE_STORAGE_KEY)
-    const initial = stored && isAppearanceMode(stored) ? stored : DEFAULT_APPEARANCE
-    setAppearanceState(initial)
-    applyAppearanceMode(initial)
-    setResolvedDark(resolveDarkMode(initial))
-
     const media = window.matchMedia('(prefers-color-scheme: dark)')
     const onSystemChange = () => {
       const current = localStorage.getItem(APPEARANCE_STORAGE_KEY)

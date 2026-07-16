@@ -1,8 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { Button } from '@/components/ui/Button'
-import { FLOWERS } from '@/lib/flowers'
 import type { Flower } from '@/lib/types'
 
 type FlowerDetailHeroProps = {

@@ -30,7 +30,6 @@ export function BouquetHero({
     return (
       <HangingBouquetDisplay
         bouquetId={bouquetId}
-        themeId={theme}
         className={className}
         id={id}
       />

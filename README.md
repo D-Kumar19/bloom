@@ -1,96 +1,36 @@
 # Bloom
 
-Bloom is a small web app for building and sharing digital bouquets. Pick a pre-made bouquet, write a note, choose a backdrop and optional ambient sound, then share a link. The whole bouquet lives in the URL. No account, no database for the message itself.
+Send someone a bouquet without leaving your chair. Pick flowers, write the note, choose the light behind it, and share a link. They tap to unwrap it. No account. No app store lecture. Just a small moment that lands.
 
-Sending flowers over the internet is objectively silly. It is also, occasionally, exactly right.
+Yes, sending flowers over the internet is a little ridiculous. It also works surprisingly well when you mean it.
 
-## What it does
+## What you can make
 
-- Browse 15 bouquets across four moods and write a rich-text note on one of nine card styles
-- Pick a still or animated backdrop plus optional ambient sound
-- Share a compressed link; recipients tap through a staged reveal (bouquet, card, message)
-- Save the moment as an image; soundtrack starts on the recipient's first tap
+- A bouquet for a mood: romantic, celebratory, gentle, or "no reason, I just like you" 💐
+- A handwritten-style note on stationery you actually chose (not a sad default font, we have standards) ✍️
+- A backdrop that feels like morning light, candle glow, cherry petals, or midnight stars 🌅🕯️🌸🌙
+- Optional ambient sound for the person opening it (rain, birds, silence if you're not that extra) 🎵
+- A link you can text, email, or paste anywhere. No carrier pigeon required 🔗
 
-## Try it
+## What it feels like for them
 
-```bash
-pnpm install && pnpm dev
-```
+They open your link. The bouquet appears first. Then the card. Then your words. Staged on purpose, like a real gift: not everything dumped on them at once.
 
-Open [http://localhost:3000](http://localhost:3000).
+They can save it as an image. They can send one back. They do not need to sign up for anything. Zero forms. Zero "verify your email to feel loved." 🙅
 
-## How the link works
+## What it feels like for you
 
-Bloom encodes the full bouquet state into the `?b=` query parameter using [lz-string](https://github.com/pieroxy/lz-string). The server never stores your message. That is why links do not expire: the bouquet is the link. If you change `NEXT_PUBLIC_SITE_URL`, copied links point at whatever origin you configured, not necessarily where you built the bouquet.
+You are not building a website. You are choosing how to show up for someone. The builder walks you through it: bouquet, card, message, atmosphere, share. Five steps. No clutter. No spreadsheet energy.
 
-## Deploy
+Walk away mid-draft? Fine. Your work waits for a day, then politely ghosts you. Fresh start. No guilt trip. 👋
 
-**Vercel (recommended):** push to GitHub, import at [vercel.com/new](https://vercel.com/new), set `NEXT_PUBLIC_SITE_URL` to your production domain, deploy. CI runs type-check, lint, test, and build via `.github/workflows/ci.yml`.
+## The honest pitch
 
-**Docker:**
+Bloom is for the message you would send if you had flowers in your hands and five quiet minutes.
 
-```bash
-docker build -t bloom .
-docker run --rm -p 3000:3000 -v bloom-data:/app/data bloom
-```
+- Birthdays you almost forgot (we won't tell) 🎂
+- "I miss you" on a random Tuesday 💭
+- Sympathy when you cannot be in the room 🤍
+- "Saw this and thought of you" with zero follow-up questions required
 
-Mount `/app/data` if you want the landing-page counter to survive restarts.
-
-## Project layout
-
-```
-app/
-  page.tsx              Landing
-  create/               5-step builder
-  bouquet/              Recipient reveal + OG image route
-  pre-release/          Footer links not ready for launch
-  api/count/            Bouquet counter API
-components/
-  builder/              Gallery, message form, theme picker, share step
-  bouquet/              Hero, hanging frame, soundtrack control
-  backdrop/             Themes, decorations, petals, preview layers
-  cards/                Message cards
-  landing/              Pre-release homepage sections
-lib/
-  bouquets/             15-bouquet catalog
-  sharing/              URL encode/decode, share copy
-  themes/               11 backdrops (5 still, 6 animated)
-  message/              Rich text, validation, inspiration
-  soundtracks/          Ambient audio playback
-public/
-  bouquets/             Hero + thumbnail images
-  sounds/               Ambient loops
-data/
-  bouquet-count.json    Landing-page counter (filesystem)
-config/
-  eslint, prettier, vitest
-```
-
-Tests live next to source as `*.test.ts` / `*.test.tsx`.
-
-## Scripts
-
-| Command | Purpose |
-|---------|---------|
-| `pnpm dev` | Development server |
-| `pnpm build` | Production build |
-| `pnpm start` | Serve production build |
-| `pnpm test:run` | Run tests once |
-| `pnpm lint` | ESLint |
-| `pnpm type-check` | TypeScript |
-
-## Environment variables
-
-Copy `.env.example` to `.env.local` for local development.
-
-| Variable | Purpose |
-|----------|---------|
-| `NEXT_PUBLIC_SITE_URL` | Origin used in copied share links and OG metadata. Set this to your production domain before sending links to real humans. |
-
-## Status
-
-Pre-release footer areas intentionally route to `/pre-release`. The flower catalog and extra landing sections are in the tree but not linked from the main nav yet.
-
-## License
-
-Private / pre-release.
+It will not replace showing up in person. Nothing should. It might still make someone's day feel a little less ordinary. And honestly? That's enough.

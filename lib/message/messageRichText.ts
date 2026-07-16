@@ -1,5 +1,5 @@
 import type { MessageFormat } from '../types'
-import { getMessageFontFamily, MESSAGE_FONT_OPTIONS } from './messageFonts'
+import { getMessageFontFamily } from './messageFonts'
 
 export { MESSAGE_FONT_OPTIONS } from './messageFonts'
 export type { MessageFontFamily } from './messageFonts'
@@ -69,7 +69,7 @@ export function plainTextToMessageHtml(text: string): string {
 const EDITOR_ZERO_WIDTH_SPACE = '\u200B'
 
 function stripEditorArtifacts(text: string): string {
-  return text.replace(/\u200B/g, '')
+  return text.replaceAll(EDITOR_ZERO_WIDTH_SPACE, '')
 }
 
 function normalizeNbspEntities(html: string): string {

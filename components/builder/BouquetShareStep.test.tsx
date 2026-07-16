@@ -29,5 +29,9 @@ describe('BouquetShareStep', () => {
     expect(screen.getByTestId('share-reveal-backdrop')).toBeInTheDocument()
     expect(screen.getByTestId('bouquet-hero')).toBeInTheDocument()
     expect(screen.getByTestId('soundtrack-inline')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'preview as recipient' })).toHaveAttribute(
+      'href',
+      expect.stringMatching(/^\/bouquet\?b=.+&preview=1$/),
+    )
   })
 })

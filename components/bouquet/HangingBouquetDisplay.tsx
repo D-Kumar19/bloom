@@ -7,14 +7,12 @@ import { DEFAULT_BOUQUET_ID, getBouquetById } from '@/lib/bouquets'
 
 type HangingBouquetDisplayProps = {
   bouquetId: string
-  themeId: string
   className?: string
   id?: string
 }
 
 export function HangingBouquetDisplay({
   bouquetId,
-  themeId: _themeId,
   className = '',
   id,
 }: HangingBouquetDisplayProps) {

@@ -1,6 +1,6 @@
 export const SITE_NAME = 'Bloom'
 
-export const SITE_TITLE = 'Bloom - Send a Digital Bouquet'
+export const SITE_TITLE = 'Bloom | Send a Digital Bouquet'
 
 export const DEFAULT_SITE_URL = 'https://bloom.app'
 

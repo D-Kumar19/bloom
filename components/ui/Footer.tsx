@@ -10,9 +10,9 @@ export async function Footer() {
   const bouquetCount = await getBouquetCount()
 
   return (
-    <footer className="mt-auto border-t border-bloom-rose/15 bg-surface-muted px-4 py-12">
+    <footer className="mt-auto border-t border-bloom-rose/15 bg-surface-muted px-4 py-8 lg:py-12">
       <div className="mx-auto max-w-6xl">
-        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
+        <div className="hidden gap-10 lg:grid lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <FooterBrand initialCount={bouquetCount} />
 
           <div>
@@ -90,7 +90,11 @@ export async function Footer() {
           </div>
         </div>
 
-        <details className="mt-8 lg:hidden">
+        <div className="lg:hidden">
+          <FooterBrand initialCount={bouquetCount} />
+        </div>
+
+        <details className="mt-6 lg:hidden">
           <summary className="cursor-pointer text-sm font-medium text-bloom-ink/70">
             More links
           </summary>
@@ -113,7 +117,7 @@ export async function Footer() {
           </div>
         </details>
 
-        <p className="mt-10 border-t border-bloom-rose/10 pt-6 text-center text-xs italic text-bloom-ink/60">
+        <p className="mt-8 border-t border-bloom-rose/10 pt-6 text-center text-xs italic text-bloom-ink/60 lg:mt-10">
           {COPYRIGHT_LINE}
         </p>
       </div>

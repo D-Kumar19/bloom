@@ -21,4 +21,18 @@ describe('ThemeDecorations', () => {
     expect(screen.getAllByTestId('theme-decoration-clouds').length).toBeGreaterThan(0)
     expect(screen.getAllByTestId('theme-decoration-birds').length).toBeGreaterThan(0)
   })
+
+  it('keeps hearts and leaves on separate slots for cherry blossom', () => {
+    render(<ThemeDecorations decorations={['hearts', 'leaves']} density="scene" />)
+
+    const hearts = screen.getAllByTestId('theme-decoration-hearts')
+    const leaves = screen.getAllByTestId('theme-decoration-leaves')
+    const positions = new Set(
+      [...hearts, ...leaves].map((element) => `${element.style.left}|${element.style.top}`),
+    )
+
+    expect(hearts.length).toBe(4)
+    expect(leaves.length).toBe(4)
+    expect(positions.size).toBe(8)
+  })
 })

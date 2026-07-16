@@ -13,6 +13,9 @@ describe('bouquets catalog', () => {
     for (const bouquet of BOUQUETS) {
       expect(bouquet.thumbnailImage).toMatch(/^\/bouquets\/.*-thumb\.png$/)
       expect(bouquet.heroImage).toMatch(/^\/bouquets\/.*-hero\.png$/)
+      expect(bouquet.description.trim().length).toBeGreaterThan(0)
+      expect(bouquet.perfectFor.trim().length).toBeGreaterThan(0)
+      expect(bouquet.facts.length).toBeGreaterThanOrEqual(2)
       expect(bouquetExists(bouquet.id)).toBe(true)
     }
   })

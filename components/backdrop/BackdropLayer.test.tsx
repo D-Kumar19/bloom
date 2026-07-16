@@ -28,11 +28,9 @@ describe('BackdropLayer', () => {
     expect(layer).toHaveAttribute('data-backdrop-variant', 'preview')
   })
 
-  it('renders cherry blossom petals', () => {
-    const { container } = render(
-      <BackdropLayer theme="cherry" className="h-32 w-full" />,
-    )
+  it('renders candlelight ambience effects', () => {
+    render(<BackdropLayer theme="candlelight" className="h-32 w-full" />)
 
-    expect(container.querySelector('svg')).toBeTruthy()
+    expect(screen.getByTestId('candlelight-effects')).toBeInTheDocument()
   })
 })

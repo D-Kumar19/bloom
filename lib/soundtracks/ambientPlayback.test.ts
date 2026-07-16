@@ -65,4 +65,17 @@ describe('ambientPlayback', () => {
     expect(audio.pause).toHaveBeenCalled()
     expect(audio.currentTime).toBe(0)
   })
+
+  it('does not restart audio when the same soundtrack is already playing', () => {
+    const playback = startAmbientSound('rain', 0.2)
+    const firstAudio = AudioMock.mock.results[0]?.value as MockAudio
+
+    const again = startAmbientSound('rain', 0.2)
+
+    expect(AudioMock).toHaveBeenCalledTimes(1)
+    expect(firstAudio.play).toHaveBeenCalledTimes(1)
+    expect(again).toBeDefined()
+
+    playback.stop()
+  })
 })
