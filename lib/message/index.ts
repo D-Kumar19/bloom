@@ -1,4 +1,5 @@
 export * from './messageCounter'
 export * from './messageFonts'
 export * from './messageRichText'
+export * from './messageValidation'
 export * from './inspiration'

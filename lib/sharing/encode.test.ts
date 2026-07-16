@@ -4,8 +4,7 @@ import { decodeBouquet, encodeBouquet } from '@/lib/sharing'
 import type { BouquetState } from '@/lib/types'
 
 const sampleState: BouquetState = {
-  flowers: ['rose', 'peony', 'tulip'],
-  greenery: 'leafy',
+  bouquetId: 'red-rose-classic',
   cardStyle: 'classic-cream',
   to: 'Sam',
   message: 'Thinking of you.',
@@ -25,8 +24,8 @@ describe('encodeBouquet', () => {
     expect(decodeBouquet('not-a-valid-hash')).toBeNull()
   })
 
-  it('returns null when fewer than 3 flowers', () => {
-    const invalid: BouquetState = { ...sampleState, flowers: ['rose'] }
+  it('returns null when bouquetId is unknown', () => {
+    const invalid: BouquetState = { ...sampleState, bouquetId: 'not-a-real-bouquet' }
     expect(decodeBouquet(encodeBouquet(invalid))).toBeNull()
   })
 
@@ -35,13 +34,18 @@ describe('encodeBouquet', () => {
     expect(decodeBouquet(encodeBouquet(long))).toEqual(long)
   })
 
-  it('round-trips optional photo card image', () => {
-    const withPhoto: BouquetState = {
+  it('rejects legacy photo-card payloads on decode', () => {
+    const withPhoto = {
       ...sampleState,
       cardStyle: 'photo-card',
-      photoCardImage: 'data:image/jpeg;base64,/9j/4AAQ',
-    }
-    expect(decodeBouquet(encodeBouquet(withPhoto))).toEqual(withPhoto)
+    } as BouquetState
+
+    expect(decodeBouquet(encodeBouquet(withPhoto))).toBeNull()
+  })
+
+  it('returns null when sender name is missing', () => {
+    const anonymous: BouquetState = { ...sampleState, from: '   ' }
+    expect(decodeBouquet(encodeBouquet(anonymous))).toBeNull()
   })
 
   it('round-trips note border customization', () => {

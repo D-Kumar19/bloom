@@ -21,6 +21,11 @@ describe('sanitizeMessageHtml', () => {
   it('keeps allowed inline formatting', () => {
     expect(sanitizeMessageHtml('<b>Hello</b> <i>there</i>')).toBe('<b>Hello</b> <i>there</i>')
   })
+
+  it('strips zero-width spaces used for caret anchoring in the editor', () => {
+    expect(sanitizeMessageHtml('Hello<br>\u200B')).toBe('Hello<br>')
+    expect(stripMessageHtml('Hello<br>\u200B')).toBe('Hello')
+  })
 })
 
 describe('isRichMessage', () => {

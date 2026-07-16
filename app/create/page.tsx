@@ -1,41 +1,38 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-
-import { BouquetComposition } from '@/components/bouquet/BouquetComposition'
+import { BouquetGalleryPicker } from '@/components/builder/BouquetGalleryPicker'
+import { BouquetShareStep } from '@/components/builder/BouquetShareStep'
 import { CardStylePicker } from '@/components/builder/CardStylePicker'
-import { FlowerPicker } from '@/components/builder/FlowerPicker'
-import { GreeneryPicker } from '@/components/builder/GreeneryPicker'
 import { MessageForm } from '@/components/builder/MessageForm'
 import { StepIndicator } from '@/components/builder/StepIndicator'
 import { ThemePicker } from '@/components/builder/ThemePicker'
 import { Button } from '@/components/ui/Button'
 import { useBouquetState } from '@/hooks/useBouquetState'
-import { DEFAULT_MESSAGE_FORMAT } from '@/lib/message'
+import { useHeaderSlot } from '@/hooks/useHeaderSlot'
+import { BUILDER_STEPS } from '@/lib/builder/steps'
 import { DEFAULT_NOTE_BORDER } from '@/lib/cards'
-import { FEATURED_CARD_ID } from '@/lib/cards'
+import { DEFAULT_MESSAGE_FORMAT } from '@/lib/message'
 
 export default function CreatePage() {
-  const router = useRouter()
   const {
     state,
     step,
-    onAdjustFlowerQuantity,
-    setGreenery,
+    setBouquet,
     setCardStyle,
-    setPhotoCardImage,
     setMessageFormat,
     setNoteBorder,
     setTo,
     setMessage,
     setFrom,
     setTheme,
+    setSoundtrack,
     canProceed,
     goNext,
     goBack,
+    goToStep,
+    startNewBouquet,
     maxMessageLength,
   } = useBouquetState()
   const previousStepRef = useRef(step)
@@ -50,53 +47,51 @@ export default function CreatePage() {
     }
   }, [step])
 
-  const handleNext = () => {
-    if (step === 'theme') {
-      sessionStorage.setItem('bloom-bouquet', JSON.stringify(state))
-      router.push('/create/result')
-      return
-    }
-    goNext()
-  }
+  const progressBar = useMemo(
+    () => (
+      <div data-testid="progress-shell">
+        <StepIndicator currentStep={step} onStepClick={goToStep} />
+      </div>
+    ),
+    [step, goToStep],
+  )
 
-  const showThemePreview = step === 'theme'
+  const progressAttached = useHeaderSlot(progressBar)
+  const stepNumber = BUILDER_STEPS.indexOf(step) + 1
+  const isShareStep = step === 'share'
 
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-8 md:px-6">
-      <header className="text-center">
-        <Link href="/" className="text-sm font-medium uppercase tracking-[0.2em] text-bloom-rose">
-          Bloom
-        </Link>
-        <h1 className="mt-2 font-display text-3xl text-bloom-ink md:text-4xl">
-          Create your bouquet
-        </h1>
-      </header>
+    <main
+      className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-6 md:px-6 md:py-8"
+    >
+      {!isShareStep ? (
+        <div className="text-center">
+          <h1 className="font-display text-3xl text-bloom-ink md:text-4xl">Create your bouquet</h1>
+          <p className="mt-2 text-sm text-bloom-ink/60">
+            Step {stepNumber} of {BUILDER_STEPS.length}
+          </p>
+        </div>
+      ) : null}
 
-      <div
-        data-testid="progress-shell"
-        className="sticky top-2 z-20 -mx-2 rounded-3xl bg-bloom-cream/90 px-2 py-3 backdrop-blur-sm md:top-4"
-      >
-        <StepIndicator currentStep={step} />
-      </div>
+      {!progressAttached ? (
+        <div
+          data-testid="progress-shell-fallback"
+          className="sticky top-[4.25rem] z-20 -mx-2 rounded-3xl bg-bloom-cream/90 px-2 py-3 backdrop-blur-sm"
+        >
+          <StepIndicator currentStep={step} onStepClick={goToStep} />
+        </div>
+      ) : null}
 
       <div className="grid gap-6">
         <div key={step} data-testid="step-panel" className="animate-step-enter">
-          {step === 'pick' ? (
-            <FlowerPicker
-              selected={state.flowers}
-              onAdjustQuantity={onAdjustFlowerQuantity}
+          {step === 'bouquet' ? (
+            <BouquetGalleryPicker
+              selectedId={state.bouquetId}
+              onSelect={setBouquet}
             />
-          ) : null}
-          {step === 'greenery' ? (
-            <GreeneryPicker selectedId={state.greenery} onSelect={setGreenery} />
           ) : null}
           {step === 'card' ? (
-            <CardStylePicker
-              selectedId={state.cardStyle}
-              photoCardImage={state.photoCardImage}
-              onSelect={setCardStyle}
-              onPhotoCardImageChange={setPhotoCardImage}
-            />
+            <CardStylePicker selectedId={state.cardStyle} onSelect={setCardStyle} />
           ) : null}
           {step === 'message' ? (
             <MessageForm
@@ -104,8 +99,6 @@ export default function CreatePage() {
               message={state.message}
               from={state.from}
               cardStyle={state.cardStyle}
-              photoCardImage={state.photoCardImage}
-              photoNoteStyle={state.photoNoteStyle ?? FEATURED_CARD_ID}
               messageFormat={state.messageFormat ?? DEFAULT_MESSAGE_FORMAT}
               noteBorder={state.noteBorder ?? DEFAULT_NOTE_BORDER}
               maxLength={maxMessageLength}
@@ -114,30 +107,43 @@ export default function CreatePage() {
               onFromChange={setFrom}
               onMessageFormatChange={setMessageFormat}
               onNoteBorderChange={setNoteBorder}
+              onCardStyleChange={setCardStyle}
             />
           ) : null}
           {step === 'theme' ? (
-            <ThemePicker selectedId={state.theme} onSelect={setTheme} />
+            <ThemePicker
+              selectedId={state.theme}
+              soundtrackId={state.soundtrack}
+              onSelect={setTheme}
+              onSoundtrackSelect={setSoundtrack}
+            />
+          ) : null}
+          {step === 'share' ? (
+            <BouquetShareStep state={state} onCreateAnother={startNewBouquet} />
           ) : null}
         </div>
-
-        {showThemePreview ? (
-          <BouquetComposition state={state} />
-        ) : null}
       </div>
 
-      <div className="flex justify-between gap-4 pb-4">
-        <Button variant="ghost" onClick={goBack} disabled={step === 'pick'}>
-          Back
-        </Button>
-        <Button
-          data-testid="next-button"
-          disabled={!canProceed}
-          onClick={handleNext}
-        >
-          {step === 'theme' ? 'Create Bouquet' : 'Continue'}
-        </Button>
-      </div>
+      {isShareStep ? (
+        <div className="pb-4">
+          <Button variant="ghost" onClick={goBack}>
+            Back
+          </Button>
+        </div>
+      ) : (
+        <div className="flex justify-between gap-4 pb-4">
+          <Button variant="ghost" onClick={goBack} disabled={step === 'bouquet'}>
+            Back
+          </Button>
+          <Button
+            data-testid="next-button"
+            disabled={!canProceed}
+            onClick={goNext}
+          >
+            Continue
+          </Button>
+        </div>
+      )}
     </main>
   )
 }

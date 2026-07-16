@@ -25,13 +25,20 @@ export const DEFAULT_MESSAGE_FORMAT: MessageFormat = {
   color: '#000000',
 }
 
+const DARK_INK_COLORS = new Set(['#000000', '#3d2f2f', '#1a1a2e'])
+
+/** True when the chosen color should follow theme ink (light/dark) instead of a fixed hex. */
+export function usesThemeInkColor(color: string): boolean {
+  return DARK_INK_COLORS.has(color.toLowerCase())
+}
+
 /** Picks readable note text on light vs midnight card surfaces. */
 export function resolveNoteTextColor(
   onDark: boolean,
   messageFormat?: MessageFormat,
 ): string {
   const color = messageFormat?.color ?? DEFAULT_MESSAGE_FORMAT.color
-  if (onDark && (color === '#000000' || color === '#3d2f2f')) {
+  if (onDark && usesThemeInkColor(color)) {
     return '#ffffff'
   }
   return color
@@ -45,10 +52,10 @@ export function stripMessageHtml(html: string): string {
   if (typeof document !== 'undefined') {
     const container = document.createElement('div')
     container.innerHTML = html
-    return container.textContent ?? ''
+    return stripEditorArtifacts(container.textContent ?? '')
   }
 
-  return html.replace(/<[^>]+>/g, '').replace(/&nbsp;/gi, ' ')
+  return stripEditorArtifacts(html.replace(/<[^>]+>/g, '').replace(/&nbsp;/gi, ' '))
 }
 
 export function plainTextToMessageHtml(text: string): string {
@@ -57,6 +64,12 @@ export function plainTextToMessageHtml(text: string): string {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/\n/g, '<br>')
+}
+
+const EDITOR_ZERO_WIDTH_SPACE = '\u200B'
+
+function stripEditorArtifacts(text: string): string {
+  return text.replace(/\u200B/g, '')
 }
 
 function normalizeNbspEntities(html: string): string {
@@ -139,7 +152,7 @@ export function sanitizeMessageHtml(html: string): string {
   }
 
   walk(container)
-  return container.innerHTML
+  return stripEditorArtifacts(container.innerHTML)
 }
 
 /** Decodes nbsp entities for card preview without mutating stored editor HTML. */

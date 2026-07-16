@@ -1,27 +1,31 @@
 import LZString from 'lz-string'
 
-import { MIN_FLOWERS } from '../types'
+import { bouquetExists } from '@/lib/bouquets'
+import { getSiteOrigin } from '@/lib/siteUrl'
 import type { BouquetState } from '../types'
+
+const LEGACY_PHOTO_CARD_ID = 'photo-card'
 
 export function encodeBouquet(state: BouquetState): string {
   const json = JSON.stringify(state)
   return LZString.compressToEncodedURIComponent(json)
 }
 
-function isValidBouquetState(value: unknown): value is BouquetState {
+export function isValidBouquetState(value: unknown): value is BouquetState {
   if (!value || typeof value !== 'object') {
     return false
   }
 
   const state = value as BouquetState
 
+  if (state.cardStyle === LEGACY_PHOTO_CARD_ID) {
+    return false
+  }
+
   return (
-    Array.isArray(state.flowers) &&
-    state.flowers.length >= MIN_FLOWERS &&
-    typeof state.greenery === 'string' &&
+    typeof state.bouquetId === 'string' &&
+    bouquetExists(state.bouquetId) &&
     typeof state.cardStyle === 'string' &&
-    (state.photoCardImage === undefined || typeof state.photoCardImage === 'string') &&
-    (state.photoNoteStyle === undefined || typeof state.photoNoteStyle === 'string') &&
     (state.messageFormat === undefined ||
       (typeof state.messageFormat === 'object' &&
         state.messageFormat !== null &&
@@ -36,7 +40,9 @@ function isValidBouquetState(value: unknown): value is BouquetState {
     typeof state.message === 'string' &&
     typeof state.to === 'string' &&
     typeof state.from === 'string' &&
-    typeof state.theme === 'string'
+    state.from.trim().length > 0 &&
+    typeof state.theme === 'string' &&
+    (state.soundtrack === undefined || typeof state.soundtrack === 'string')
   )
 }
 
@@ -55,10 +61,14 @@ export function decodeBouquet(encoded: string): BouquetState | null {
 }
 
 export function buildShareUrl(state: BouquetState): string {
-  if (typeof window === 'undefined') {
-    return ''
-  }
-
   const encoded = encodeBouquet(state)
-  return `${window.location.origin}/bouquet?b=${encoded}`
+  return `${getSiteOrigin()}/bouquet?b=${encoded}`
+}
+
+export function buildRecipientPreviewUrl(state: BouquetState): string {
+  return `${buildShareUrl(state)}&preview=1`
+}
+
+export function isRecipientPreviewUrl(search: string): boolean {
+  return new URLSearchParams(search).get('preview') === '1'
 }
