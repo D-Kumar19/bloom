@@ -33,7 +33,7 @@ export default function CreatePage() {
     goBack,
     goToStep,
     startNewBouquet,
-    maxMessageLength,
+    maxMessageWords,
   } = useBouquetState()
   const previousStepRef = useRef(step)
 
@@ -101,7 +101,7 @@ export default function CreatePage() {
               cardStyle={state.cardStyle}
               messageFormat={state.messageFormat ?? DEFAULT_MESSAGE_FORMAT}
               noteBorder={state.noteBorder ?? DEFAULT_NOTE_BORDER}
-              maxLength={maxMessageLength}
+              maxWords={maxMessageWords}
               onToChange={setTo}
               onMessageChange={setMessage}
               onFromChange={setFrom}

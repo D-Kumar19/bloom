@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 
 import { AppearanceProvider } from '@/components/ui/AppearanceProvider'
@@ -15,9 +15,7 @@ describe('AppearanceProvider', () => {
       </AppearanceProvider>,
     )
 
-    await waitFor(() => {
-      expect(document.documentElement.classList.contains('dark')).toBe(true)
-    })
+    expect(document.documentElement.classList.contains('dark')).toBe(true)
 
     expect(screen.getByLabelText('Switch to light mode')).toBeInTheDocument()
     expect(localStorage.getItem(APPEARANCE_STORAGE_KEY)).toBeNull()
@@ -32,9 +30,7 @@ describe('AppearanceProvider', () => {
       </AppearanceProvider>,
     )
 
-    await waitFor(() => {
-      expect(document.documentElement.classList.contains('dark')).toBe(false)
-    })
+    expect(document.documentElement.classList.contains('dark')).toBe(false)
 
     expect(screen.getByLabelText('Switch to dark mode')).toBeInTheDocument()
   })

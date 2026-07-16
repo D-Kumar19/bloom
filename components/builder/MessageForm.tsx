@@ -10,9 +10,7 @@ import {
 } from '@/components/builder/RichMessageEditor'
 import { MessageCard } from '@/components/cards/MessageCard'
 import { Modal } from '@/components/ui/Modal'
-import { INSPIRATION_PROMPTS, hasMessageContent } from '@/lib/message'
-import { formatCharactersLeft } from '@/lib/message'
-import { plainTextToMessageHtml, stripMessageHtml } from '@/lib/message'
+import { INSPIRATION_PROMPTS, countMessageWords, formatWordsLeft, hasMessageContent, plainTextToMessageHtml } from '@/lib/message'
 import type { MessageFormat, NoteBorder } from '@/lib/types'
 
 type MessageFormProps = {
@@ -22,7 +20,7 @@ type MessageFormProps = {
   cardStyle: string
   messageFormat: MessageFormat
   noteBorder: NoteBorder
-  maxLength: number
+  maxWords: number
   onToChange: (value: string) => void
   onMessageChange: (value: string) => void
   onFromChange: (value: string) => void
@@ -44,7 +42,7 @@ export function MessageForm({
   cardStyle,
   messageFormat,
   noteBorder,
-  maxLength,
+  maxWords,
   onToChange,
   onMessageChange,
   onFromChange,
@@ -56,7 +54,7 @@ export function MessageForm({
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [cardPickerOpen, setCardPickerOpen] = useState(false)
   const editorRef = useRef<HTMLDivElement>(null)
-  const charsLeft = maxLength - stripMessageHtml(message).length
+  const wordsLeft = maxWords - countMessageWords(message)
   const messageFilled = hasMessageContent(message)
   const toMissing = !to.trim()
   const fromMissing = !from.trim()
@@ -130,17 +128,17 @@ export function MessageForm({
                 Your message
               </label>
               <span
-                data-testid="chars-left"
+                data-testid="words-left"
                 className="shrink-0 text-xs tabular-nums text-bloom-ink/60"
               >
-                {formatCharactersLeft(charsLeft)}
+                {formatWordsLeft(wordsLeft)}
               </span>
             </div>
             <RichMessageEditor
               ref={editorRef}
               message={message}
               messageFormat={messageFormat}
-              maxLength={maxLength}
+              maxWords={maxWords}
               onMessageChange={onMessageChange}
               onMessageFormatChange={onMessageFormatChange}
               invalid={messageMissing}
