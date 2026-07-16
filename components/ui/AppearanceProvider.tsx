@@ -43,7 +43,14 @@ export function AppearanceProvider({ children }: { children: React.ReactNode }) 
     setAppearanceState(mode)
     localStorage.setItem(APPEARANCE_STORAGE_KEY, mode)
     applyAppearanceMode(mode)
-    setResolvedDark(resolveDarkMode(mode))
+    setResolvedDark(document.documentElement.classList.contains('dark'))
+  }, [])
+
+  useEffect(() => {
+    const mode = readStoredAppearance()
+    applyAppearanceMode(mode)
+    setAppearanceState(mode)
+    setResolvedDark(document.documentElement.classList.contains('dark'))
   }, [])
 
   useEffect(() => {
@@ -55,7 +62,7 @@ export function AppearanceProvider({ children }: { children: React.ReactNode }) 
         return
       }
       applyAppearanceMode('system')
-      setResolvedDark(resolveDarkMode('system'))
+      setResolvedDark(document.documentElement.classList.contains('dark'))
     }
 
     media.addEventListener('change', onSystemChange)

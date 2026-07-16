@@ -179,14 +179,14 @@ export function BouquetViewer() {
         <button
           type="button"
           data-testid="preview-dismiss-backdrop"
-          className="fixed inset-0 z-20"
+          className="fixed inset-0 z-20 hidden md:block"
           aria-label="Exit preview"
           onClick={() => router.push('/create')}
         />
       ) : null}
 
       <main
-        className="relative z-30 mx-auto flex min-h-dvh w-full max-w-3xl flex-col px-4 py-6 md:px-6 md:py-8"
+        className="relative z-30 mx-auto flex w-full max-w-3xl flex-col px-4 py-6 pb-10 md:px-6 md:py-8"
         onClick={(event) => event.stopPropagation()}
         onMouseDown={(event) => event.stopPropagation()}
       >
@@ -233,7 +233,7 @@ export function BouquetViewer() {
           tabIndex={canAdvanceReveal ? 0 : undefined}
           onClick={canAdvanceReveal ? advance : undefined}
           onKeyDown={canAdvanceReveal ? handleRevealKeyDown : undefined}
-          className={`flex-1 text-left ${canAdvanceReveal ? 'cursor-pointer' : 'cursor-default'}`}
+          className={`text-left ${canAdvanceReveal ? 'cursor-pointer' : 'cursor-default'}`}
           aria-label={canAdvanceReveal ? 'Tap to continue the reveal' : undefined}
         >
           <div className="space-y-6">

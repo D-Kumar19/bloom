@@ -91,13 +91,14 @@ export function BackdropLayer({
   const decorationMotion =
     animateDecorations ??
     (variant === 'preview' ? isThemeAnimated(resolved) : isThemeAnimated(resolved))
+  const clipOverflow = variant !== 'full'
 
   return (
     <div
       data-testid={dataTestId ?? `backdrop-layer-${resolved.id}`}
       data-backdrop-variant={variant}
       data-backdrop-tone={resolved.dark ? 'dark' : 'light'}
-      className={`relative overflow-hidden ${resolved.className} ${
+      className={`relative ${clipOverflow ? 'overflow-hidden' : 'overflow-x-hidden'} ${resolved.className} ${
         resolved.dark ? 'text-white' : ''
       } ${variant === 'muted' ? 'backdrop-muted' : ''} ${className}`}
       style={
@@ -176,7 +177,9 @@ export function BackdropLayer({
         <MiniBouquetSilhouette dark={resolved.dark} />
       ) : null}
 
-      {children ? <div className="relative z-10 h-full min-h-0">{children}</div> : null}
+      {children ? (
+        <div className={`relative z-10 ${clipOverflow ? 'h-full min-h-0' : ''}`}>{children}</div>
+      ) : null}
     </div>
   )
 }

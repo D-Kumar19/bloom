@@ -47,21 +47,22 @@ export function Modal({ open, onClose, onBackdropClick, title, children }: Modal
   const handleBackdropClick = onBackdropClick ?? onClose
 
   return createPortal(
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[100] overflow-y-auto overscroll-contain">
       <button
         type="button"
-        className="absolute inset-0 bg-bloom-ink/40 backdrop-blur-sm"
+        className="fixed inset-0 bg-bloom-ink/40 backdrop-blur-sm"
         aria-label="Close dialog"
         onClick={handleBackdropClick}
       />
-      <div
-        className="relative z-10 w-full max-w-lg rounded-3xl bg-bloom-cream p-6 shadow-xl"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="modal-title"
-        onClick={(event) => event.stopPropagation()}
-        onMouseDown={(event) => event.stopPropagation()}
-      >
+      <div className="flex min-h-full justify-center p-4 sm:items-center">
+        <div
+          className="relative z-10 my-4 w-full max-w-lg rounded-3xl bg-bloom-cream p-6 shadow-xl sm:my-8"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-title"
+          onClick={(event) => event.stopPropagation()}
+          onMouseDown={(event) => event.stopPropagation()}
+        >
         <div className="mb-4 flex items-center justify-between gap-4">
           <h2 id="modal-title" className="font-display text-2xl text-bloom-ink">
             {title}
@@ -76,6 +77,7 @@ export function Modal({ open, onClose, onBackdropClick, title, children }: Modal
           </button>
         </div>
         {children}
+        </div>
       </div>
     </div>,
     document.body,
