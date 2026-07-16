@@ -6,11 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint .",
-    "format": "prettier --write .",
+    "lint": "eslint -c config/eslint.config.mjs .",
+    "format": "prettier --write . --config config/prettier.config.mjs",
     "type-check": "tsc --noEmit",
-    "test": "vitest",
-    "test:run": "vitest run"
+    "test": "vitest --config config/vitest.config.ts",
+    "test:run": "vitest run --config config/vitest.config.ts"
   },
   "dependencies": {
     "framer-motion": "^12.42.2",
