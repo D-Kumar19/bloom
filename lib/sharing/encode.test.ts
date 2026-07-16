@@ -29,8 +29,11 @@ describe('encodeBouquet', () => {
     expect(decodeBouquet(encodeBouquet(invalid))).toBeNull()
   })
 
-  it('survives max length message round-trip', () => {
-    const long: BouquetState = { ...sampleState, message: 'a'.repeat(200) }
+  it('survives max word message round-trip', () => {
+    const long: BouquetState = {
+      ...sampleState,
+      message: Array(200).fill('word').join(' '),
+    }
     expect(decodeBouquet(encodeBouquet(long))).toEqual(long)
   })
 

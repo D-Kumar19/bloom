@@ -12,7 +12,7 @@ import { DEFAULT_MESSAGE_FORMAT, truncateMessageHtml } from '@/lib/message'
 import { canProceedMessageStep } from '@/lib/message'
 import { applyMoodPreset, isMoodId } from '@/lib/moods'
 import {
-  MAX_MESSAGE_LENGTH,
+  MAX_MESSAGE_WORDS,
   type BouquetState,
   type BuilderStep,
   type MessageFormat,
@@ -81,7 +81,7 @@ export function useBouquetState() {
   const setMessage = useCallback((message: string) => {
     setState((current) => ({
       ...current,
-      message: truncateMessageHtml(message, MAX_MESSAGE_LENGTH),
+      message: truncateMessageHtml(message, MAX_MESSAGE_WORDS),
     }))
   }, [])
 
@@ -152,6 +152,6 @@ export function useBouquetState() {
     goBack,
     goToStep,
     startNewBouquet,
-    maxMessageLength: MAX_MESSAGE_LENGTH,
+    maxMessageWords: MAX_MESSAGE_WORDS,
   }
 }

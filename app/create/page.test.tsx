@@ -47,7 +47,7 @@ function buildState(step: 'bouquet' | 'card' | 'message' | 'theme') {
     goBack: vi.fn(),
     goToStep: vi.fn(),
     startNewBouquet: vi.fn(),
-    maxMessageLength: 200,
+    maxMessageWords: 200,
   }
 }
 

@@ -12,6 +12,7 @@ import {
   plainTextToMessageHtml,
   sanitizeMessageHtml,
   stripMessageHtml,
+  countMessageWords,
   truncateMessageHtml,
   usesThemeInkColor,
 } from '@/lib/message'
@@ -21,7 +22,7 @@ const EDITOR_ZERO_WIDTH_SPACE = '\u200B'
 type RichMessageEditorProps = {
   message: string
   messageFormat: MessageFormat
-  maxLength: number
+  maxWords: number
   placeholder?: string
   invalid?: boolean
   onMessageChange: (html: string) => void
@@ -147,7 +148,7 @@ export const RichMessageEditor = forwardRef<HTMLDivElement, RichMessageEditorPro
     {
       message,
       messageFormat,
-      maxLength,
+      maxWords,
       placeholder = 'Write your message here. Say what you mean.',
       invalid = false,
       onMessageChange,
@@ -180,7 +181,7 @@ export const RichMessageEditor = forwardRef<HTMLDivElement, RichMessageEditorPro
         return
       }
 
-      const sanitized = truncateMessageHtml(sanitizeMessageHtml(editor.innerHTML), maxLength)
+      const sanitized = truncateMessageHtml(sanitizeMessageHtml(editor.innerHTML), maxWords)
       onMessageChange(sanitized)
       return sanitized
     }
@@ -197,7 +198,7 @@ export const RichMessageEditor = forwardRef<HTMLDivElement, RichMessageEditorPro
       }
 
       const caretOffset = getCaretCharacterOffsetWithin(editor)
-      const sanitized = truncateMessageHtml(sanitizeMessageHtml(rawHtml), maxLength)
+      const sanitized = truncateMessageHtml(sanitizeMessageHtml(rawHtml), maxWords)
       if (sanitized !== rawHtml) {
         editor.innerHTML = sanitized
         if (caretOffset !== null) {
@@ -329,7 +330,7 @@ export const RichMessageEditor = forwardRef<HTMLDivElement, RichMessageEditorPro
       applySpanStyle(`font-size: ${px}`)
     }
 
-    const plainLength = stripMessageHtml(message).length
+    const wordCount = countMessageWords(message)
 
     return (
       <div data-testid="rich-message-editor">
@@ -446,7 +447,7 @@ export const RichMessageEditor = forwardRef<HTMLDivElement, RichMessageEditorPro
         </div>
 
         <div className="relative">
-          {plainLength === 0 ? (
+          {wordCount === 0 ? (
             <p
               className="pointer-events-none absolute left-4 top-3 z-10 text-sm text-bloom-ink/45"
               aria-hidden
@@ -482,7 +483,7 @@ export const RichMessageEditor = forwardRef<HTMLDivElement, RichMessageEditorPro
         </div>
 
         <p className="sr-only" aria-live="polite">
-          {plainLength} of {maxLength} characters used
+          {wordCount} of {maxWords} words used
         </p>
       </div>
     )

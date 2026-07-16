@@ -160,15 +160,6 @@ export function normalizeMessageHtmlForDisplay(html: string): string {
   return normalizeNbspEntities(sanitizeMessageHtml(html))
 }
 
-export function truncateMessageHtml(html: string, maxPlainLength: number): string {
-  const plain = stripMessageHtml(html)
-  if (plain.length <= maxPlainLength) {
-    return sanitizeMessageHtml(html)
-  }
-
-  return plainTextToMessageHtml(plain.slice(0, maxPlainLength))
-}
-
 export function getMessageFormatStyles(format: MessageFormat): {
   fontFamily: string
   fontSizeClass: string

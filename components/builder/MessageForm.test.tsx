@@ -17,7 +17,7 @@ function renderMessageForm(overrides: Partial<Parameters<typeof MessageForm>[0]>
     cardStyle: 'midnight',
     messageFormat: DEFAULT_MESSAGE_FORMAT,
     noteBorder: DEFAULT_NOTE_BORDER,
-    maxLength: 200,
+    maxWords: 200,
     onToChange: vi.fn(),
     onMessageChange: vi.fn(),
     onFromChange: vi.fn(),
@@ -76,14 +76,14 @@ describe('MessageForm', () => {
     expect(screen.getByTestId('quick-card-garden')).toBeInTheDocument()
   })
 
-  it('shows warmer character counter copy when there is room', () => {
-    renderMessageForm({ message: 'a'.repeat(180) })
-    expect(screen.getByTestId('chars-left')).toHaveTextContent('20 characters of love left')
+  it('shows warmer word counter copy when there is room', () => {
+    renderMessageForm({ message: Array(180).fill('word').join(' ') })
+    expect(screen.getByTestId('words-left')).toHaveTextContent('20 words of love left')
   })
 
   it('shortens the counter copy near the limit', () => {
-    renderMessageForm({ message: 'a'.repeat(195) })
-    expect(screen.getByTestId('chars-left')).toHaveTextContent('5 characters left')
+    renderMessageForm({ message: Array(195).fill('word').join(' ') })
+    expect(screen.getByTestId('words-left')).toHaveTextContent('5 words left')
   })
 
   it('expands inspiration prompts in a grid with emoji labels and starter text', () => {
