@@ -2,7 +2,7 @@ export type AppearanceMode = 'light' | 'dark' | 'system'
 
 export const APPEARANCE_STORAGE_KEY = 'bloom-appearance'
 
-export const DEFAULT_APPEARANCE: AppearanceMode = 'system'
+export const DEFAULT_APPEARANCE: AppearanceMode = 'dark'
 
 export function isAppearanceMode(value: string): value is AppearanceMode {
   return value === 'light' || value === 'dark' || value === 'system'

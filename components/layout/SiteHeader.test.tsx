@@ -31,6 +31,6 @@ describe('SiteHeader', () => {
     )
 
     fireEvent.click(screen.getByTestId('theme-toggle'))
-    expect(localStorage.getItem('bloom-appearance')).toBe('dark')
+    expect(localStorage.getItem('bloom-appearance')).toBe('light')
   })
 })

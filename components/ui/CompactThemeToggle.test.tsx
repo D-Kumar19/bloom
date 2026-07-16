@@ -15,9 +15,9 @@ describe('CompactThemeToggle', () => {
     )
 
     fireEvent.click(screen.getByTestId('theme-toggle'))
-    expect(localStorage.getItem('bloom-appearance')).toBe('dark')
+    expect(localStorage.getItem('bloom-appearance')).toBe('light')
 
     fireEvent.click(screen.getByTestId('theme-toggle'))
-    expect(localStorage.getItem('bloom-appearance')).toBe('light')
+    expect(localStorage.getItem('bloom-appearance')).toBe('dark')
   })
 })
