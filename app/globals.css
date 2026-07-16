@@ -23,6 +23,7 @@
 
 body.bouquet-immersive {
   background: transparent;
+  overflow-y: auto;
 }
 
 [data-backdrop-tone='light'] {

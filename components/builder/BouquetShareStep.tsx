@@ -109,15 +109,15 @@ export function BouquetShareStep({ state, onCreateAnother }: BouquetShareStepPro
       <BackdropLayer
         theme={state.theme}
         variant="full"
-        className="mb-6 min-h-[min(72vh,760px)] overflow-hidden rounded-3xl"
+        className="mb-6 rounded-3xl"
         data-testid="share-reveal-backdrop"
       >
-        <div className="relative flex min-h-[min(72vh,760px)] flex-col px-4 py-8 md:px-8">
+        <div className="relative flex flex-col px-4 py-8 md:px-8">
           <p className={`mb-6 text-center text-xs font-medium uppercase tracking-[0.2em] ${previewTone.eyebrow}`}>
             Recipient preview
           </p>
 
-          <div className="flex flex-1 flex-col justify-center space-y-6">
+          <div className="flex flex-col justify-center gap-6">
             <BouquetHero
               bouquetId={state.bouquetId}
               theme={state.theme}
