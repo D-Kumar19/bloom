@@ -4,13 +4,11 @@ import Link from 'next/link'
 import { useState } from 'react'
 
 import { BackdropLayer } from '@/components/backdrop/BackdropLayer'
-import { BouquetHero } from '@/components/bouquet/BouquetHero'
+import { GiftComposition } from '@/components/bouquet/GiftComposition'
 import { SoundtrackPlayer } from '@/components/bouquet/SoundtrackPlayer'
-import { MessageCard } from '@/components/cards/MessageCard'
 import { Button } from '@/components/ui/Button'
 import { useToast } from '@/components/ui/Toast'
 import { recordBouquetSentOnce } from '@/lib/counter/recordBouquetSent'
-import { shouldShowNoteCard } from '@/lib/message'
 import {
   buildRecipientPreviewPath,
   buildShareMessage,
@@ -35,7 +33,6 @@ export function BouquetShareStep({ state, onCreateAnother }: BouquetShareStepPro
   const shareMessagePreview = formatShareMessagePreview(shareMessage)
   const shareUrl = buildShareUrl(state)
   const previewPath = buildRecipientPreviewPath(state)
-  const showNote = shouldShowNoteCard(state.message)
   const onDark = getThemeById(state.theme)?.dark ?? false
   const previewTone = onDark
     ? {
@@ -90,8 +87,9 @@ export function BouquetShareStep({ state, onCreateAnother }: BouquetShareStepPro
   }
 
   return (
-    <div className="relative mx-auto w-full max-w-3xl" data-testid="bouquet-share-step">
-      <header className="mb-5 text-center">
+    <div className="bloom-share relative mx-auto w-full" data-testid="bouquet-share-step">
+      <header className="mb-8">
+        <p className="bloom-eyebrow">Made by you. Ready for them.</p>
         <h2 className="font-display text-3xl text-bloom-ink md:text-4xl">Preview and share</h2>
         <p className="mt-2 text-sm text-bloom-ink/70">
           This is what they will see, with your backdrop and ambient sound.
@@ -102,41 +100,21 @@ export function BouquetShareStep({ state, onCreateAnother }: BouquetShareStepPro
         <SoundtrackPlayer soundtrackId={state.soundtrack} autoPlay variant="inline" />
       </div>
 
+      <div className="bloom-share__layout">
       <BackdropLayer
         theme={state.theme}
         variant="full"
-        className="mb-6 rounded-3xl"
+        className="bloom-share__preview"
         data-testid="share-reveal-backdrop"
       >
-        <div className="relative flex flex-col px-4 py-8 md:px-8">
+        <div className="relative flex flex-col p-5 md:p-8">
           <p
             className={`mb-6 text-center text-xs font-medium uppercase tracking-[0.2em] ${previewTone.eyebrow}`}
           >
             Recipient preview
           </p>
 
-          <div className="flex flex-col justify-center gap-6">
-            <BouquetHero
-              bouquetId={state.bouquetId}
-              theme={state.theme}
-              showBackdrop={false}
-              className="!mx-auto !max-w-md"
-            />
-
-            {showNote ? (
-              <div className="mx-auto w-full max-w-md">
-                <MessageCard
-                  styleId={state.cardStyle}
-                  to={state.to}
-                  message={state.message}
-                  from={state.from}
-                  messageFormat={state.messageFormat}
-                  noteBorder={state.noteBorder}
-                  className="w-full !shadow-lg"
-                />
-              </div>
-            ) : null}
-          </div>
+          <GiftComposition bouquet={state} />
 
           <p
             className={`mx-auto mt-6 max-w-md rounded-2xl px-4 py-3 text-center text-sm backdrop-blur-sm ${previewTone.scrim} ${previewTone.body}`}
@@ -149,7 +127,7 @@ export function BouquetShareStep({ state, onCreateAnother }: BouquetShareStepPro
         </div>
       </BackdropLayer>
 
-      <section className="rounded-2xl border border-bloom-rose/20 bg-surface p-4 shadow-sm sm:p-5" aria-label="Share your bouquet">
+      <section className="bloom-share__actions border border-bloom-rose/30 bg-surface p-5 sm:p-6" aria-label="Share your bouquet">
         <p className="mb-3 text-xs font-medium uppercase tracking-wide text-bloom-ink/50">
           Ready to send
         </p>
@@ -188,6 +166,7 @@ export function BouquetShareStep({ state, onCreateAnother }: BouquetShareStepPro
           </button>
         </div>
       </section>
+      </div>
     </div>
   )
 }

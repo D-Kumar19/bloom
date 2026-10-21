@@ -2,27 +2,14 @@ import { flushSync } from 'react-dom'
 import { createRoot } from 'react-dom/client'
 
 import { BackdropLayer } from '@/components/backdrop/BackdropLayer'
-import { BouquetHero } from '@/components/bouquet/BouquetHero'
-import { MessageCard } from '@/components/cards/MessageCard'
-import { shouldShowNoteCard } from '@/lib/message'
+import { GiftComposition } from '@/components/bouquet/GiftComposition'
 import type { BouquetState } from '@/lib/types'
 
 export function BouquetSnapshot({ bouquet }: { bouquet: BouquetState }) {
   return (
     <BackdropLayer theme={bouquet.theme} animateDecorations={false} className="export-static">
-      <div className="flex flex-col gap-6 p-10" style={{ width: 720 }}>
-        <BouquetHero bouquetId={bouquet.bouquetId} theme={bouquet.theme} showBackdrop={false} />
-        {shouldShowNoteCard(bouquet.message) ? (
-          <MessageCard
-            styleId={bouquet.cardStyle}
-            to={bouquet.to}
-            message={bouquet.message}
-            from={bouquet.from}
-            messageFormat={bouquet.messageFormat}
-            noteBorder={bouquet.noteBorder}
-            className="mx-auto w-full max-w-md"
-          />
-        ) : null}
+      <div className="gift-snapshot" style={{ width: 1024 }}>
+        <GiftComposition bouquet={bouquet} />
       </div>
     </BackdropLayer>
   )
@@ -58,7 +45,7 @@ export function normalizeCaptureColors(doc: Document): void {
 export async function captureBouquetSnapshot(bouquet: BouquetState): Promise<Blob> {
   const host = document.createElement('div')
   host.setAttribute('aria-hidden', 'true')
-  host.style.cssText = 'position:absolute;left:-10000px;top:0;width:720px;pointer-events:none'
+  host.style.cssText = 'position:absolute;left:-10000px;top:0;width:1024px;pointer-events:none'
   document.body.appendChild(host)
   const root = createRoot(host)
   try {
@@ -77,7 +64,7 @@ export async function captureBouquetSnapshot(bouquet: BouquetState): Promise<Blo
       useCORS: true,
       allowTaint: false,
       logging: false,
-      windowWidth: 720,
+      windowWidth: 1024,
       onclone: normalizeCaptureColors,
     })
     if (!canvas.width || !canvas.height) throw new Error('Gift snapshot is empty')

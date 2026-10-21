@@ -18,16 +18,16 @@ export function SiteHeader({ slot }: SiteHeaderProps) {
   return (
     <header
       data-testid="site-header"
-      className="sticky top-0 z-40 border-b border-bloom-rose/12 bg-background/92 backdrop-blur-md"
+      className="bloom-header sticky top-0 z-40"
     >
-      <div className="mx-auto flex max-w-6xl items-center gap-4 px-4 py-3.5 md:px-6">
+      <div className="bloom-header__bar">
         <BloomLogo />
-
+        <p className="bloom-header__tagline">A small gesture. A lot of feeling.</p>
         <div className="ml-auto flex items-center gap-2.5 sm:gap-3">
           <CompactThemeToggle />
           <Button
             href="/create"
-            className={`rounded-full px-5 py-2 text-sm ${
+            className={`px-5 py-2 text-sm ${
               onCreate ? 'ring-2 ring-brand-pink/20' : ''
             }`}
           >
@@ -39,7 +39,7 @@ export function SiteHeader({ slot }: SiteHeaderProps) {
       {slot ? (
         <div
           data-testid="header-slot"
-          className="border-t border-bloom-rose/10 bg-background/92 px-4 py-3 md:px-6"
+          className="bloom-header__progress px-4 py-3 md:px-6"
         >
           <div className="mx-auto max-w-6xl">{slot}</div>
         </div>

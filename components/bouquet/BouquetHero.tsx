@@ -40,7 +40,7 @@ export function BouquetHero({
     <div
       id={id}
       data-testid="bouquet-hero"
-      className="relative mx-auto aspect-[4/5] w-full max-w-md overflow-hidden rounded-3xl"
+      className="relative mx-auto aspect-[2/3] w-full max-w-md overflow-hidden"
     >
       <Image
         src={bouquet.heroImage}
@@ -49,19 +49,19 @@ export function BouquetHero({
         unoptimized
         priority
         sizes="(max-width: 768px) 100vw, 448px"
-        className="object-cover"
+        className="object-contain"
       />
     </div>
   )
 
   if (!showBackdrop) {
-    return <div className={`relative overflow-hidden rounded-3xl ${className}`}>{image}</div>
+    return <div className={`relative ${className}`}>{image}</div>
   }
 
   return (
     <BackdropLayer
       theme={theme}
-      className={`mx-auto aspect-[4/5] w-full max-w-md overflow-hidden rounded-3xl ${className}`}
+      className={`mx-auto aspect-[2/3] w-full max-w-md overflow-hidden ${className}`}
     >
       {image}
     </BackdropLayer>

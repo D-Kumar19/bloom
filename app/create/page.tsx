@@ -8,12 +8,14 @@ import { CardStylePicker } from '@/components/builder/CardStylePicker'
 import { MessageForm } from '@/components/builder/MessageForm'
 import { StepIndicator } from '@/components/builder/StepIndicator'
 import { ThemePicker } from '@/components/builder/ThemePicker'
+import { GiftComposition } from '@/components/bouquet/GiftComposition'
 import { Button } from '@/components/ui/Button'
 import { useBouquetState } from '@/hooks/useBouquetState'
 import { useHeaderSlot } from '@/hooks/useHeaderSlot'
 import { BUILDER_STEPS } from '@/lib/builder/steps'
 import { DEFAULT_NOTE_BORDER } from '@/lib/cards'
 import { DEFAULT_MESSAGE_FORMAT } from '@/lib/message'
+import { getBouquetById } from '@/lib/bouquets'
 
 export default function CreatePage() {
   const {
@@ -71,7 +73,7 @@ export default function CreatePage() {
   }
 
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-6 md:px-6 md:py-8">
+    <main className="bloom-builder mx-auto flex w-full flex-1 flex-col gap-6 px-4 py-6 md:px-6 md:py-8">
       {storageError ? (
         <p
           role="alert"
@@ -81,7 +83,8 @@ export default function CreatePage() {
         </p>
       ) : null}
       {!isShareStep ? (
-        <div className="text-center">
+        <div className="bloom-builder__heading">
+          <p className="bloom-eyebrow">A little time. Something personal.</p>
           <h1 className="font-display text-3xl text-bloom-ink md:text-4xl">Create your bouquet</h1>
           <p className="mt-2 text-sm text-bloom-ink/60">
             Step {stepNumber} of {BUILDER_STEPS.length}
@@ -98,7 +101,7 @@ export default function CreatePage() {
         </div>
       ) : null}
 
-      <div className="grid gap-6">
+      <div className={`bloom-builder__workspace ${!isShareStep && step !== 'message' ? 'bloom-builder__workspace--preview' : ''}`}>
         <div key={step} data-testid="step-panel" className="animate-step-enter">
           {step === 'bouquet' ? (
             <BouquetGalleryPicker selectedId={state.bouquetId} onSelect={setBouquet} />
@@ -135,6 +138,14 @@ export default function CreatePage() {
             <BouquetShareStep state={state} onCreateAnother={startNewBouquet} />
           ) : null}
         </div>
+        {!isShareStep && step !== 'message' ? (
+          <aside className="bloom-builder__preview" aria-label="Your bouquet so far">
+            <p className="bloom-eyebrow">Your bouquet so far</p>
+            <GiftComposition bouquet={state} showNote={false} />
+            <p className="bloom-builder__selection">{getBouquetById(state.bouquetId)?.name}</p>
+            <p className="text-sm text-bloom-ink/75">Keep the defaults, or make it yours. No need to choose everything.</p>
+          </aside>
+        ) : null}
       </div>
 
       {isShareStep ? (
@@ -144,7 +155,7 @@ export default function CreatePage() {
           </Button>
         </div>
       ) : (
-        <div className="flex justify-between gap-4 pb-4">
+        <div className="bloom-builder__navigation flex justify-between gap-4 pb-4">
           <Button variant="ghost" onClick={goBack} disabled={step === 'bouquet'}>
             Back
           </Button>

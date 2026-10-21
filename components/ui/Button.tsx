@@ -25,11 +25,11 @@ export const buttonClassName = (
   variant: ButtonVariant = 'primary',
   className = ''
 ) =>
-  `inline-flex min-h-11 items-center justify-center rounded-2xl px-6 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bloom-ink ${variantClasses[variant]} ${className}`
+  `bloom-button inline-flex min-h-11 items-center justify-center px-6 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bloom-ink ${variantClasses[variant]} ${className}`
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    'bg-[#9a4a50] text-white hover:bg-[#7f3b41] disabled:bg-[#D4D4D4] disabled:text-[#666] disabled:cursor-not-allowed',
+    'bg-brand-pink text-white hover:bg-brand-pink-dark disabled:bg-[#D4D4D4] disabled:text-[#666] disabled:cursor-not-allowed',
   secondary:
     'bg-bloom-sage text-[#2a2420] hover:bg-bloom-sage/90 disabled:bg-[#D4D4D4] disabled:cursor-not-allowed',
   ghost:

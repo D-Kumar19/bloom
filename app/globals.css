@@ -3,22 +3,26 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #faf7f2;
-  --foreground: #2a2420;
-  --brand-pink: #b85c63;
-  --brand-pink-dark: #9a4a50;
-  --surface: #fffcf8;
-  --surface-muted: rgb(255 252 248 / 0.88);
+  color-scheme: light;
+  --background: #f7f5fb;
+  --foreground: #2b1245;
+  --brand-pink: #71315c;
+  --brand-pink-dark: #512141;
+  --surface: #ffffff;
+  --surface-muted: #f0edf6;
+  --bloom-coral: #f35378;
+  --bloom-plum: #2b1245;
+  --bloom-acid: #f5ff7a;
 }
 
 .dark {
   color-scheme: dark;
-  --background: #141210;
-  --foreground: #ece6df;
-  --brand-pink: #d47a82;
-  --brand-pink-dark: #b85c63;
-  --surface: #1c1916;
-  --surface-muted: rgb(28 25 22 / 0.92);
+  --background: #171020;
+  --foreground: #f5f0ff;
+  --brand-pink: #9b457f;
+  --brand-pink-dark: #7e3667;
+  --surface: #251a30;
+  --surface-muted: #201729;
 }
 
 body.bouquet-immersive {
@@ -65,7 +69,116 @@ body {
 }
 
 .font-display {
-  font-family: var(--font-playfair), Georgia, serif;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-weight: 750;
+  letter-spacing: -0.045em;
+}
+
+.bloom-wordmark {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.09em;
+  color: inherit;
+}
+
+.bloom-mark { display: none; }
+.bloom-eyebrow { font-size: .7rem; font-weight: 650; text-transform: uppercase; letter-spacing: .1em; line-height: 1.6; }
+.bloom-header { border-bottom: 1px solid var(--foreground); background: var(--background); }
+.bloom-header__bar { max-width: 1440px; margin: auto; padding: 18px 32px; display: flex; gap: 24px; align-items: center; }
+.bloom-header__tagline { margin: auto; font-size: .75rem; }
+.bloom-header__progress { border-top: 1px solid color-mix(in srgb, var(--foreground) 15%, transparent); }
+.bloom-header__progress nav { max-width: 900px; }
+.bloom-header__progress nav > div { padding-bottom: 20px; }
+.bloom-header__progress [role="progressbar"] { height: 3px; box-shadow: none; }
+.bloom-header__progress [role="progressbar"] > div:first-child { background: var(--brand-pink); }
+.bloom-header__progress [role="progressbar"] > div + div { display: none; }
+.bloom-header__progress [aria-current="step"] > span { border-radius: 0; box-shadow: none; }
+.bloom-header__progress nav ol button { min-height: 44px; }
+.bloom-header__progress nav > p { margin-top: 0; font-size: .75rem; font-weight: 400; }
+.bloom-button { border-radius: 2px; min-height: 48px; }
+.bloom-button:focus-visible { outline-color: currentColor; }
+.bloom-footer { background: var(--surface-muted); border-top: 1px solid var(--foreground); }
+.bloom-footer h2 { letter-spacing: 0; font-weight: 700; }
+.bloom-footer a { display: inline-flex; align-items: center; min-height: 36px; }
+.bloom-home { color: var(--bloom-plum); }
+.bloom-home__hero { display: grid; grid-template-columns: 1fr 1fr; min-height: 650px; background: var(--bloom-coral); }
+.bloom-home__invitation { padding: clamp(32px, 4vw, 64px); display: flex; flex-direction: column; align-items: flex-start; justify-content: center; }
+.bloom-home h1 { font-size: clamp(64px, 7.5vw, 112px); font-weight: 800; line-height: .96; letter-spacing: -.075em; margin: 28px 0; }
+.bloom-home__intro { font-size: clamp(16px, 1.5vw, 20px); line-height: 1.6; max-width: 400px; }
+.bloom-home__cta { margin-top: 28px; gap: 28px; background: var(--bloom-plum); color: var(--bloom-acid); }
+.bloom-home__cta:hover { background: #421f61; }
+.bloom-home__example { margin-top: 16px; text-decoration: underline; text-underline-offset: 4px; display: inline-flex; align-items: center; min-height: 44px; font-size: .875rem; }
+.bloom-home__privacy { font-size: .75rem; line-height: 1.6; max-width: 320px; margin-top: 16px; }
+.bloom-home__gallery { background: var(--bloom-plum); min-height: 650px; position: relative; color: var(--bloom-acid); }
+.bloom-home__aside { position: absolute; top: 24px; left: 24px; max-width: 120px; line-height: 1.4; font-size: 1rem; font-weight: 650; }
+.bloom-home__photo { position: absolute; margin: 0; }
+.bloom-home__photo img { display: block; width: 100%; height: auto; }
+.bloom-home__photo--main { width: 55%; top: 48px; right: 8%; }
+.bloom-home__photo--small { width: 32%; left: 6%; bottom: 48px; border: 7px solid var(--bloom-acid); }
+.bloom-home__gallery-caption { position: absolute; bottom: 16px; right: 24px; font-size: .7rem; }
+.bloom-home__principles { display: grid; grid-template-columns: repeat(3, 1fr); padding: 28px 40px; gap: 24px; background: var(--bloom-acid); color: var(--bloom-plum); border-bottom: 1px solid var(--bloom-plum); }
+.bloom-home__principles p { font-size: .875rem; }
+.bloom-home__principles span { display: block; margin-bottom: 8px; }
+.bloom-builder { max-width: 1360px; }
+.bloom-builder__heading { padding: 16px 0 24px; border-bottom: 1px solid color-mix(in srgb, var(--foreground) 25%, transparent); }
+.bloom-builder__heading h1 { margin-top: 12px; }
+.bloom-builder__workspace { display: grid; gap: 32px; }
+.bloom-builder__workspace > * { min-width: 0; }
+.bloom-builder__preview { display: none; }
+.bloom-builder__navigation { border-top: 1px solid color-mix(in srgb, var(--foreground) 25%, transparent); padding-top: 24px; }
+.bloom-builder__selection { font-size: 1rem; font-weight: 650; margin: 18px 0 8px; }
+.bloom-builder__preview .gift-composition { margin-top: 20px; }
+.bloom-builder__preview .gift-composition__flowers { padding: 0; background: transparent; }
+.bloom-builder__preview .gift-composition [data-testid="bouquet-hero"] { max-width: 250px; }
+.bloom-bouquet-tile { border-radius: 0; box-shadow: none; }
+.bloom-bouquet-tile h3 { letter-spacing: -.025em; }
+.bloom-sound-options { border-top: 1px solid color-mix(in srgb, var(--foreground) 30%, transparent); border-bottom: 1px solid color-mix(in srgb, var(--foreground) 30%, transparent); padding-bottom: 12px; }
+.gift-composition { display: flex; align-items: stretch; gap: 0; min-width: 0; }
+.gift-composition__flowers { margin: 0; min-width: 0; flex: 1; display: flex; align-items: flex-start; justify-content: center; padding: 24px; background: #2b1245; }
+.gift-composition__flowers > div { width: 100%; }
+.gift-composition__flowers [data-testid="bouquet-hero"] { max-width: 350px; }
+.gift-composition__note { min-width: 0; flex: 1.25; display: flex; }
+.gift-composition__note > .note-card { width: 100%; border-radius: 0; box-shadow: none; padding: clamp(24px, 3vw, 40px); display: flex; flex-direction: column; justify-content: center; }
+.gift-composition__note [data-testid="formatted-message-body"] { line-height: 1.75; }
+.gift-composition:not(.gift-composition--paired) .gift-composition__flowers { background: transparent; }
+.gift-snapshot { padding: 48px; }
+.gift-snapshot .gift-composition__note > .note-card { padding: 32px; }
+.bloom-share__layout { display: grid; gap: 28px; align-items: start; }
+.bloom-share__preview, .bloom-share__preview > div { min-width: 0; }
+.bloom-share__actions { min-width: 0; }
+.bloom-recipient { max-width: 1240px; }
+.bloom-recipient__heading h1, .bloom-opening h1 { font-size: clamp(40px, 5vw, 72px); line-height: 1.05; }
+.bloom-opening { max-width: 850px; margin: 32px auto; }
+.bloom-recipient [data-testid="reveal-stage"]:focus-visible { outline: 3px solid currentColor; outline-offset: 6px; }
+@media (min-width: 1100px) {
+  .bloom-builder__workspace--preview { grid-template-columns: minmax(0, 1fr) 300px; }
+  .bloom-builder__preview { display: block; position: sticky; top: 250px; align-self: start; background: var(--surface-muted); padding: 24px; }
+  .bloom-share__layout { grid-template-columns: minmax(0, 1fr) 320px; }
+  .bloom-share__actions { position: sticky; top: 240px; }
+}
+@media (min-width: 1600px) {
+  .bloom-home__gallery { min-height: 800px; }
+  .bloom-home__photo--main { width: min(55%, 440px); }
+  .bloom-home__photo--small { width: min(32%, 260px); }
+}
+@media (max-width: 760px) {
+  .bloom-header__bar { padding: 16px; gap: 12px; }
+  .bloom-header__tagline { display: none; }
+  .bloom-header .bloom-button { padding: 10px 16px; }
+  .bloom-home__hero { display: flex; flex-direction: column; }
+  .bloom-home__invitation { padding: 32px 24px; }
+  .bloom-home h1 { font-size: clamp(56px, 12vw, 80px); margin: 24px 0; }
+  .bloom-home__gallery { order: -1; min-height: 0; height: 105vw; max-height: 600px; }
+  .bloom-home__photo--main { width: 52%; top: 28px; right: 10%; }
+  .bloom-home__photo--small { width: 32%; left: 6%; bottom: 36px; border-width: 5px; }
+  .bloom-home__aside { max-width: 90px; font-size: .875rem; left: 20px; }
+  .bloom-home__principles { grid-template-columns: 1fr; padding: 24px; gap: 20px; }
+  .bloom-home__principles span { display: inline; margin-right: 12px; }
+  .gift-composition { flex-direction: column; }
+  .gift-composition__flowers { padding: 20px; }
+  .gift-composition__flowers [data-testid="bouquet-hero"] { max-width: 280px; }
+  .gift-composition__note > .note-card { padding: 28px 24px; }
 }
 
 @keyframes bloom-in {

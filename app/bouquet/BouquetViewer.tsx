@@ -4,12 +4,11 @@ import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { BackdropLayer } from '@/components/backdrop/BackdropLayer'
-import { BouquetHero } from '@/components/bouquet/BouquetHero'
+import { GiftComposition } from '@/components/bouquet/GiftComposition'
 import {
   SoundtrackPlayer,
   type SoundtrackPlayerHandle,
 } from '@/components/bouquet/SoundtrackPlayer'
-import { MessageCard } from '@/components/cards/MessageCard'
 import { Button } from '@/components/ui/Button'
 import { RoundIconButton } from '@/components/ui/RoundIconButton'
 import { useToast } from '@/components/ui/Toast'
@@ -99,6 +98,11 @@ export function BouquetViewer() {
     setBeat((current) => (current < finalBeat ? ((current + 1) as RevealBeat) : current))
   }, [finalBeat])
 
+  const openEntireGift = () => {
+    soundtrackRef.current?.startPlayback()
+    setBeat(finalBeat)
+  }
+
   const handleRevealKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
       if (beat >= finalBeat) {
@@ -186,7 +190,7 @@ export function BouquetViewer() {
       ) : null}
 
       <main
-        className="relative z-30 mx-auto flex w-full max-w-3xl flex-col px-4 py-6 pb-10 [overflow-wrap:anywhere] md:px-6 md:py-8"
+        className="bloom-recipient relative z-30 mx-auto flex w-full flex-col px-4 py-6 pb-10 [overflow-wrap:anywhere] md:px-6 md:py-8"
         onClick={(event) => event.stopPropagation()}
         onMouseDown={(event) => event.stopPropagation()}
       >
@@ -218,8 +222,9 @@ export function BouquetViewer() {
         />
 
         {beat > 0 ? (
-          <header className="mb-6 pt-10 text-center md:pt-12">
-            <h1 className={`font-display text-3xl md:text-4xl ${tone.title}`}>
+          <header className="bloom-recipient__heading mb-8 pt-10 md:pt-12">
+            <p className={`bloom-eyebrow ${tone.body}`}>A moment, from {sender} to {bouquet.to || 'you'}.</p>
+            <h1 className={`font-display mt-4 ${tone.title}`}>
               {revealTitle}
             </h1>
           </header>
@@ -240,12 +245,10 @@ export function BouquetViewer() {
             {beat === 0 ? (
               <div
                 data-testid="reveal-beat-wrap"
-                className={`flex min-h-[50vh] flex-col items-center justify-center rounded-3xl border p-8 backdrop-blur-[2px] ${tone.beat0Card}`}
+                className={`bloom-opening flex min-h-[55vh] flex-col items-start justify-center border p-8 backdrop-blur-[2px] ${tone.beat0Card}`}
               >
-                <div
-                  className={`h-28 w-28 rounded-full border-2 border-dashed ${tone.beat0Ring}`}
-                />
-                <p className={`mt-6 font-display text-xl ${tone.title}`}>{revealTitle}</p>
+                <p className={`bloom-eyebrow ${tone.body}`}>Picked with you in mind.</p>
+                <h1 className={`mt-6 font-display ${tone.title}`}>{revealTitle}</h1>
                 <p
                   className={`mt-3 rounded-full px-4 py-1.5 text-sm font-medium backdrop-blur-sm ${tone.hint} ${tone.hintScrim}`}
                 >
@@ -255,27 +258,15 @@ export function BouquetViewer() {
             ) : null}
 
             {beat >= 1 ? (
-              <BouquetHero
-                bouquetId={bouquet.bouquetId}
-                theme={bouquet.theme}
-                showBackdrop={false}
-              />
-            ) : null}
-
-            {beat >= 2 && hasNote ? (
-              <div className="text-center">
-                <MessageCard
-                  styleId={bouquet.cardStyle}
-                  to={bouquet.to}
-                  message={beat >= 3 ? bouquet.message : ''}
-                  from={beat >= 3 ? bouquet.from : ''}
-                  messageFormat={bouquet.messageFormat}
-                  noteBorder={bouquet.noteBorder}
-                  folded={beat < 3}
-                />
-              </div>
+              <GiftComposition bouquet={bouquet} showNote={beat >= 2} folded={beat < 3} />
             ) : null}
           </div>
+
+          {canAdvanceReveal ? (
+            <button type="button" className={`mx-auto mt-5 min-h-11 px-4 text-sm underline underline-offset-4 ${tone.body}`} onClick={openEntireGift}>
+              Open everything now
+            </button>
+          ) : null}
 
           {canAdvanceReveal && beat > 0 ? (
             <p
