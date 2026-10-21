@@ -7,6 +7,7 @@ export type AmbientPlayback = {
 
 let activeAudio: HTMLAudioElement | null = null
 let activeSoundtrackId: Exclude<SoundtrackId, 'none'> | null = null
+let activePlayPromise: Promise<void> | null = null
 
 function stopActiveAudio(): void {
   if (!activeAudio) {
@@ -17,16 +18,18 @@ function stopActiveAudio(): void {
   activeAudio.currentTime = 0
   activeAudio = null
   activeSoundtrackId = null
+  activePlayPromise = null
 }
 
 export function startAmbientSound(
   id: Exclude<SoundtrackId, 'none'>,
   volume = 0.35,
+  onError?: () => void,
 ): AmbientPlayback {
   if (activeAudio && activeSoundtrackId === id && !activeAudio.paused) {
     const audio = activeAudio
     return {
-      playPromise: Promise.resolve(),
+      playPromise: activePlayPromise ?? Promise.resolve(),
       stop: () => {
         if (activeAudio !== audio) {
           return
@@ -36,6 +39,7 @@ export function startAmbientSound(
         audio.currentTime = 0
         activeAudio = null
         activeSoundtrackId = null
+        activePlayPromise = null
       },
     }
   }
@@ -47,12 +51,18 @@ export function startAmbientSound(
   audio.volume = Math.min(1, Math.max(0, volume))
   audio.preload = 'auto'
 
-  const playPromise = audio.play().catch(() => {
-    // Browsers block autoplay until the user interacts with the page.
-  })
-
   activeAudio = audio
   activeSoundtrackId = id
+  audio.onerror = () => {
+    if (activeAudio !== audio) return
+    stopActiveAudio()
+    onError?.()
+  }
+  const playPromise = audio.play().catch((error: unknown) => {
+    if (activeAudio === audio) stopActiveAudio()
+    throw error
+  })
+  activePlayPromise = playPromise
 
   return {
     playPromise: playPromise.then(() => undefined),
@@ -65,6 +75,7 @@ export function startAmbientSound(
       audio.currentTime = 0
       activeAudio = null
       activeSoundtrackId = null
+      activePlayPromise = null
     },
   }
 }

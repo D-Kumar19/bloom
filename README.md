@@ -1,5 +1,12 @@
 # Bloom
 
+## Project status and ongoing work
+
+Start with the [project notebook](./docs/README.md) for the current audit,
+prioritized open work, redesign direction, and handoff notes. The product
+description below describes the intended experience; the notebook records
+known gaps and which reliability fixes still need deployment.
+
 Send someone a bouquet without leaving your chair. Pick flowers, write the note, choose the light behind it, and share a link. They tap to unwrap it. No account. No app store lecture. Just a small moment that lands.
 
 Yes, sending flowers over the internet is a little ridiculous. It also works surprisingly well when you mean it.
@@ -18,11 +25,17 @@ They open your link. The bouquet appears first. Then the card. Then your words. 
 
 They can save it as an image. They can send one back. They do not need to sign up for anything. Zero forms. Zero "verify your email to feel loved." 🙅
 
+Saved PNGs use the gift's bouquet, note formatting, stationery, border, and backdrop.
+They are still keepsakes, not recordings: motion is stopped at its initial state
+and the watercolor's blurred overlay is omitted. Sound is not included.
+
 ## What it feels like for you
 
 You are not building a website. You are choosing how to show up for someone. The builder walks you through it: bouquet, card, message, atmosphere, share. Five steps. No clutter. No spreadsheet energy.
 
-Walk away mid-draft? Fine. Your work waits for a day, then politely ghosts you. Fresh start. No guilt trip. 👋
+Walk away mid-draft? Your edits and current step stay in this browser for a day after your last edit. Starting a new bouquet clears the old draft. If browser storage is blocked, Bloom warns you to keep the page open until you copy your gift link.
+
+Notes have a 200-word limit. If you go over, your full text stays in the editor and draft; Bloom shows how many words to remove before continuing. Nothing is silently cut off.
 
 ## The honest pitch
 

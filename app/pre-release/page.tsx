@@ -1,7 +1,6 @@
 import Link from 'next/link'
 
 import { Button } from '@/components/ui/Button'
-import { PRERELEASE_CONTACT } from '@/lib/site'
 
 export const metadata = {
   title: 'Pre-release | Bloom',
@@ -19,8 +18,8 @@ export default function PreReleasePage() {
       </h1>
       <p className="mt-6 text-base leading-relaxed text-bloom-ink/70">
         This is a <strong className="font-medium text-bloom-ink">pre-release</strong> of Bloom.
-        Most of the wander-y pages (moments, flower tours, language guides, polite legal
-        paperwork) are not here yet, or never were, or went out for milk.
+        Standalone flower tours, occasion guides, and template galleries are not available yet.
+        You can choose flowers, stationery, and a backdrop inside the builder.
       </p>
       <p className="mt-4 text-base leading-relaxed text-bloom-ink/70">
         What <em>does</em>{' '}
@@ -33,15 +32,9 @@ export default function PreReleasePage() {
         fancy bits when they stop wobbling.
       </p>
       <p className="mt-8 rounded-2xl border border-bloom-rose/20 bg-surface px-5 py-4 text-sm leading-relaxed text-bloom-ink/75">
-        In a hurry and something broke?{' '}
-        <a
-          href={`mailto:${PRERELEASE_CONTACT}`}
-          className="font-medium text-brand-pink hover:underline"
-        >
-          {PRERELEASE_CONTACT}
-        </a>
-        <br />
-        <span className="text-bloom-ink/55">Dheeraj reads this. Probably before lunch.</span>
+        A public contact channel is not available yet. Read{' '}
+        <Link href="/privacy" className="underline">how gift links and drafts work</Link>
+        {' '}before sharing anything sensitive.
       </p>
       <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
         <Button href="/create">Create a bouquet</Button>

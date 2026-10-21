@@ -186,7 +186,7 @@ export function BouquetViewer() {
       ) : null}
 
       <main
-        className="relative z-30 mx-auto flex w-full max-w-3xl flex-col px-4 py-6 pb-10 md:px-6 md:py-8"
+        className="relative z-30 mx-auto flex w-full max-w-3xl flex-col px-4 py-6 pb-10 [overflow-wrap:anywhere] md:px-6 md:py-8"
         onClick={(event) => event.stopPropagation()}
         onMouseDown={(event) => event.stopPropagation()}
       >
@@ -272,7 +272,6 @@ export function BouquetViewer() {
                   messageFormat={bouquet.messageFormat}
                   noteBorder={bouquet.noteBorder}
                   folded={beat < 3}
-                  onClick={beat === 2 ? () => setBeat(3) : undefined}
                 />
               </div>
             ) : null}

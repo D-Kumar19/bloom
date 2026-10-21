@@ -1,19 +1,8 @@
 import { ImageResponse } from 'next/og'
 
-import { getBouquetById } from '@/lib/bouquets'
-import { decodeBouquet } from '@/lib/sharing'
-
 export const runtime = 'edge'
 
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url)
-  const encoded = searchParams.get('b')
-  const bouquet = encoded ? decodeBouquet(encoded) : null
-
-  const to = bouquet?.to?.trim() || 'Someone special'
-  const from = bouquet?.from?.trim() || 'Someone'
-  const bouquetMeta = bouquet ? getBouquetById(bouquet.bouquetId) : null
-
+export async function GET() {
   return new ImageResponse(
     (
       <div
@@ -44,26 +33,11 @@ export async function GET(request: Request) {
             BLOOM
           </p>
           <p style={{ fontSize: 52, color: '#3d2f2f', margin: '24px 0 12px', textAlign: 'center' }}>
-            A bouquet for {to}
+            A bouquet is waiting for you
           </p>
           <p style={{ fontSize: 28, color: '#3d2f2f99', margin: 0, textAlign: 'center' }}>
-            From {from}
-            {bouquetMeta ? ` · ${bouquetMeta.name}` : ''}
+            A small moment, made for someone.
           </p>
-          {bouquetMeta ? (
-            <p
-              style={{
-                fontSize: 22,
-                color: '#3d2f2f80',
-                marginTop: 20,
-                fontStyle: 'italic',
-                textAlign: 'center',
-                maxWidth: 700,
-              }}
-            >
-              {bouquetMeta.meaning}
-            </p>
-          ) : null}
         </div>
       </div>
     ),

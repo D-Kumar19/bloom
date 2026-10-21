@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 import {
   editorNeedsDomCleanup,
@@ -14,17 +14,42 @@ describe('sanitizeMessageHtml', () => {
   })
 
   it('converts div line breaks from contenteditable into br tags', () => {
-    expect(sanitizeMessageHtml('<div>Hello</div><div>World</div>')).toBe('Hello<br>World<br>')
-    expect(isRichMessage(sanitizeMessageHtml('<div>Hello</div><div>World</div>'))).toBe(true)
+    expect(sanitizeMessageHtml('<div>Hello</div><div>World</div>')).toBe(
+      'Hello<br>World<br>'
+    )
+    expect(
+      isRichMessage(sanitizeMessageHtml('<div>Hello</div><div>World</div>'))
+    ).toBe(true)
+  })
+
+  it('does not merge text before an editable block', () => {
+    expect(sanitizeMessageHtml('Hello<div>World</div>')).toBe(
+      'Hello<br>World<br>'
+    )
+  })
+
+  it('extracts line breaks and entities identically without a browser DOM', () => {
+    const html =
+      'Hello<br>world<p>A &amp; B&nbsp;C&#32;D&#x20;E &lt;friend&gt;</p>'
+    const browserText = stripMessageHtml(html)
+    try {
+      vi.stubGlobal('document', undefined)
+      expect(stripMessageHtml(html)).toBe(browserText)
+      expect(browserText).toBe('Hello\nworld\nA & B\u00a0C D E <friend>\n')
+    } finally {
+      vi.unstubAllGlobals()
+    }
   })
 
   it('keeps allowed inline formatting', () => {
-    expect(sanitizeMessageHtml('<b>Hello</b> <i>there</i>')).toBe('<b>Hello</b> <i>there</i>')
+    expect(sanitizeMessageHtml('<b>Hello</b> <i>there</i>')).toBe(
+      '<b>Hello</b> <i>there</i>'
+    )
   })
 
   it('strips zero-width spaces used for caret anchoring in the editor', () => {
     expect(sanitizeMessageHtml('Hello<br>\u200B')).toBe('Hello<br>')
-    expect(stripMessageHtml('Hello<br>\u200B')).toBe('Hello')
+    expect(stripMessageHtml('Hello<br>\u200B')).toBe('Hello\n')
   })
 })
 

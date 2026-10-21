@@ -31,12 +31,25 @@ type AppearanceState = {
 
 const AppearanceContext = createContext<AppearanceContextValue | null>(null)
 
-function readStoredAppearance(): AppearanceMode {
+function getStorage(): Storage | null {
   if (typeof window === 'undefined') {
+    return null
+  }
+
+  try {
+    return window.localStorage ?? null
+  } catch {
+    return null
+  }
+}
+
+function readStoredAppearance(): AppearanceMode {
+  const storage = getStorage()
+  if (!storage) {
     return DEFAULT_APPEARANCE
   }
 
-  const stored = localStorage.getItem(APPEARANCE_STORAGE_KEY)
+  const stored = storage.getItem(APPEARANCE_STORAGE_KEY)
   return stored && isAppearanceMode(stored) ? stored : DEFAULT_APPEARANCE
 }
 
@@ -62,7 +75,10 @@ export function AppearanceProvider({ children }: { children: React.ReactNode }) 
   const [state, setState] = useState<AppearanceState>(readAppearanceState)
 
   const setAppearance = useCallback((mode: AppearanceMode) => {
-    localStorage.setItem(APPEARANCE_STORAGE_KEY, mode)
+    const storage = getStorage()
+    if (storage) {
+      storage.setItem(APPEARANCE_STORAGE_KEY, mode)
+    }
     applyAppearanceMode(mode)
     setState({
       appearance: mode,
@@ -73,7 +89,8 @@ export function AppearanceProvider({ children }: { children: React.ReactNode }) 
   useEffect(() => {
     const media = window.matchMedia('(prefers-color-scheme: dark)')
     const onSystemChange = () => {
-      const current = localStorage.getItem(APPEARANCE_STORAGE_KEY)
+      const storage = getStorage()
+      const current = storage?.getItem(APPEARANCE_STORAGE_KEY)
       const mode = current && isAppearanceMode(current) ? current : DEFAULT_APPEARANCE
       if (mode !== 'system') {
         return

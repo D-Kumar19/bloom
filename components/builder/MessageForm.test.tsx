@@ -9,7 +9,9 @@ vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: vi.fn() }),
 }))
 
-function renderMessageForm(overrides: Partial<Parameters<typeof MessageForm>[0]> = {}) {
+function renderMessageForm(
+  overrides: Partial<Parameters<typeof MessageForm>[0]> = {}
+) {
   const props = {
     to: '',
     message: '',
@@ -50,13 +52,19 @@ describe('MessageForm', () => {
   })
 
   it('shows an empty card preview with To and From placeholders before the message is written', () => {
-    renderMessageForm({ cardStyle: 'classic-cream', to: 'Sarah', from: 'Dheeraj' })
+    renderMessageForm({
+      cardStyle: 'classic-cream',
+      to: 'Sarah',
+      from: 'Dheeraj',
+    })
 
     expect(screen.getByText('Live preview')).toBeInTheDocument()
     expect(screen.getByTestId('message-card')).toBeInTheDocument()
     expect(screen.getByText('To: Sarah')).toBeInTheDocument()
     expect(screen.getByText('With love, Dheeraj')).toBeInTheDocument()
-    expect(screen.getByText('Your message will appear here...')).toBeInTheDocument()
+    expect(
+      screen.getByText('Your message will appear here...')
+    ).toBeInTheDocument()
     expect(screen.queryByText('Classic Cream')).not.toBeInTheDocument()
   })
 
@@ -78,12 +86,34 @@ describe('MessageForm', () => {
 
   it('shows warmer word counter copy when there is room', () => {
     renderMessageForm({ message: Array(180).fill('word').join(' ') })
-    expect(screen.getByTestId('words-left')).toHaveTextContent('20 words of love left')
+    expect(screen.getByTestId('words-left')).toHaveTextContent(
+      '20 words of love left'
+    )
   })
 
   it('shortens the counter copy near the limit', () => {
     renderMessageForm({ message: Array(195).fill('word').join(' ') })
     expect(screen.getByTestId('words-left')).toHaveTextContent('5 words left')
+  })
+
+  it('warns explicitly about over-limit notes while keeping all text in editor and preview', () => {
+    renderMessageForm({ message: Array(201).fill('word').join('<br>') })
+    expect(screen.getByTestId('words-left')).toHaveTextContent(
+      '1 word over the limit'
+    )
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      'Your full message is kept. Remove 1 word to continue.'
+    )
+    expect(screen.getByTestId('message-editor')).toHaveAttribute(
+      'aria-invalid',
+      'true'
+    )
+    expect(
+      screen.getByTestId('message-editor').querySelectorAll('br')
+    ).toHaveLength(200)
+    expect(
+      screen.getByTestId('formatted-message-body').querySelectorAll('br')
+    ).toHaveLength(200)
   })
 
   it('expands inspiration prompts in a grid with emoji labels and starter text', () => {
@@ -93,7 +123,7 @@ describe('MessageForm', () => {
     expect(screen.getByTestId('inspiration-sympathy')).toBeInTheDocument()
     expect(screen.getByText('Sympathy')).toBeInTheDocument()
     expect(
-      screen.getByText("I carry you with me. In everything I do, you're there."),
+      screen.getByText("I carry you with me. In everything I do, you're there.")
     ).toBeInTheDocument()
   })
 
@@ -105,13 +135,17 @@ describe('MessageForm', () => {
     fireEvent.click(screen.getByTestId('inspiration-thank-you'))
 
     expect(onMessageChange).toHaveBeenCalled()
-    expect(screen.queryByTestId('inspiration-thank-you')).not.toBeInTheDocument()
+    expect(
+      screen.queryByTestId('inspiration-thank-you')
+    ).not.toBeInTheDocument()
   })
 
   it('shows message editor placeholder when empty', () => {
     renderMessageForm()
 
-    expect(screen.getByText('Write your message here. Say what you mean.')).toBeInTheDocument()
+    expect(
+      screen.getByText('Write your message here. Say what you mean.')
+    ).toBeInTheDocument()
   })
 
   it('shows formatting toolbar and hides note border until advanced is opened', () => {
@@ -132,8 +166,12 @@ describe('MessageForm', () => {
     renderMessageForm({ message: '', to: '', from: '' })
 
     expect(screen.getByText('Add who this is for')).toBeInTheDocument()
-    expect(screen.getByText('Add your name so they know who sent this')).toBeInTheDocument()
-    expect(screen.getByText('Write your message before continuing')).toBeInTheDocument()
+    expect(
+      screen.getByText('Add your name so they know who sent this')
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText('Write your message before continuing')
+    ).toBeInTheDocument()
   })
 
   it('updates note border when style is selected in advanced', () => {

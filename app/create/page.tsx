@@ -34,6 +34,8 @@ export default function CreatePage() {
     goToStep,
     startNewBouquet,
     maxMessageWords,
+    storageError,
+    ready,
   } = useBouquetState()
   const previousStepRef = useRef(step)
 
@@ -60,10 +62,24 @@ export default function CreatePage() {
   const stepNumber = BUILDER_STEPS.indexOf(step) + 1
   const isShareStep = step === 'share'
 
+  if (!ready) {
+    return (
+      <main className="mx-auto px-4 py-20 text-center">
+        <p role="status">Restoring your draft...</p>
+      </main>
+    )
+  }
+
   return (
-    <main
-      className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-6 md:px-6 md:py-8"
-    >
+    <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-6 md:px-6 md:py-8">
+      {storageError ? (
+        <p
+          role="alert"
+          className="rounded-2xl border border-brand-pink/30 bg-surface p-4 text-sm text-bloom-ink"
+        >
+          {storageError}
+        </p>
+      ) : null}
       {!isShareStep ? (
         <div className="text-center">
           <h1 className="font-display text-3xl text-bloom-ink md:text-4xl">Create your bouquet</h1>
@@ -85,10 +101,7 @@ export default function CreatePage() {
       <div className="grid gap-6">
         <div key={step} data-testid="step-panel" className="animate-step-enter">
           {step === 'bouquet' ? (
-            <BouquetGalleryPicker
-              selectedId={state.bouquetId}
-              onSelect={setBouquet}
-            />
+            <BouquetGalleryPicker selectedId={state.bouquetId} onSelect={setBouquet} />
           ) : null}
           {step === 'card' ? (
             <CardStylePicker selectedId={state.cardStyle} onSelect={setCardStyle} />
@@ -135,11 +148,7 @@ export default function CreatePage() {
           <Button variant="ghost" onClick={goBack} disabled={step === 'bouquet'}>
             Back
           </Button>
-          <Button
-            data-testid="next-button"
-            disabled={!canProceed}
-            onClick={goNext}
-          >
+          <Button data-testid="next-button" disabled={!canProceed} onClick={goNext}>
             Continue
           </Button>
         </div>

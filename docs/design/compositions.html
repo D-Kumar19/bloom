@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bloom / Two contemporary compositions</title>
+  <style>
+    :root { color-scheme: light; font-family: Arial, Helvetica, sans-serif; color: #202128; background: #e9e9ee; }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    button, select { font: inherit; }
+    button, a, select { -webkit-tap-highlight-color: transparent; }
+    button, select { min-height: 44px; }
+    button { cursor: pointer; }
+    button:disabled { cursor: not-allowed; }
+    button:focus-visible, a:focus-visible, select:focus-visible { outline: 3px solid #2457d6; outline-offset: 5px; }
+    a { color: inherit; text-underline-offset: .2em; }
+    h1, h2, h3, p, figure { margin: 0; }
+    [hidden] { display: none !important; }
+    .review { padding: 20px 28px; background: #fff; border-bottom: 1px solid #bdbdc7; }
+    .review-head { display: flex; gap: 20px; align-items: baseline; justify-content: space-between; flex-wrap: wrap; }
+    .review h1 { font-size: 20px; }
+    .review p { font-size: 13px; line-height: 1.6; max-width: 900px; margin-top: 8px; }
+    .controls { display: flex; gap: 12px 24px; flex-wrap: wrap; margin-top: 16px; }
+    .control { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+    select { background: #f5f5f8; color: #202128; border: 1px solid #8b8d9a; border-radius: 4px; padding: 8px 28px 8px 10px; }
+    .study { margin: 24px auto 0; width: min(1440px, calc(100% - 48px)); }
+    .study.mobile { width: min(390px, calc(100% - 24px)); }
+    .summary { padding: 18px 0; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px 24px; font-size: 13px; line-height: 1.6; }
+    .summary span { max-width: 860px; }
+    .screen { overflow: hidden; background: #fff; container-type: inline-size; }
+    .caption { font: 12px/1.5 Arial, sans-serif; text-transform: uppercase; letter-spacing: .1em; }
+    .brand { font-size: 30px; letter-spacing: -.08em; font-weight: 800; }
+    .nav { display: flex; align-items: center; justify-content: space-between; padding: 24px 36px; gap: 20px; }
+    .nav small { font-size: 12px; letter-spacing: .04em; }
+    .action { border: none; display: inline-flex; align-items: center; justify-content: center; gap: 24px; padding: 16px 24px; font-weight: 700; font-size: 16px; min-height: 56px; }
+    .plain { border: 1px solid currentColor; background: transparent; color: inherit; padding: 12px 18px; font-size: 14px; }
+    .gift-image { width: 100%; height: auto; display: block; aspect-ratio: 2/3; object-fit: contain; }
+    .screen-footer { display: flex; justify-content: space-between; gap: 16px; padding: 24px 36px; font-size: 12px; flex-wrap: wrap; line-height: 1.6; }
+    .screen-footer a { min-height: 44px; display: inline-flex; align-items: center; }
+    .sample-link { text-decoration: underline; background: transparent; color: inherit; border: 0; padding: 10px 0; }
+    .review-note { margin: 28px auto 48px; width: min(1440px, calc(100% - 48px)); font-size: 13px; line-height: 1.7; }
+    .review-note p + p { margin-top: 12px; }
+    .recipient { overflow-wrap: anywhere; }
+    .note-copy { white-space: pre-line; }
+    .a { --base: #f35378; --ink: #2b1245; --pop: #f5ff7a; --calm: #d4eedc; background: var(--base); color: var(--ink); }
+    .a.sympathy { --base: #d4eedc; --ink: #193d3b; --pop: #e6deff; --calm: #c3d8f1; }
+    .a .nav { border-bottom: 1px solid var(--ink); }
+    .a .action { color: var(--pop); background: var(--ink); border-radius: 0; }
+    .a .home-main { display: grid; grid-template-columns: 1fr 1fr; min-height: 660px; }
+    .a .invitation { padding: 48px 36px 40px; display: flex; flex-direction: column; align-items: flex-start; position: relative; z-index: 1; }
+    .a h2 { font-size: clamp(60px, 7.5cqw, 112px); line-height: .94; font-weight: 800; letter-spacing: -.07em; margin: 32px 0; }
+    .a .intro { max-width: 380px; font-size: 19px; line-height: 1.5; }
+    .a .invitation .action { margin-top: 32px; }
+    .a .fine { font-size: 12px; line-height: 1.6; margin-top: 16px; max-width: 360px; }
+    .a .gallery { position: relative; background: var(--ink); min-height: 650px; overflow: hidden; }
+    .a .gallery-main { position: absolute; top: 50px; right: 9%; width: 57%; }
+    .a .gallery-secondary { position: absolute; bottom: 48px; left: 6%; width: 34%; border: 8px solid var(--pop); }
+    .a .gallery-label { position: absolute; bottom: 16px; right: 24px; color: var(--pop); font-size: 12px; }
+    .a .gallery-aside { position: absolute; top: 24px; left: 24px; color: var(--pop); font-weight: 700; font-size: 18px; line-height: 1.3; max-width: 120px; }
+    .a .strip { background: var(--pop); display: grid; grid-template-columns: repeat(3, 1fr); padding: 24px 36px; gap: 24px; border-bottom: 1px solid var(--ink); font-size: 15px; }
+    .a .strip b { display: block; font-size: 12px; margin-bottom: 10px; }
+    .a .recipient-heading { padding: 40px 36px 32px; max-width: 900px; }
+    .a .recipient-heading h2 { font-size: clamp(44px, 5.5cqw, 78px); margin: 20px 0 0; }
+    .a .gift-pair { display: grid; grid-template-columns: 5fr 6fr; margin: 0 36px 36px; align-items: stretch; }
+    .a .gift-portrait { background: var(--ink); padding: 24px; }
+    .a .gift-portrait img { max-width: 350px; margin: auto; }
+    .a .gift-portrait figcaption { color: var(--pop); font-size: 12px; padding-top: 18px; text-align: center; }
+    .a .message { background: var(--pop); padding: clamp(28px, 4cqw, 64px); display: flex; flex-direction: column; justify-content: center; }
+    .a .message h3 { font-size: 15px; margin-bottom: 30px; }
+    .a .note-copy { font-size: clamp(22px, 2.6cqw, 34px); line-height: 1.4; letter-spacing: -.025em; }
+    .a .message.long .note-copy { font-size: 20px; line-height: 1.7; letter-spacing: 0; }
+    .a .signature { margin-top: 36px; font-size: 16px; }
+    .a .gift-actions { padding: 0 36px 36px; display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+    .a .screen-footer { background: var(--calm); border-top: 1px solid var(--ink); }
+    .b { --base: #213dcf; --ink: #fffaf5; --accent: #f5b5a5; --deep: #18254d; background: var(--base); color: var(--ink); }
+    .b.sympathy { --base: #275b60; --ink: #fffaf5; --accent: #d1e9df; --deep: #123c40; }
+    .b .nav { padding: 28px 48px; }
+    .b .brand { font-weight: 500; letter-spacing: -.06em; }
+    .b .home-main { display: grid; grid-template-columns: 7fr 5fr; }
+    .b .large-portrait { padding: 8px 64px 56px; position: relative; display: flex; flex-direction: column; align-items: center; }
+    .b .large-portrait img { width: min(390px, 85%); }
+    .b .portrait-caption { max-width: 390px; width: 85%; display: flex; justify-content: space-between; gap: 12px; margin-top: 16px; font-size: 12px; }
+    .b .invitation { padding: 64px 56px 64px 16px; display: flex; align-items: flex-start; flex-direction: column; justify-content: center; }
+    .b h2 { font-family: Georgia, serif; font-size: clamp(56px, 6.2cqw, 90px); line-height: 1.04; font-weight: 400; letter-spacing: -.06em; margin: 24px 0; }
+    .b h2 em { font-weight: 400; }
+    .b .intro { font-size: 17px; line-height: 1.65; max-width: 350px; }
+    .b .action { background: var(--accent); color: var(--deep); margin-top: 32px; border-radius: 40px; }
+    .b .fine { font-size: 12px; margin-top: 16px; line-height: 1.7; max-width: 330px; }
+    .b .index { display: flex; gap: 40px; flex-wrap: wrap; padding: 28px 48px; background: var(--deep); font-size: 14px; }
+    .b .index span { display: flex; gap: 12px; align-items: baseline; }
+    .b .index b { font: 12px/1.5 "Courier New", monospace; opacity: .85; }
+    .b .recipient-heading { text-align: center; padding: 32px 24px; max-width: 900px; margin: auto; }
+    .b .recipient-heading h2 { font-size: clamp(48px, 6cqw, 80px); margin: 20px 0 8px; }
+    .b .recipient-image { width: min(380px, 64%); margin: 0 auto; }
+    .b .recipient-image figcaption { text-align: center; margin-top: 16px; font-size: 12px; }
+    .b .reading-invite { display: block; color: var(--ink); background: transparent; border: 0; border-bottom: 1px solid var(--ink); margin: 28px auto 40px; padding: 12px 8px; font-size: 14px; }
+    .b .message { background: var(--accent); color: var(--deep); padding: 64px 32px; text-align: left; }
+    .b .message-inner { max-width: 650px; margin: auto; }
+    .b .message h3 { font-size: 13px; font-weight: 400; margin-bottom: 28px; }
+    .b .note-copy { font: 34px/1.5 Georgia, serif; letter-spacing: -.025em; }
+    .b .message.long .note-copy { font-size: 23px; line-height: 1.7; letter-spacing: 0; }
+    .b .signature { margin-top: 32px; font-size: 16px; }
+    .b .gift-actions { display: flex; align-items: center; gap: 20px; margin-top: 32px; flex-wrap: wrap; }
+    .b .gift-actions .action { background: var(--deep); color: var(--ink); margin: 0; }
+    .b .screen-footer { padding: 28px 48px; }
+    .a .mock-disabled, .b .mock-disabled { opacity: 1; }
+    .mock-explanation { font-size: 12px; line-height: 1.6; max-width: 420px; }
+    .error-state { padding: 28px 36px; background: #fff; color: #202128; border-top: 1px solid #bdbdc7; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+    .error-state h3 { font-size: 16px; margin-bottom: 8px; }
+    .error-state p { font-size: 14px; line-height: 1.6; max-width: 460px; }
+    .state-placeholder { width: 80px; height: 120px; background: #e9e9ee; margin: 16px 0; }
+    .state-annotation { margin-top: 12px; color: #555766; font-size: 12px !important; }
+    @container (max-width: 650px) {
+      .nav { padding: 20px; }
+      .nav small { font-size: 10px; }
+      .a .home-main { display: flex; flex-direction: column; }
+      .a .invitation { padding: 28px 24px 32px; }
+      .a h2 { font-size: 62px; margin: 24px 0; }
+      .a .intro { font-size: 17px; }
+      .a .gallery { min-height: 390px; order: -1; }
+      .a .gallery-main { top: 32px; right: 10%; width: 52%; }
+      .a .gallery-secondary { bottom: 36px; left: 7%; width: 33%; border-width: 5px; }
+      .a .gallery-aside { font-size: 15px; top: 18px; left: 20px; max-width: 90px; }
+      .a .strip { grid-template-columns: 1fr; padding: 24px; gap: 16px; }
+      .a .strip b { display: inline; margin-right: 14px; }
+      .a .recipient-heading { padding: 32px 24px; }
+      .a .recipient-heading h2 { font-size: 46px; }
+      .a .gift-pair { grid-template-columns: 1fr; margin: 0 20px 28px; }
+      .a .gift-portrait { padding: 20px; }
+      .a .gift-portrait img { max-width: 260px; }
+      .a .message { padding: 32px 24px; }
+      .a .note-copy { font-size: 27px; }
+      .a .message.long .note-copy { font-size: 18px; }
+      .a .gift-actions { padding: 0 20px 28px; }
+      .screen-footer { padding: 24px; }
+      .b .nav { padding: 24px; }
+      .b .home-main { display: flex; flex-direction: column; }
+      .b .large-portrait { padding: 12px 24px 0; }
+      .b .large-portrait img { width: 65%; }
+      .b .portrait-caption { width: 65%; font-size: 10px; }
+      .b .invitation { padding: 32px 28px 40px; }
+      .b h2 { font-size: 50px; margin: 20px 0; }
+      .b .intro { font-size: 16px; }
+      .b .index { padding: 24px; gap: 18px; flex-direction: column; }
+      .b .recipient-heading { padding: 20px 24px 28px; }
+      .b .recipient-heading h2 { font-size: 54px; }
+      .b .recipient-image { width: 68%; }
+      .b .message { padding: 40px 28px; }
+      .b .note-copy { font-size: 28px; }
+      .b .message.long .note-copy { font-size: 20px; }
+      .b .screen-footer { padding: 24px; }
+      .error-state { padding: 24px; grid-template-columns: 1fr; }
+    }
+    @media (max-width: 650px) {
+      .review { padding: 20px; }
+      .study { width: calc(100% - 24px); margin-top: 8px; }
+      .control { flex-direction: column; align-items: flex-start; }
+      .review-note { width: calc(100% - 40px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="review">
+    <div class="review-head">
+      <h1>Bloom / D02 composition studies</h1>
+      <a href="reference-study.md">Reference evidence</a>
+    </div>
+    <p>Two structural directions, not final screens. Your refinement: more color, contemporary, less rustic, less paper-like. No accounts, uploads, extra builder steps, or changes to the live product.</p>
+    <form class="controls" aria-label="Composition review controls" aria-describedby="control-help">
+      <label class="control">Concept
+        <select id="concept"><option value="a">A / Color, delivered</option><option value="b">B / A moment apart</option></select>
+      </label>
+      <label class="control">Screen
+        <select id="surface"><option value="home">Homepage</option><option value="recipient">Recipient</option></select>
+      </label>
+      <label class="control">Example
+        <select id="occasion"><option value="birthday">Birthday</option><option value="sympathy">Sympathy</option></select>
+      </label>
+      <label class="control">Message
+        <select id="length"><option value="short">Short note</option><option value="long">Long note</option></select>
+      </label>
+      <label class="control">Frame
+        <select id="frame"><option value="desktop">Responsive / full width</option><option value="mobile">390px mobile study</option></select>
+      </label>
+    </form>
+    <p id="control-help">Homepage uses a birthday/sympathy sample gift; message length applies to the recipient screen. Desktop concepts reflow on narrow windows; choose the mobile frame to compare on a wide screen.</p>
+    <noscript><p>JavaScript is needed only for these local review switches. Concept A's birthday homepage remains visible below. No data leaves this document.</p></noscript>
+  </header>
+
+  <main>
+    <div class="study" id="study">
+      <div class="summary" aria-live="polite" aria-atomic="true">
+        <strong id="concept-title">A / Color, delivered</strong>
+        <span id="concept-description">Graphic, energetic, object-led. A large typographic invitation faces an arranged bouquet gallery; flowers and message share one composition in the recipient view.</span>
+      </div>
+      <div class="screen a" id="screen">
+        <nav class="nav" aria-label="Study screen navigation">
+          <span class="brand">bloom</span>
+          <small id="nav-caption">A small gesture. A lot of feeling.</small>
+          <button class="sample-link" type="button" id="nav-switch">See recipient study</button>
+        </nav>
+
+        <div id="home">
+          <div class="home-main">
+            <div class="invitation" id="invitation">
+              <p class="caption">Flowers for the feeling.</p>
+              <h2 id="home-title">Not there?<br>Still care.</h2>
+              <p class="intro" id="home-intro">Send a little color across the distance. Choose their flowers, write your words, and give them a moment that's just theirs.</p>
+              <button type="button" class="action" id="home-action">Explore the recipient study <span aria-hidden="true">&#8599;</span></button>
+              <p class="fine">Production CTA: Create your bouquet.<br>This study previews the recipient, not a working builder.</p>
+              <button type="button" class="sample-link" id="example-action">See the sample gift</button>
+              <p class="fine">No account. Share a link anywhere.<br>Anyone with that link can open the gift.</p>
+            </div>
+            <div class="gallery" id="a-gallery">
+              <span class="gallery-aside" id="gallery-aside">For a brighter day.</span>
+              <figure class="gallery-main">
+                <img class="gift-image main-image" src="../../public/bouquets/sunflower-burst-hero.png" width="1024" height="1536" alt="Sunflower Burst bouquet in kraft wrapping">
+              </figure>
+              <figure class="gallery-secondary">
+                <img class="gift-image" src="../../public/bouquets/single-stem-poppy-hero.png" width="1024" height="1536" alt="A contrasting existing Single Stem Poppy bouquet">
+              </figure>
+              <span class="gallery-label">Real words. Digital flowers.</span>
+            </div>
+            <figure class="large-portrait" id="b-portrait" hidden>
+              <img class="gift-image main-image" src="../../public/bouquets/sunflower-burst-hero.png" width="1024" height="1536" alt="Sunflower Burst bouquet in kraft wrapping">
+              <figcaption class="portrait-caption"><span class="bouquet-name">Sunflower Burst</span><span>Made for someone.</span></figcaption>
+            </figure>
+          </div>
+          <div class="strip" id="a-steps">
+            <span><b>THE FLOWERS /</b> Chosen by you.</span>
+            <span><b>THE NOTE /</b> Only you could write it.</span>
+            <span><b>THE LINK /</b> Their moment, anywhere.</span>
+          </div>
+          <div class="index" id="b-steps" hidden>
+            <span><b>THE GESTURE</b> A bouquet, chosen by you.</span>
+            <span><b>THE WORDS</b> A note, only you could write.</span>
+            <span><b>THE DISTANCE</b> One link, anywhere.</span>
+          </div>
+        </div>
+
+        <div class="recipient" id="recipient" hidden>
+          <header class="recipient-heading">
+            <p class="caption">Jules made this for you</p>
+            <h2 id="recipient-title">Mira, this one's yours.</h2>
+            <p id="recipient-subtitle">A little sunshine for your birthday.</p>
+          </header>
+          <div class="gift-pair" id="a-gift">
+            <figure class="gift-portrait">
+              <img class="gift-image main-image" src="../../public/bouquets/sunflower-burst-hero.png" width="1024" height="1536" alt="Sunflower Burst bouquet in kraft wrapping">
+              <figcaption class="bouquet-name">Sunflower Burst</figcaption>
+            </figure>
+            <section class="message" aria-label="Personal note" id="a-message">
+              <h3>To Mira,</h3>
+              <div class="note-copy"></div>
+              <p class="signature">With love, Jules</p>
+            </section>
+          </div>
+          <div id="b-gift" hidden>
+            <figure class="recipient-image">
+              <img class="gift-image main-image" src="../../public/bouquets/sunflower-burst-hero.png" width="1024" height="1536" alt="Sunflower Burst bouquet in kraft wrapping">
+              <figcaption class="bouquet-name">Sunflower Burst</figcaption>
+            </figure>
+            <button type="button" class="reading-invite" id="read-note">Your note is just below &#8595;</button>
+            <section class="message" aria-label="Personal note" id="b-message">
+              <div class="message-inner">
+                <h3>A few words from Jules, for Mira.</h3>
+                <div class="note-copy"></div>
+                <p class="signature">With love, Jules</p>
+                <div class="gift-actions">
+                  <button type="button" class="action mock-disabled" disabled>Save as Image</button>
+                  <button type="button" class="sample-link return-home">Back to homepage study</button>
+                </div>
+                <p class="mock-explanation">Download is unavailable in this design study. In production, the secondary action remains Send a bouquet back.</p>
+              </div>
+            </section>
+          </div>
+          <div class="gift-actions" id="a-actions">
+            <button type="button" class="action mock-disabled" disabled>Save as Image</button>
+            <button type="button" class="plain return-home">Back to homepage study</button>
+            <p class="mock-explanation">Download is unavailable in this design study. In production, the secondary action remains Send a bouquet back.</p>
+          </div>
+        </div>
+
+        <footer class="screen-footer">
+          <span>Digital flowers. A real gesture.</span>
+          <span>Study only / <a href="../backlog.md">Project status</a></span>
+        </footer>
+      </div>
+      <section class="error-state" aria-label="Companion state studies">
+        <article>
+          <h3>Loading / quiet and specific</h3>
+          <div class="state-placeholder" role="img" aria-label="Reserved bouquet image space"></div>
+          <p>Opening your bouquet...</p>
+          <p class="state-annotation">Study annotation: reserve image space without fake progress or a looping celebration. This specimen is static, not an active loading request.</p>
+        </article>
+        <article>
+          <h3>This bouquet could not be opened.</h3>
+          <p>The link may be incomplete. Ask the sender to copy it again, or create a bouquet of your own.</p>
+          <button type="button" class="plain" disabled>Create a bouquet (study only)</button>
+          <p class="state-annotation">Invalid-link specimen. In production this action opens the builder. Do not say a link expired: existing gifts do not expire.</p>
+        </article>
+      </section>
+    </div>
+
+    <aside class="review-note" aria-label="Study boundaries">
+      <p><strong>What you are reviewing:</strong> composition, image/text relationship, color intensity, hierarchy, and mobile order. Concept A pairs gift and note; concept B gives the bouquet a dedicated view before a full-width reading area. Both keep an honest rectangular image boundary.</p>
+      <p><strong>Not implemented here:</strong> builder, opening animation, export, clipboard, soundtrack, appearance toggle, arbitrary rich-text customization, or old-link decoding. These existing capabilities must be preserved during D04-D06; this static study does not replace or certify them. The three homepage phrases describe the gesture, not a proposed change from five builder steps.</p>
+      <p><strong>Asset and font status:</strong> existing Bloom images are used only for this local review; their provenance is still unverified. Arial and Georgia are system fallbacks, not approved brand typography. No third-party images, remote fonts, analytics, or storage are used.</p>
+      <p><a href="reference-board.html">D01 board</a> / <a href="composition-review.md">Comparison and approval criteria</a> / <a href="../redesign-plan.md">Redesign plan</a></p>
+    </aside>
+  </main>
+  <script>
+    const controls = Object.fromEntries(['concept', 'surface', 'occasion', 'length', 'frame'].map(id => [id, document.getElementById(id)]))
+    const samples = {
+      birthday: {
+        image: 'sunflower-burst', name: 'Sunflower Burst',
+        intro: "Send a little color across the distance. Choose their flowers, write your words, and give them a moment that's just theirs.",
+        subtitle: 'A little sunshine for your birthday.',
+        short: "Happy birthday, Mira.\n\nHere's to the ordinary afternoons that turn into our favourite stories. Wish I could be there for the cake. These will have to do until I can bring the real thing.",
+        long: "Happy birthday, Mira.\n\nI was going to write something very wise about getting older, but you know me too well for that. Instead, I keep thinking about the afternoon we missed our train because we were still talking outside the cafe. Nothing special was supposed to happen that day. Somehow, it became one of my favourite memories.\n\nYou have a way of making ordinary things feel worth noticing: a song from an open window, a particularly dramatic dog, the first warm evening of the year. I hope today gives some of that attention back to you.\n\nI wish I could be there to make an unreasonable fuss, bring the wrong number of candles, and stay too late. Until then, here is a small, bright thing from across the distance.\n\nNo grand advice. Just this: I am very glad you are here, and very lucky that our ordinary afternoons overlap. Save me a slice. I will bring the coffee when I see you."
+      },
+      sympathy: {
+        image: 'eucalyptus-and-white', name: 'Eucalyptus and White',
+        intro: "When the right words are hard to find, a small gesture can still say: I'm here. Choose their flowers, add your note, and share it quietly.",
+        subtitle: 'No need to reply. Just a little care.',
+        short: "Thinking of you, Mira.\n\nThere isn't a perfect thing to say. I just wanted you to know I'm here, and you don't have to find the words either. No need to reply.",
+        long: "Mira,\n\nI have started this message a few times, trying to find something that would make today a little easier. I do not think there is a sentence that can do that. So I will keep it simple: I am thinking of you, and I care about you.\n\nYou do not need to answer this or explain how you are feeling. There is no right way to get through a day like this, and no deadline for being ready to talk. If quiet company would help, I can offer that too.\n\nI remember the kindness you showed me when I was having a difficult time. You did not try to make everything better with one conversation. You just kept showing up in small, ordinary ways. I have not forgotten that.\n\nI would like to do the same for you. I can bring dinner on Thursday, take a walk, or simply sit with you for a while. If none of that feels right, that is all right too.\n\nThese flowers are just a small way of saying that you are not forgotten."
+      }
+    }
+    function update() {
+      const a = controls.concept.value === 'a'
+      const recipient = controls.surface.value === 'recipient'
+      const sympathy = controls.occasion.value === 'sympathy'
+      const sample = samples[controls.occasion.value]
+      document.getElementById('screen').className = `screen ${a ? 'a' : 'b'}${sympathy ? ' sympathy' : ''}`
+      document.getElementById('study').classList.toggle('mobile', controls.frame.value === 'mobile')
+      document.getElementById('concept-title').textContent = a ? 'A / Color, delivered' : 'B / A moment apart'
+      document.getElementById('concept-description').textContent = a
+        ? 'Graphic, energetic, object-led. A large typographic invitation faces an arranged bouquet gallery; flowers and message share one composition in the recipient view.'
+        : 'Immersive, spacious, image-first. One large portrait leads the homepage; the recipient moves from a dedicated bouquet view into a separate, uninterrupted reading field.'
+      document.getElementById('home').hidden = recipient
+      document.getElementById('recipient').hidden = !recipient
+      document.getElementById('a-gallery').hidden = !a
+      document.getElementById('b-portrait').hidden = a
+      document.getElementById('a-steps').hidden = !a
+      document.getElementById('b-steps').hidden = a
+      document.getElementById('a-gift').hidden = !a
+      document.getElementById('b-gift').hidden = a
+      document.getElementById('a-actions').hidden = !a
+      const homeMain = document.querySelector('.home-main')
+      if (a) homeMain.prepend(document.getElementById('invitation'))
+      else homeMain.prepend(document.getElementById('b-portrait'))
+      document.getElementById('home-title').innerHTML = a ? 'Not there?<br>Still care.' : 'A little closer.<br><em>Even from here.</em>'
+      document.getElementById('home-intro').textContent = sample.intro
+      document.getElementById('recipient-title').textContent = a ? "Mira, this one's yours." : 'For you, Mira.'
+      document.getElementById('recipient-subtitle').textContent = sample.subtitle
+      document.getElementById('gallery-aside').textContent = sympathy ? 'A little care, quietly.' : 'For a brighter day.'
+      document.getElementById('nav-caption').textContent = recipient ? 'A moment, from Jules to Mira.' : 'A small gesture. A lot of feeling.'
+      document.getElementById('nav-switch').textContent = recipient ? 'See homepage study' : 'See recipient study'
+      for (const image of document.querySelectorAll('.main-image')) {
+        image.src = `../../public/bouquets/${sample.image}-hero.png`
+        image.alt = `${sample.name}, an existing Bloom bouquet portrait`
+      }
+      for (const name of document.querySelectorAll('.bouquet-name')) name.textContent = sample.name
+      for (const copy of document.querySelectorAll('.note-copy')) copy.textContent = sample[controls.length.value]
+      for (const message of document.querySelectorAll('.message')) message.classList.toggle('long', controls.length.value === 'long')
+      controls.length.disabled = !recipient
+    }
+    function showSurface(surface) {
+      controls.surface.value = surface
+      update()
+      document.getElementById('screen').scrollIntoView({ block: 'start' })
+      document.getElementById('nav-switch').focus({ preventScroll: true })
+    }
+    for (const control of Object.values(controls)) control.addEventListener('change', update)
+    for (const id of ['home-action', 'example-action']) document.getElementById(id).addEventListener('click', () => showSurface('recipient'))
+    document.getElementById('nav-switch').addEventListener('click', () => showSurface(controls.surface.value === 'home' ? 'recipient' : 'home'))
+    for (const button of document.querySelectorAll('.return-home')) button.addEventListener('click', () => showSurface('home'))
+    document.getElementById('read-note').addEventListener('click', () => {
+      const message = document.getElementById('b-message')
+      message.setAttribute('tabindex', '-1')
+      message.focus({ preventScroll: true })
+      message.scrollIntoView({ block: 'start' })
+    })
+    document.querySelector('form').addEventListener('submit', event => event.preventDefault())
+    update()
+  </script>
+</body>
+</html>

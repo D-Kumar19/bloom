@@ -4,13 +4,16 @@ import { useRef, useState } from 'react'
 
 import { CardStyleQuickPicker } from '@/components/builder/CardStyleQuickPicker'
 import { NoteBorderPicker } from '@/components/builder/NoteBorderPicker'
-import {
-  RichMessageEditor,
-  focusMessageEditorEnd,
-} from '@/components/builder/RichMessageEditor'
+import { RichMessageEditor, focusMessageEditorEnd } from '@/components/builder/RichMessageEditor'
 import { MessageCard } from '@/components/cards/MessageCard'
 import { Modal } from '@/components/ui/Modal'
-import { INSPIRATION_PROMPTS, countMessageWords, formatWordsLeft, hasMessageContent, plainTextToMessageHtml } from '@/lib/message'
+import {
+  INSPIRATION_PROMPTS,
+  countMessageWords,
+  formatWordsLeft,
+  hasMessageContent,
+  plainTextToMessageHtml,
+} from '@/lib/message'
 import type { MessageFormat, NoteBorder } from '@/lib/types'
 
 type MessageFormProps = {
@@ -32,8 +35,7 @@ type MessageFormProps = {
 const inputClassName =
   'w-full rounded-2xl border border-bloom-rose/20 bg-surface px-4 py-2.5 text-sm text-bloom-ink outline-none transition focus:border-brand-pink focus:ring-2 focus:ring-brand-pink/15'
 
-const inputErrorClassName =
-  'border-brand-pink/60 focus:border-brand-pink focus:ring-brand-pink/25'
+const inputErrorClassName = 'border-brand-pink/60 focus:border-brand-pink focus:ring-brand-pink/25'
 
 export function MessageForm({
   to,
@@ -89,7 +91,10 @@ export function MessageForm({
         <div className="space-y-5 rounded-3xl border border-bloom-rose/15 bg-surface-muted p-5 shadow-sm ring-1 ring-bloom-rose/10 md:p-7">
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label htmlFor="recipient" className="mb-1.5 block text-sm font-medium text-bloom-ink">
+              <label
+                htmlFor="recipient"
+                className="mb-1.5 block text-sm font-medium text-bloom-ink"
+              >
                 To
               </label>
               <input
@@ -117,7 +122,9 @@ export function MessageForm({
                 className={`${inputClassName} ${fromMissing ? inputErrorClassName : ''}`}
               />
               {fromMissing ? (
-                <p className="mt-1 text-xs text-brand-pink">Add your name so they know who sent this</p>
+                <p className="mt-1 text-xs text-brand-pink">
+                  Add your name so they know who sent this
+                </p>
               ) : null}
             </div>
           </div>
@@ -141,8 +148,14 @@ export function MessageForm({
               maxWords={maxWords}
               onMessageChange={onMessageChange}
               onMessageFormatChange={onMessageFormatChange}
-              invalid={messageMissing}
+              invalid={messageMissing || wordsLeft < 0}
             />
+            {wordsLeft < 0 ? (
+              <p role="alert" className="mt-1 text-xs text-brand-pink">
+                Your full message is kept. Remove {-wordsLeft} {wordsLeft === -1 ? 'word' : 'words'}{' '}
+                to continue.
+              </p>
+            ) : null}
             {messageMissing ? (
               <p className="mt-1 text-xs text-brand-pink">Write your message before continuing</p>
             ) : null}

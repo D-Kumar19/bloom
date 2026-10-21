@@ -38,7 +38,7 @@ export const SoundtrackPlayer = forwardRef<SoundtrackPlayerHandle, SoundtrackPla
   const userMutedRef = useRef(false)
   const id = soundtrackId && isSoundtrackId(soundtrackId) ? soundtrackId : 'none'
   const hasSoundtrack = id !== 'none'
-  const { play, stop, isPlaying } = useAmbientSoundtrack({ volume: 0.35 })
+  const { play, stop, isPlaying, error } = useAmbientSoundtrack({ volume: 0.35 })
   const label = getSoundtrackLabel(id)
 
   const startPlayback = useCallback(() => {
@@ -55,6 +55,12 @@ export const SoundtrackPlayer = forwardRef<SoundtrackPlayerHandle, SoundtrackPla
   }, [hasSoundtrack, id, isPlaying, muted, play])
 
   useImperativeHandle(ref, () => ({ startPlayback }), [startPlayback])
+
+  useEffect(() => {
+    stop()
+    userMutedRef.current = false
+    setMuted(!autoPlay)
+  }, [id, autoPlay, stop])
 
   useEffect(() => {
     if (!autoPlay || !hasSoundtrack || userMutedRef.current) {
@@ -117,6 +123,7 @@ export const SoundtrackPlayer = forwardRef<SoundtrackPlayerHandle, SoundtrackPla
               </>
             )}
           </p>
+          {error ? <p role="status" className="mt-1 text-xs text-bloom-ink">{error}</p> : null}
         </div>
         {toggleButton}
       </div>
@@ -129,6 +136,11 @@ export const SoundtrackPlayer = forwardRef<SoundtrackPlayerHandle, SoundtrackPla
       className={className || 'fixed bottom-6 right-6 z-30'}
     >
       {toggleButton}
+      {error ? (
+        <p role="status" className="mt-2 max-w-56 rounded-xl bg-surface p-3 text-xs text-bloom-ink">
+          {error}
+        </p>
+      ) : null}
     </div>
   )
   },

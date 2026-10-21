@@ -11,7 +11,7 @@ export function encodeBouquet(state: BouquetState): string {
   return LZString.compressToEncodedURIComponent(json)
 }
 
-export function isValidBouquetState(value: unknown): value is BouquetState {
+export function isValidBouquetDraft(value: unknown): value is BouquetState {
   if (!value || typeof value !== 'object') {
     return false
   }
@@ -40,10 +40,13 @@ export function isValidBouquetState(value: unknown): value is BouquetState {
     typeof state.message === 'string' &&
     typeof state.to === 'string' &&
     typeof state.from === 'string' &&
-    state.from.trim().length > 0 &&
     typeof state.theme === 'string' &&
     (state.soundtrack === undefined || typeof state.soundtrack === 'string')
   )
+}
+
+export function isValidBouquetState(value: unknown): value is BouquetState {
+  return isValidBouquetDraft(value) && value.from.trim().length > 0
 }
 
 export function decodeBouquet(encoded: string): BouquetState | null {

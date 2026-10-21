@@ -106,7 +106,7 @@ export const metadata: Metadata = {
     title: SITE_TITLE,
     description:
       'Bloom turns a feeling into a link. Pick a bouquet, write a note, share a private link.',
-    images: ['/og-image.png'],
+    images: [{ url: '/bouquet/og', width: 1200, height: 630 }],
     type: 'website',
   },
 }

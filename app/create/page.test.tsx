@@ -33,6 +33,7 @@ function buildState(step: 'bouquet' | 'card' | 'message' | 'theme') {
       soundtrack: 'none',
     },
     step,
+    ready: true,
     setBouquet: vi.fn(),
     setCardStyle: vi.fn(),
     setMessageFormat: vi.fn(),
@@ -61,7 +62,7 @@ function renderCreatePage(withChrome = true) {
   return render(
     <AppearanceProvider>
       {withChrome ? <SiteChrome>{page}</SiteChrome> : page}
-    </AppearanceProvider>,
+    </AppearanceProvider>
   )
 }
 
@@ -78,7 +79,21 @@ describe('CreatePage transitions', () => {
 
     expect(screen.getByTestId('header-slot')).toBeInTheDocument()
     expect(screen.getByTestId('progress-shell')).toBeInTheDocument()
-    expect(screen.queryByTestId('progress-shell-fallback')).not.toBeInTheDocument()
+    expect(
+      screen.queryByTestId('progress-shell-fallback')
+    ).not.toBeInTheDocument()
+  })
+
+  it('shows a persistent warning when draft storage is unavailable', () => {
+    mockUseBouquetState.mockReturnValue({
+      ...buildState('bouquet'),
+      storageError: 'Draft recovery is unavailable in this browser.',
+    })
+    renderCreatePage()
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      'Draft recovery is unavailable'
+    )
+    expect(screen.getByTestId('next-button')).toBeEnabled()
   })
 
   it('falls back to a sticky progress shell without site chrome', () => {

@@ -30,4 +30,16 @@ describe('countMessageWords', () => {
   it('counts words in stored message html', () => {
     expect(countMessageWords('<b>Hello</b> there friend')).toBe(3)
   })
+
+  it.each([199, 200, 201])(
+    'counts %s newline-separated words without merging them',
+    (count) => {
+      expect(countMessageWords(Array(count).fill('word').join('<br>'))).toBe(
+        count
+      )
+      expect(countMessageWords(Array(count).fill('word').join('\n'))).toBe(
+        count
+      )
+    }
+  )
 })

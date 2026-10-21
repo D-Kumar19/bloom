@@ -4,6 +4,8 @@ import {
   BUILDER_DRAFT_STORAGE_KEY,
   BUILDER_DRAFT_TTL_MS,
   BUILDER_OPEN_SHARE_KEY,
+  BUILDER_DRAFT_KEY,
+  BUILDER_STEP_KEY,
   clearBuilderDraft,
   restoreShareDraftIfPresent,
   saveBuilderDraft,
@@ -80,5 +82,63 @@ describe('draftSession', () => {
 
     expect(restoreShareDraftIfPresent(setState, setStep)).toBe(true)
     expect(sessionStorage.getItem(BUILDER_OPEN_SHARE_KEY)).toBeNull()
+  })
+
+  it.each(['bouquet', 'card', 'message'] as const)(
+    'restores incomplete edits and the %s step',
+    (step) => {
+      saveBuilderDraft(
+        { ...sampleState, to: '', from: '', message: 'Still writing<br>this' },
+        step
+      )
+      const setState = vi.fn()
+      const setStep = vi.fn()
+      expect(restoreShareDraftIfPresent(setState, setStep)).toBe(true)
+      expect(setStep).toHaveBeenCalledWith(step)
+      expect(setState.mock.calls[0][0](sampleState)).toMatchObject({
+        from: '',
+        to: '',
+        message: 'Still writing<br>this',
+      })
+    }
+  )
+
+  it('migrates partial legacy drafts without losing the actual step', () => {
+    sessionStorage.setItem(
+      BUILDER_DRAFT_KEY,
+      JSON.stringify({ ...sampleState, from: '' })
+    )
+    sessionStorage.setItem(BUILDER_STEP_KEY, 'message')
+    const setStep = vi.fn()
+    expect(restoreShareDraftIfPresent(vi.fn(), setStep)).toBe(true)
+    expect(setStep).toHaveBeenCalledWith('message')
+    expect(localStorage.getItem(BUILDER_DRAFT_STORAGE_KEY)).not.toBeNull()
+    expect(sessionStorage.getItem(BUILDER_DRAFT_KEY)).toBeNull()
+  })
+
+  it('does not let an unfinished or over-limit restored gift skip validation', () => {
+    saveBuilderDraft(
+      { ...sampleState, message: Array(201).fill('word').join('<br>') },
+      'share'
+    )
+    const setStep = vi.fn()
+    restoreShareDraftIfPresent(vi.fn(), setStep)
+    expect(setStep).toHaveBeenCalledWith('message')
+  })
+
+  it('discards an unknown step rather than restoring it', () => {
+    const logger = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    localStorage.setItem(
+      BUILDER_DRAFT_STORAGE_KEY,
+      JSON.stringify({
+        v: 1,
+        state: sampleState,
+        savedAt: Date.now(),
+        step: 'broken',
+      })
+    )
+    expect(restoreShareDraftIfPresent(vi.fn(), vi.fn())).toBe(false)
+    expect(logger).toHaveBeenCalled()
+    logger.mockRestore()
   })
 })

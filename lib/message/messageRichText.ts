@@ -33,10 +33,7 @@ export function usesThemeInkColor(color: string): boolean {
 }
 
 /** Picks readable note text on light vs midnight card surfaces. */
-export function resolveNoteTextColor(
-  onDark: boolean,
-  messageFormat?: MessageFormat,
-): string {
+export function resolveNoteTextColor(onDark: boolean, messageFormat?: MessageFormat): string {
   const color = messageFormat?.color ?? DEFAULT_MESSAGE_FORMAT.color
   if (onDark && usesThemeInkColor(color)) {
     return '#ffffff'
@@ -45,17 +42,39 @@ export function resolveNoteTextColor(
 }
 
 export function stripMessageHtml(html: string): string {
-  if (!html.includes('<') && !html.includes('&')) {
-    return html
+  // Keep extraction identical during server rendering and browser editing.
+  const entities: Record<string, string> = {
+    amp: '&',
+    lt: '<',
+    gt: '>',
+    quot: '"',
+    apos: "'",
+    nbsp: '\u00a0',
+    Tab: '\t',
+    NewLine: '\n',
+    ensp: '\u2002',
+    emsp: '\u2003',
+    thinsp: '\u2009',
+    ndash: '\u2013',
+    mdash: '\u2014',
+    hellip: '\u2026',
   }
-
-  if (typeof document !== 'undefined') {
-    const container = document.createElement('div')
-    container.innerHTML = html
-    return stripEditorArtifacts(container.textContent ?? '')
-  }
-
-  return stripEditorArtifacts(html.replace(/<[^>]+>/g, '').replace(/&nbsp;/gi, ' '))
+  return stripEditorArtifacts(
+    html
+      .replace(/<br\b[^>]*>/gi, '\n')
+      .replace(/<\/?(?:div|p|li|h[1-6]|blockquote|ul|ol)\b[^>]*>/gi, '\n')
+      .replace(/<[^>]+>/g, '')
+      .replace(/&(#x[\da-f]+|#\d+|[a-z]+);/gi, (entity, name: string) => {
+        if (name.startsWith('#')) {
+          const code =
+            name[1].toLowerCase() === 'x' ? parseInt(name.slice(2), 16) : Number(name.slice(1))
+          return code > 0 && code <= 0x10ffff && !(code >= 0xd800 && code <= 0xdfff)
+            ? String.fromCodePoint(code)
+            : '\ufffd'
+        }
+        return entities[name] ?? entity
+      }),
+  )
 }
 
 export function plainTextToMessageHtml(text: string): string {
@@ -85,6 +104,9 @@ function unwrapBlockElements(container: HTMLElement): void {
       continue
     }
 
+    if (block.previousSibling && !(block.previousSibling instanceof HTMLBRElement)) {
+      parent.insertBefore(document.createElement('br'), block)
+    }
     const fragment = document.createDocumentFragment()
     while (block.firstChild) {
       fragment.appendChild(block.firstChild)
@@ -166,8 +188,7 @@ export function getMessageFormatStyles(format: MessageFormat): {
   color: string
 } {
   const size =
-    MESSAGE_SIZE_OPTIONS.find((option) => option.id === format.fontSize) ??
-    MESSAGE_SIZE_OPTIONS[1]
+    MESSAGE_SIZE_OPTIONS.find((option) => option.id === format.fontSize) ?? MESSAGE_SIZE_OPTIONS[1]
 
   return {
     fontFamily: getMessageFontFamily(format.fontFamily),
@@ -177,7 +198,5 @@ export function getMessageFormatStyles(format: MessageFormat): {
 }
 
 export function isRichMessage(message: string): boolean {
-  return (
-    /<(?:br|span|b|strong|i|em)\b/i.test(message) || /&(?:nbsp|amp|lt|gt);/i.test(message)
-  )
+  return /<(?:br|span|b|strong|i|em)\b/i.test(message) || /&(?:nbsp|amp|lt|gt);/i.test(message)
 }
