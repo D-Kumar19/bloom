@@ -1,7 +1,30 @@
 # Bloom: a florist's worktable
 
-Status: reference vocabulary approved with refinement; composition selection pending.
+Status: D01/D02 complete; A ("Color, delivered") selected. Partial application
+integration exists on local `redesign/color-delivered` at `cb3f62c`.
+No redesign deployment or complete redesign acceptance yet.
 Owner decisions recorded 2026-10-19 and 2026-10-20.
+
+## Progress reconciliation - 2026-10-22
+
+The discovery sections below describe the original sequence; their
+selection-pending language is historical. The owner selected A and requested
+real application integration rather than further standalone HTML review.
+The WIP branch touches home, builder, share, recipient, export, and shared
+chrome. D03/D04/D05 have partial implementation, not completed approval;
+D06 remains outstanding.
+
+Before a review deployment, integrate current main without losing the shipped
+v0.0.4 reliability work, counter protections, local fonts, and Contact/Explore
+pages. Validate the example link stays on the preview origin, staged opening
+and immediate-open controls, contrast, reduced motion, draft/copy behavior,
+and actual exported layout. Run targeted tests, then the full suite,
+type-check, lint, build, and desktop/mobile browser checks. The older focused
+9-test pass does not establish release readiness.
+
+Deploy a branch preview for review after that integration and validation;
+production waits for full-flow owner approval and D06 acceptance. New later
+features are not prerequisites for shipping the redesign.
 
 ## D01 review material - 2026-10-20
 
