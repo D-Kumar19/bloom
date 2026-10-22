@@ -1,14 +1,13 @@
-import { isValidBouquetState } from '@/lib/sharing/encode'
+import { BUILDER_STEPS } from '@/lib/builder/steps'
+import { canProceedMessageStep } from '@/lib/message'
+import { isValidBouquetDraft } from '@/lib/sharing/encode'
 import type { BouquetState, BuilderStep } from '@/lib/types'
 
 /** @deprecated Legacy sessionStorage keys; migrated on read. */
 export const BUILDER_DRAFT_KEY = 'bloom-bouquet'
 export const BUILDER_STEP_KEY = 'bloom-builder-step'
 export const BUILDER_OPEN_SHARE_KEY = 'bloom-open-share'
-
 export const BUILDER_DRAFT_STORAGE_KEY = 'bloom-builder-draft'
-
-/** Drafts older than this are cleared on restore. */
 export const BUILDER_DRAFT_TTL_MS = 24 * 60 * 60 * 1000
 
 type StoredDraft = {
@@ -18,153 +17,149 @@ type StoredDraft = {
   step: BuilderStep
 }
 
-function canUseStorage(storage: Storage | undefined): storage is Storage {
-  return typeof storage !== 'undefined'
+function isBuilderStep(value: unknown): value is BuilderStep {
+  return BUILDER_STEPS.some((step) => step === value)
 }
 
 function readEnvelope(raw: string | null): StoredDraft | null {
-  if (!raw) {
-    return null
-  }
-
+  if (!raw) return null
   try {
     const parsed: unknown = JSON.parse(raw)
     if (
-      !parsed ||
-      typeof parsed !== 'object' ||
-      (parsed as StoredDraft).v !== 1 ||
-      typeof (parsed as StoredDraft).savedAt !== 'number' ||
-      !isValidBouquetState((parsed as StoredDraft).state) ||
-      typeof (parsed as StoredDraft).step !== 'string'
+      parsed &&
+      typeof parsed === 'object' &&
+      'v' in parsed &&
+      parsed.v === 1 &&
+      'savedAt' in parsed &&
+      typeof parsed.savedAt === 'number' &&
+      Number.isFinite(parsed.savedAt) &&
+      parsed.savedAt <= Date.now() &&
+      'state' in parsed &&
+      isValidBouquetDraft(parsed.state) &&
+      'step' in parsed &&
+      isBuilderStep(parsed.step)
     ) {
-      return null
+      return {
+        v: 1,
+        savedAt: parsed.savedAt,
+        state: parsed.state,
+        step: parsed.step,
+      }
     }
-
-    return parsed as StoredDraft
   } catch {
-    return null
+    // Invalid JSON is handled like an invalid envelope below.
   }
-}
-
-function isExpired(savedAt: number, now = Date.now()): boolean {
-  return now - savedAt > BUILDER_DRAFT_TTL_MS
+  console.warn('Invalid Bloom draft was discarded.')
+  localStorage.removeItem(BUILDER_DRAFT_STORAGE_KEY)
+  return null
 }
 
 function readLegacySessionDraft(): StoredDraft | null {
-  if (!canUseStorage(typeof sessionStorage !== 'undefined' ? sessionStorage : undefined)) {
-    return null
-  }
-
-  const shouldRestore =
-    sessionStorage.getItem(BUILDER_OPEN_SHARE_KEY) === '1' ||
-    sessionStorage.getItem(BUILDER_STEP_KEY) === 'share'
-
-  if (!shouldRestore) {
-    return null
-  }
-
-  const saved = sessionStorage.getItem(BUILDER_DRAFT_KEY)
-  if (!saved) {
-    return null
-  }
-
+  const saved = readSessionValue(BUILDER_DRAFT_KEY)
+  if (!saved) return null
   try {
     const parsed: unknown = JSON.parse(saved)
-    if (!isValidBouquetState(parsed)) {
-      return null
-    }
-
-    return {
-      v: 1,
-      savedAt: Date.now(),
-      state: parsed,
-      step: 'share',
+    const step = readSessionValue(BUILDER_STEP_KEY)
+    if (isValidBouquetDraft(parsed)) {
+      return {
+        v: 1,
+        savedAt: Date.now(),
+        state: parsed,
+        step: isBuilderStep(step) ? step : 'bouquet',
+      }
     }
   } catch {
-    return null
+    // Invalid legacy JSON is discarded, not restored as an empty gift.
   }
+  console.warn('Invalid legacy Bloom draft was discarded.')
+  clearLegacySessionDraft()
+  return null
 }
 
 function clearLegacySessionDraft(): void {
-  if (!canUseStorage(typeof sessionStorage !== 'undefined' ? sessionStorage : undefined)) {
-    return
+  try {
+    sessionStorage.removeItem(BUILDER_DRAFT_KEY)
+    sessionStorage.removeItem(BUILDER_STEP_KEY)
+    sessionStorage.removeItem(BUILDER_OPEN_SHARE_KEY)
+  } catch {
+    console.warn(
+      'Bloom could not clear legacy session storage. The local draft is unchanged.'
+    )
   }
-
-  sessionStorage.removeItem(BUILDER_DRAFT_KEY)
-  sessionStorage.removeItem(BUILDER_STEP_KEY)
-  sessionStorage.removeItem(BUILDER_OPEN_SHARE_KEY)
 }
 
-export function saveBuilderDraft(state: BouquetState, step: BuilderStep = 'share'): void {
-  if (!canUseStorage(typeof localStorage !== 'undefined' ? localStorage : undefined)) {
-    return
+function readSessionValue(key: string): string | null {
+  try {
+    return sessionStorage.getItem(key)
+  } catch {
+    console.warn(
+      'Bloom session storage is unavailable; using the local draft without a preview return marker.'
+    )
+    return null
   }
+}
 
-  const envelope: StoredDraft = {
-    v: 1,
-    savedAt: Date.now(),
-    state,
-    step,
-  }
-
+// Storage access errors intentionally reach the builder's visible recovery warning.
+export function saveBuilderDraft(
+  state: BouquetState,
+  step: BuilderStep = 'share'
+): void {
+  const envelope: StoredDraft = { v: 1, savedAt: Date.now(), state, step }
   localStorage.setItem(BUILDER_DRAFT_STORAGE_KEY, JSON.stringify(envelope))
   clearLegacySessionDraft()
 }
 
 export function clearBuilderDraft(): void {
-  if (canUseStorage(typeof localStorage !== 'undefined' ? localStorage : undefined)) {
-    localStorage.removeItem(BUILDER_DRAFT_STORAGE_KEY)
-  }
-
+  localStorage.removeItem(BUILDER_DRAFT_STORAGE_KEY)
   clearLegacySessionDraft()
 }
 
 export function markReturnToShareStep(): void {
-  if (!canUseStorage(typeof sessionStorage !== 'undefined' ? sessionStorage : undefined)) {
-    return
+  try {
+    sessionStorage.setItem(BUILDER_OPEN_SHARE_KEY, '1')
+  } catch {
+    console.warn(
+      'Bloom could not save the preview return marker. The saved draft is unchanged.'
+    )
   }
-
-  sessionStorage.setItem(BUILDER_OPEN_SHARE_KEY, '1')
 }
 
-function readStoredDraft(): StoredDraft | null {
-  if (canUseStorage(typeof localStorage !== 'undefined' ? localStorage : undefined)) {
-    const envelope = readEnvelope(localStorage.getItem(BUILDER_DRAFT_STORAGE_KEY))
-    if (envelope) {
-      return envelope
-    }
-  }
-
-  return readLegacySessionDraft()
-}
-
-export function restoreShareDraftIfPresent(
-  setState: (value: BouquetState | ((current: BouquetState) => BouquetState)) => void,
-  setStep: (step: BuilderStep) => void,
+export function restoreBuilderDraft(
+  setState: (
+    value: BouquetState | ((current: BouquetState) => BouquetState)
+  ) => void,
+  setStep: (step: BuilderStep) => void
 ): boolean {
-  const openSharePending =
-    canUseStorage(typeof sessionStorage !== 'undefined' ? sessionStorage : undefined) &&
-    sessionStorage.getItem(BUILDER_OPEN_SHARE_KEY) === '1'
-
-  const draft = readStoredDraft()
-  if (!draft) {
-    if (openSharePending) {
-      clearBuilderDraft()
-    }
-    return false
-  }
-
-  if (isExpired(draft.savedAt)) {
+  const raw = localStorage.getItem(BUILDER_DRAFT_STORAGE_KEY)
+  const stored = readEnvelope(raw)
+  const draft = stored ?? readLegacySessionDraft()
+  if (!draft) return false
+  if (Date.now() - draft.savedAt > BUILDER_DRAFT_TTL_MS) {
     clearBuilderDraft()
     return false
   }
 
-  if (draft.step !== 'share' && !openSharePending) {
-    return false
+  const openSharePending = readSessionValue(BUILDER_OPEN_SHARE_KEY) === '1'
+  let step = openSharePending ? 'share' : draft.step
+  if (
+    (step === 'theme' || step === 'share') &&
+    !canProceedMessageStep(
+      draft.state.to,
+      draft.state.from,
+      draft.state.message
+    )
+  ) {
+    step = 'message'
   }
-
-  clearLegacySessionDraft()
+  if (!stored) {
+    saveBuilderDraft(draft.state, step)
+  } else {
+    clearLegacySessionDraft()
+  }
   setState((current) => ({ ...current, ...draft.state }))
-  setStep('share')
+  setStep(step)
   return true
 }
+
+/** @deprecated Restores every builder step, not just share. */
+export const restoreShareDraftIfPresent = restoreBuilderDraft

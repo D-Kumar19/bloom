@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { BackdropLayer } from '@/components/backdrop/BackdropLayer'
 import { BouquetHero } from '@/components/bouquet/BouquetHero'
@@ -9,10 +9,14 @@ import { SoundtrackPlayer } from '@/components/bouquet/SoundtrackPlayer'
 import { MessageCard } from '@/components/cards/MessageCard'
 import { Button } from '@/components/ui/Button'
 import { useToast } from '@/components/ui/Toast'
-import { saveBuilderDraft } from '@/lib/builder/draftSession'
 import { recordBouquetSentOnce } from '@/lib/counter/recordBouquetSent'
 import { shouldShowNoteCard } from '@/lib/message'
-import { buildRecipientPreviewPath, buildShareMessage, buildShareUrl, formatShareMessagePreview } from '@/lib/sharing'
+import {
+  buildRecipientPreviewPath,
+  buildShareMessage,
+  buildShareUrl,
+  formatShareMessagePreview,
+} from '@/lib/sharing'
 import { getThemeById } from '@/lib/themes'
 import type { BouquetState } from '@/lib/types'
 
@@ -47,10 +51,6 @@ export function BouquetShareStep({ state, onCreateAnother }: BouquetShareStepPro
         scrim: 'bg-white/88 ring-1 ring-[#2a2420]/8 shadow-sm',
       }
 
-  useEffect(() => {
-    saveBuilderDraft(state, 'share')
-  }, [state])
-
   const handleCopyMessage = async () => {
     if (copyingMessage) {
       return
@@ -59,7 +59,7 @@ export function BouquetShareStep({ state, onCreateAnother }: BouquetShareStepPro
     setCopyingMessage(true)
     try {
       await navigator.clipboard.writeText(shareMessage)
-      await recordBouquetSentOnce(state)
+      void recordBouquetSentOnce(state)
       setCopiedMessage(true)
       showToast('Copied with love! Paste into WhatsApp or iMessage.', 'success')
       window.setTimeout(() => setCopiedMessage(false), 2000)
@@ -78,7 +78,7 @@ export function BouquetShareStep({ state, onCreateAnother }: BouquetShareStepPro
     setCopyingLink(true)
     try {
       await navigator.clipboard.writeText(shareUrl)
-      await recordBouquetSentOnce(state)
+      void recordBouquetSentOnce(state)
       setCopiedLink(true)
       showToast('Link copied.', 'success')
       window.setTimeout(() => setCopiedLink(false), 2000)
@@ -87,10 +87,6 @@ export function BouquetShareStep({ state, onCreateAnother }: BouquetShareStepPro
     } finally {
       setCopyingLink(false)
     }
-  }
-
-  const handleOpenPreview = () => {
-    saveBuilderDraft(state, 'share')
   }
 
   return (
@@ -113,7 +109,9 @@ export function BouquetShareStep({ state, onCreateAnother }: BouquetShareStepPro
         data-testid="share-reveal-backdrop"
       >
         <div className="relative flex flex-col px-4 py-8 md:px-8">
-          <p className={`mb-6 text-center text-xs font-medium uppercase tracking-[0.2em] ${previewTone.eyebrow}`}>
+          <p
+            className={`mb-6 text-center text-xs font-medium uppercase tracking-[0.2em] ${previewTone.eyebrow}`}
+          >
             Recipient preview
           </p>
 
@@ -144,18 +142,14 @@ export function BouquetShareStep({ state, onCreateAnother }: BouquetShareStepPro
             className={`mx-auto mt-6 max-w-md rounded-2xl px-4 py-3 text-center text-sm backdrop-blur-sm ${previewTone.scrim} ${previewTone.body}`}
           >
             Open the full reveal in{' '}
-            <Link
-              href={previewPath}
-              onClick={handleOpenPreview}
-              className={`underline underline-offset-2 ${previewTone.link}`}
-            >
+            <Link href={previewPath} className={`underline underline-offset-2 ${previewTone.link}`}>
               preview as recipient
             </Link>
           </p>
         </div>
       </BackdropLayer>
 
-      <section className="rounded-2xl border border-bloom-rose/20 bg-surface p-4 shadow-sm sm:p-5">
+      <section className="rounded-2xl border border-bloom-rose/20 bg-surface p-4 shadow-sm sm:p-5" aria-label="Share your bouquet">
         <p className="mb-3 text-xs font-medium uppercase tracking-wide text-bloom-ink/50">
           Ready to send
         </p>

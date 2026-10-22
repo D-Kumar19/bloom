@@ -1,36 +1,196 @@
-# Bloom
+<div align="center">
 
-Send someone a bouquet without leaving your chair. Pick flowers, write the note, choose the light behind it, and share a link. They tap to unwrap it. No account. No app store lecture. Just a small moment that lands.
+# 💐 Bloom
 
-Yes, sending flowers over the internet is a little ridiculous. It also works surprisingly well when you mean it.
+### Flowers for the distance. Words that make it personal.
 
-## What you can make
+A digital bouquet, a note in your own words, and a link that opens like a gift.
+No account. No app to install. Just a small way to show up.
 
-- A bouquet for a mood: romantic, celebratory, gentle, or "no reason, I just like you" 💐
-- A handwritten-style note on stationery you actually chose (not a sad default font, we have standards) ✍️
-- A backdrop that feels like morning light, candle glow, cherry petals, or midnight stars 🌅🕯️🌸🌙
-- Optional ambient sound for the person opening it (rain, piano, instrumental, silence if you're not that extra) 🎵
-- A link you can text, email, or paste anywhere. No carrier pigeon required 🔗
+**[🌷 Open Bloom](https://bloom-delta-nine.vercel.app) · [🛠️ Run locally](#grow-it-locally) · [📓 Project notebook](./docs/README.md)**
 
-## What it feels like for them
+<img src="./public/bouquets/blush-peony-cloud-thumb.png" width="180" alt="Blush peony bouquet from Bloom's flower collection" />
+<img src="./public/bouquets/sunflower-burst-thumb.png" width="180" alt="Bright sunflower bouquet from Bloom's flower collection" />
+<img src="./public/bouquets/dusty-lavender-thumb.png" width="180" alt="Dusty lavender bouquet from Bloom's flower collection" />
 
-They open your link. The bouquet appears first. Then the card. Then your words. Staged on purpose, like a real gift: not everything dumped on them at once.
+*For birthdays. For random Tuesdays. For “wish I could bring these over.”*
 
-They can save it as an image. They can send one back. They do not need to sign up for anything. Zero forms. Zero "verify your email to feel loved." 🙅
+</div>
 
-## What it feels like for you
+---
 
-You are not building a website. You are choosing how to show up for someone. The builder walks you through it: bouquet, card, message, atmosphere, share. Five steps. No clutter. No spreadsheet energy.
+> 🚧 **Pre-release, with a reliability-first release in progress.**
+> This README describes the current branch, not a promise that every fix is live.
+> The production counter still needs Redis configuration and deployed verification.
+> A separate visual redesign is work in progress—not the experience shown here.
 
-Walk away mid-draft? Fine. Your work waits for a day, then politely ghosts you. Fresh start. No guilt trip. 👋
+## ✨ A little gesture, made by you
 
-## The honest pitch
+Not a checkout for physical flowers. Not a greeting-card attachment.
+Bloom lets you compose a small digital moment and send it wherever a link can go.
 
-Bloom is for the message you would send if you had flowers in your hands and five quiet minutes.
+| 🌷 Choose the flowers | ✍️ Make the note yours | 🌙 Set the atmosphere |
+| :--- | :--- | :--- |
+| Pick from 15 bouquet arrangements, from a single poppy to a burst of sunflowers. | Choose stationery and a border, then add names and a formatted note of up to 200 words. | Pick a backdrop and, if it fits the moment, optional ambient sound. |
 
-- Birthdays you almost forgot (we won't tell) 🎂
-- "I miss you" on a random Tuesday 💭
-- Sympathy when you cannot be in the room 🤍
-- "Saw this and thought of you" with zero follow-up questions required
+### One thoughtful flow. Five steps.
 
-It will not replace showing up in person. Nothing should. It might still make someone's day feel a little less ordinary. And honestly? That's enough.
+**💐 Bouquet → 💌 Card → ✍️ Message → 🌅 Atmosphere → 🔗 Share**
+
+Send the link in a text, a chat, or an email. Bloom creates the gift link;
+it doesn't send an email or confirm that someone received it.
+
+### On the other side of the link…
+
+1. **The flowers arrive.** A staged reveal gives the bouquet its own moment.
+2. **The card follows.** The recipient opens the note rather than landing on a wall of text.
+3. **The words stay.** They can save a PNG keepsake or create a bouquet in return.
+
+No registration gate between the recipient and the gift. 🙌
+
+## 🧵 The details behind the gesture
+
+The small things are part of the product, not just the decoration.
+
+| Detail | What Bloom does |
+| :--- | :--- |
+| 📝 **An unfinished note is still your note** | Saves the draft and current builder step in this browser for 24 hours after the last edit. Starting a new bouquet clears it. |
+| ✂️ **A limit without the scissors** | Keeps over-limit text intact, shows how many words to remove, and blocks Continue above 200 words. No silent trimming. |
+| 🎨 **Formatting that travels** | Preserves supported rich text and line breaks in the shared gift and PNG. |
+| 🖼️ **A keepsake, not a recording** | Exports the bouquet, stationery, border, note, and backdrop as a still image. Motion is frozen; audio and the watercolor blur overlay are omitted. |
+| 🔈 **Sound is optional** | Includes rain, piano, instrumental, and other ambient tracks, with a visible retry when playback fails. Browser playback rules still apply. |
+| ♿ **More than mouse clicks** | Includes keyboard controls, focus indicators, reduced-motion support, and accessibility fixes. Full real-device release checks remain open. |
+
+## 🔍 A link is not a locked envelope
+
+Bloom is account-free, but that does **not** make a gift private or encrypted.
+
+- The gift's selections, names, and note are compressed into its URL—not stored as an account-backed gift record.
+- Anyone with that link can open or forward it. There is no password, expiry, or revocation.
+- Current gift URLs use a query parameter, so hosting services and link-preview tools may receive the contents. Browser history and messaging apps may retain the link.
+- Drafts stay in local browser storage. If storage is blocked, the builder warns you to keep the page open until you copy the link.
+
+**Avoid sensitive information in a bouquet.** The in-app [privacy page](./app/privacy/page.tsx) explains the boundaries in more detail.
+
+<a id="grow-it-locally"></a>
+
+## 🛠️ Grow it locally
+
+Use **Node.js 20** (the CI baseline) and **pnpm 9.15.9** (the pinned package manager).
+
+```bash
+git clone https://github.com/D-Kumar19/bloom.git
+cd bloom
+pnpm install
+cp .env.example .env.local
+pnpm dev
+```
+
+Open **http://localhost:3000**. Redis is optional for local development;
+without credentials, the counter uses a development-only local file.
+
+<details>
+<summary><strong>🧪 Checks before a release</strong></summary>
+
+```bash
+pnpm test:run
+pnpm type-check
+pnpm lint
+pnpm build
+```
+
+`pnpm test` starts Vitest in watch mode; `pnpm test:run` runs it once.
+GitHub CI runs these checks and builds the Docker image on `main`. Actions
+are SHA-pinned; the [draft release workflow](./docs/releases.md) requires
+passing CI for the exact commit and never publishes or deploys automatically.
+
+On the current branch's validation machine (Node 26), tests were run with
+`NODE_OPTIONS=--no-experimental-webstorage npm run test:run`.
+
+Local reliability baseline: **52 test files / 253 tests passing**, plus
+type-check, lint, and production build. These are automated checks, not
+certification of every mobile browser or the deployed site.
+
+</details>
+
+<details>
+<summary><strong>🏗️ Under the petals: how it works</strong></summary>
+
+**Next.js 16 · React 19 · TypeScript · Tailwind CSS 4 · Vitest**
+
+```text
+Builder edits → browser draft
+              → compressed gift URL → recipient reveal
+                                    → static PNG snapshot
+
+Share action → counter API → Redis in production
+```
+
+- **Gift transport:** `lz-string` compresses the gift into a shareable URL. The recipient reconstructs it without an account lookup.
+- **Image export:** `html2canvas` captures a static composition using the bouquet, note, and backdrop components.
+- **Counter:** the first successful copy records a bouquet prepared to share. A stable random gift ID survives edits/reloads; Redis atomically deduplicates it and enforces 10 requests per fixed minute and 50 per fixed hour per hashed client IP. Retries cannot increment the same gift again.
+- **Counter caveat:** this is not proof of delivery or unique recipients. The historical total is retained under its earlier rules. Sharing never waits for counting; Redis failure shows an unavailable statistic, not a made-up zero. [Deployment and edge protection](./docs/counter.md) still need live verification.
+
+| Location | Responsibility |
+| :--- | :--- |
+| [`app/`](./app/) | Pages, recipient entry point, metadata, and API routes |
+| [`components/`](./components/) | Builder controls, gift presentation, and shared UI |
+| [`hooks/`](./hooks/) | Builder state and browser-side behavior |
+| [`lib/`](./lib/) | Gift encoding, message handling, storage, audio, and export |
+| [`public/`](./public/) | Bouquet artwork, flowers, and ambient tracks |
+| [`docs/`](./docs/) | Findings, acceptance criteria, product decisions, and redesign studies |
+
+</details>
+
+<details>
+<summary><strong>🚀 Deploying the counter without starting from zero</strong></summary>
+
+Production requires **one complete writable credential pair**:
+
+- `KV_REST_API_URL` + `KV_REST_API_TOKEN`, **or**
+- `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN`.
+
+See [`.env.example`](./.env.example). Never expose these tokens through a
+`NEXT_PUBLIC_` variable or commit them.
+
+Also configure `COUNTER_RATE_LIMIT_SECRET` (at least 32 random characters)
+and Vercel edge protection for `POST /api/count`; see the
+[counter checklist](./docs/counter.md). Application limits protect increments,
+but each valid request still reaches Redis unless the edge blocks it first.
+
+Keep the same Redis store and `bouquet:count` key across releases. Production
+does not fall back to a temporary file when Redis is missing or unavailable.
+Before calling the issue fixed, record the live total, deploy, confirm that
+the total survives, and verify the next share increments it.
+
+The [production checklist](./docs/README.md#completing-b01-in-production)
+tracks the remaining acceptance checks.
+
+</details>
+
+## 🧭 Where Bloom goes next
+
+**Make the core reliable → verify it in production → redesign → consider more features.**
+
+| Now | Later—not shipped |
+| :--- | :--- |
+| Draft recovery, faithful notes and PNGs, truthful pages, accessibility and audio fixes | The “Color, delivered” visual redesign |
+| Production counter setup and real-device release checks | Email-compose shortcuts and optional accounts with a bouquet journey |
+
+There are no accounts, automatic email delivery, or journey timelines today.
+More choices are not automatically a better gift.
+
+**[📋 All TODOs and acceptance criteria](./docs/backlog.md)** ·
+**[🔎 Audit findings](./docs/audit.md)** ·
+**[🎨 Redesign direction](./docs/redesign-plan.md)** ·
+**[🌱 Product principles](./docs/product-direction.md)**
+
+---
+
+<div align="center">
+
+**It won't replace showing up in person.**
+
+But “I'm thinking of you” deserves more than a notification. 💐
+
+</div>

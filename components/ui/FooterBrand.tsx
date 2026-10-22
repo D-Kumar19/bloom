@@ -5,7 +5,7 @@ import { BouquetCounter } from '@/components/landing/BouquetCounter'
 import { FOOTER_TAGLINE } from '@/lib/site'
 
 type FooterBrandProps = {
-  initialCount: number
+  initialCount: number | null
 }
 
 export function FooterBrand({ initialCount }: FooterBrandProps) {

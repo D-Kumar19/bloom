@@ -3,27 +3,35 @@
 import { useEffect, useState } from 'react'
 
 type BouquetCounterProps = {
-  initialCount: number
+  initialCount: number | null
   compact?: boolean
 }
 
-export function BouquetCounter({ initialCount, compact = false }: BouquetCounterProps) {
+export function BouquetCounter({
+  initialCount,
+  compact = false,
+}: BouquetCounterProps) {
   const [display, setDisplay] = useState(0)
 
   useEffect(() => {
+    if (initialCount === null) {
+      return
+    }
     const duration = 1200
     const start = performance.now()
     const target = initialCount
 
+    let frame: number
     const tick = (now: number) => {
       const progress = Math.min((now - start) / duration, 1)
       setDisplay(Math.round(target * progress))
       if (progress < 1) {
-        requestAnimationFrame(tick)
+        frame = requestAnimationFrame(tick)
       }
     }
 
-    requestAnimationFrame(tick)
+    frame = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(frame)
   }, [initialCount])
 
   const formatted = display.toLocaleString()
@@ -31,21 +39,25 @@ export function BouquetCounter({ initialCount, compact = false }: BouquetCounter
   return (
     <p
       className={
-        compact
-          ? 'text-xs text-bloom-ink/65'
-          : 'mt-6 text-lg text-bloom-ink/80'
+        compact ? 'text-xs text-bloom-ink/65' : 'mt-6 text-lg text-bloom-ink/80'
       }
     >
-      <span
-        className={`inline-block font-display text-brand-pink ${
-          compact ? 'text-base' : 'animate-pulse text-2xl'
-        }`}
-      >
-        {formatted}
-      </span>{' '}
-      {initialCount === 0
-        ? 'Be the first to send a bouquet with love'
-        : 'bouquets sent so far'}
+      {initialCount === null ? (
+        'Bouquet count temporarily unavailable'
+      ) : (
+        <>
+          <span
+            className={`inline-block font-display text-brand-pink ${
+              compact ? 'text-base' : 'animate-pulse text-2xl'
+            }`}
+          >
+            {formatted}
+          </span>{' '}
+          {initialCount === 0
+            ? 'Be the first to prepare a bouquet to share'
+            : 'bouquets prepared to share'}
+        </>
+      )}
     </p>
   )
 }

@@ -1,42 +1,25 @@
 import type { Metadata } from 'next'
 
 import { BouquetViewer } from '@/app/bouquet/BouquetViewer'
-import { getBouquetDocumentTitle } from '@/lib/bouquet/recipientCopy'
-import { decodeBouquet } from '@/lib/sharing'
 
-type BouquetPageProps = {
-  searchParams: Promise<{ b?: string }>
-}
-
-export async function generateMetadata({ searchParams }: BouquetPageProps): Promise<Metadata> {
-  const params = await searchParams
-  const encoded = params.b
-
-  if (!encoded) {
-    return {
-      title: 'Your bouquet',
-      description: 'Open to see your digital bouquet and message',
-    }
-  }
-
-  const bouquet = decodeBouquet(encoded)
-  if (!bouquet) {
-    return {
-      title: 'Your bouquet',
-      description: 'Open to see your digital bouquet and message',
-    }
-  }
-
-  const title = getBouquetDocumentTitle(bouquet.from)
-
-  return {
-    title,
-    description: `${bouquet.from.trim() || 'Someone'} sent you a digital bouquet on Bloom.`,
-    openGraph: {
-      title,
-      description: 'Open to see your digital bouquet and message',
-    },
-  }
+// Personal gift data is decoded only by the viewer, never for crawler metadata.
+export const metadata: Metadata = {
+  title: 'A bouquet is waiting for you',
+  description: 'Open a digital bouquet and a personal note on Bloom.',
+  robots: { index: false, follow: false, nocache: true },
+  referrer: 'no-referrer',
+  openGraph: {
+    title: 'A bouquet is waiting for you',
+    description: 'A small moment, made for someone. Open it on Bloom.',
+    images: [{ url: '/bouquet/og', width: 1200, height: 630 }],
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'A bouquet is waiting for you',
+    description: 'A small moment, made for someone. Open it on Bloom.',
+    images: ['/bouquet/og'],
+  },
 }
 
 export default function BouquetPage() {

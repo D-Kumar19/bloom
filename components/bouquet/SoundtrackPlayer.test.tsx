@@ -5,11 +5,13 @@ import { SoundtrackPlayer, type SoundtrackPlayerHandle } from '@/components/bouq
 
 const play = vi.fn()
 const stop = vi.fn()
+const audioState = vi.hoisted(() => ({ error: null as string | null }))
 
 vi.mock('@/hooks/useAmbientSoundtrack', () => ({
   useAmbientSoundtrack: () => ({
     play,
     stop,
+    error: audioState.error,
     isPlaying: (id: string) => id === 'rain',
   }),
 }))
@@ -18,11 +20,26 @@ describe('SoundtrackPlayer', () => {
   beforeEach(() => {
     play.mockClear()
     stop.mockClear()
+    audioState.error = null
   })
 
   it('renders nothing when soundtrack is none', () => {
     const { container } = render(<SoundtrackPlayer soundtrackId="none" autoPlay />)
     expect(container).toBeEmptyDOMElement()
+  })
+
+  it('stops the previous track when the soundtrack changes to silence', () => {
+    const { rerender } = render(<SoundtrackPlayer soundtrackId="rain" autoPlay />)
+    stop.mockClear()
+    rerender(<SoundtrackPlayer soundtrackId="none" autoPlay />)
+    expect(stop).toHaveBeenCalledOnce()
+  })
+
+  it.each(['inline', 'fixed'] as const)('shows a single retry message in the %s player', variant => {
+    audioState.error = 'Sound could not play. Tap to retry, or choose silence.'
+    render(<SoundtrackPlayer soundtrackId="rain" variant={variant} />)
+    expect(screen.getAllByRole('status')).toHaveLength(1)
+    expect(screen.getByRole('status')).toHaveTextContent(audioState.error)
   })
 
   it('autoplays and mutes immediately on click', () => {

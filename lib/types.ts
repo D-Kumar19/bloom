@@ -81,6 +81,7 @@ export type NoteBorder = {
 }
 
 export type BouquetState = {
+  giftId?: string
   bouquetId: string
   cardStyle: string
   messageFormat?: MessageFormat

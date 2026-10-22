@@ -2,6 +2,7 @@ import LZString from 'lz-string'
 
 import { bouquetExists } from '@/lib/bouquets'
 import { getSiteOrigin } from '@/lib/siteUrl'
+import { isGiftId } from '@/lib/counter/contract'
 import type { BouquetState } from '../types'
 
 const LEGACY_PHOTO_CARD_ID = 'photo-card'
@@ -11,7 +12,7 @@ export function encodeBouquet(state: BouquetState): string {
   return LZString.compressToEncodedURIComponent(json)
 }
 
-export function isValidBouquetState(value: unknown): value is BouquetState {
+export function isValidBouquetDraft(value: unknown): value is BouquetState {
   if (!value || typeof value !== 'object') {
     return false
   }
@@ -23,6 +24,7 @@ export function isValidBouquetState(value: unknown): value is BouquetState {
   }
 
   return (
+    (state.giftId === undefined || isGiftId(state.giftId)) &&
     typeof state.bouquetId === 'string' &&
     bouquetExists(state.bouquetId) &&
     typeof state.cardStyle === 'string' &&
@@ -40,10 +42,13 @@ export function isValidBouquetState(value: unknown): value is BouquetState {
     typeof state.message === 'string' &&
     typeof state.to === 'string' &&
     typeof state.from === 'string' &&
-    state.from.trim().length > 0 &&
     typeof state.theme === 'string' &&
     (state.soundtrack === undefined || typeof state.soundtrack === 'string')
   )
+}
+
+export function isValidBouquetState(value: unknown): value is BouquetState {
+  return isValidBouquetDraft(value) && value.from.trim().length > 0
 }
 
 export function decodeBouquet(encoded: string): BouquetState | null {

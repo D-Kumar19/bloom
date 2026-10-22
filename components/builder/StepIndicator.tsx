@@ -142,7 +142,7 @@ export function StepIndicator({ currentStep, onStepClick }: StepIndicatorProps) 
           </div>
         </div>
 
-        <ol className="mt-4 grid grid-cols-3 gap-x-1 gap-y-3 sm:grid-cols-6 sm:gap-y-1">
+        <ol className="mt-4 grid grid-cols-5 gap-x-1 gap-y-3 sm:gap-y-1">
           {BUILDER_STEP_META.map((step, index) => {
             const isActive = step.id === currentStep
             const isComplete = index < currentIndex

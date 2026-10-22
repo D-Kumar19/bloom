@@ -289,6 +289,13 @@ body {
   display: none;
 }
 
+.export-static *,
+.export-static *::before,
+.export-static *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
 @keyframes rose-gold-shimmer {
   0%,
   100% {

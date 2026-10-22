@@ -12,10 +12,12 @@ vi.mock('next/navigation', () => ({
 const onSelect = vi.fn()
 const onSoundtrackSelect = vi.fn()
 const playAmbient = vi.fn()
+const audioState = vi.hoisted(() => ({ error: null as string | null }))
 
 vi.mock('@/hooks/useAmbientSoundtrack', () => ({
   useAmbientSoundtrack: () => ({
     playingId: null,
+    error: audioState.error,
     play: playAmbient,
     stop: vi.fn(),
     isPlaying: () => false,
@@ -28,6 +30,7 @@ describe('ThemePicker', () => {
     onSoundtrackSelect.mockReset()
     playAmbient.mockReset()
     push.mockReset()
+    audioState.error = null
   })
 
   it('renders the backdrop headline and helper copy', () => {
@@ -122,5 +125,13 @@ describe('ThemePicker', () => {
 
     expect(onSoundtrackSelect).toHaveBeenCalledWith('rain')
     expect(playAmbient).toHaveBeenCalledWith('rain')
+  })
+
+  it('shows one retry status rather than repeating it inside every sound option', () => {
+    audioState.error = 'Sound could not play. Tap to retry, or choose silence.'
+    render(<ThemePicker selectedId="warm" soundtrackId="rain" onSelect={onSelect}
+      onSoundtrackSelect={onSoundtrackSelect} />)
+    expect(screen.getAllByRole('status')).toHaveLength(1)
+    expect(screen.getByRole('status')).toHaveTextContent(audioState.error)
   })
 })

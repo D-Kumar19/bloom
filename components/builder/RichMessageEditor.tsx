@@ -4,7 +4,6 @@ import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
 
 import type { MessageFormat, MessageFontFamily } from '@/lib/types'
 import {
-  editorNeedsDomCleanup,
   getMessageFontFamily,
   MESSAGE_COLOR_OPTIONS,
   MESSAGE_FONT_OPTIONS,
@@ -13,7 +12,6 @@ import {
   sanitizeMessageHtml,
   stripMessageHtml,
   countMessageWords,
-  truncateMessageHtml,
   usesThemeInkColor,
 } from '@/lib/message'
 
@@ -37,13 +35,7 @@ function toolbarButtonClass(active = false): string {
   }`
 }
 
-function ToolbarSection({
-  label,
-  children,
-}: {
-  label: string
-  children: React.ReactNode
-}) {
+function ToolbarSection({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:gap-3">
       <span className="shrink-0 pt-1 text-[10px] font-semibold uppercase tracking-wide text-bloom-ink/75 sm:w-14">
@@ -157,6 +149,7 @@ export const RichMessageEditor = forwardRef<HTMLDivElement, RichMessageEditorPro
     ref,
   ) {
     const editorRef = useRef<HTMLDivElement>(null)
+    const composing = useRef(false)
 
     useImperativeHandle(ref, () => editorRef.current as HTMLDivElement)
 
@@ -167,9 +160,7 @@ export const RichMessageEditor = forwardRef<HTMLDivElement, RichMessageEditorPro
       }
 
       const nextHtml =
-        message.includes('<') || message.includes('&')
-          ? message
-          : plainTextToMessageHtml(message)
+        message.includes('<') || message.includes('&') ? message : plainTextToMessageHtml(message)
       if (editor.innerHTML !== nextHtml) {
         editor.innerHTML = nextHtml
       }
@@ -181,7 +172,7 @@ export const RichMessageEditor = forwardRef<HTMLDivElement, RichMessageEditorPro
         return
       }
 
-      const sanitized = truncateMessageHtml(sanitizeMessageHtml(editor.innerHTML), maxWords)
+      const sanitized = sanitizeMessageHtml(editor.innerHTML)
       onMessageChange(sanitized)
       return sanitized
     }
@@ -193,12 +184,8 @@ export const RichMessageEditor = forwardRef<HTMLDivElement, RichMessageEditorPro
       }
 
       const rawHtml = editor.innerHTML
-      if (!editorNeedsDomCleanup(rawHtml)) {
-        return
-      }
-
       const caretOffset = getCaretCharacterOffsetWithin(editor)
-      const sanitized = truncateMessageHtml(sanitizeMessageHtml(rawHtml), maxWords)
+      const sanitized = sanitizeMessageHtml(rawHtml)
       if (sanitized !== rawHtml) {
         editor.innerHTML = sanitized
         if (caretOffset !== null) {
@@ -212,11 +199,35 @@ export const RichMessageEditor = forwardRef<HTMLDivElement, RichMessageEditorPro
     }
 
     const handleInput = () => {
-      emitChange()
+      if (!composing.current) emitChange()
     }
 
     const handleBlur = () => {
+      composing.current = false
       cleanupEditorDom()
+      emitChange()
+    }
+
+    const handlePaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
+      if (composing.current) return
+      const editor = editorRef.current
+      const selection = window.getSelection()
+      if (!editor || !selection || !selection.rangeCount) return
+      const range = selection.getRangeAt(0)
+      if (!editor.contains(range.commonAncestorContainer)) return
+      event.preventDefault()
+      const html = event.clipboardData.getData('text/html')
+      const clean = sanitizeMessageHtml(
+        html || plainTextToMessageHtml(event.clipboardData.getData('text/plain')),
+      )
+      const fragment = range.createContextualFragment(clean)
+      const last = fragment.lastChild
+      range.deleteContents()
+      range.insertNode(fragment)
+      if (last) range.setStartAfter(last)
+      range.collapse(true)
+      selection.removeAllRanges()
+      selection.addRange(range)
       emitChange()
     }
 
@@ -254,7 +265,7 @@ export const RichMessageEditor = forwardRef<HTMLDivElement, RichMessageEditorPro
     }
 
     const handleEnter = (event: React.KeyboardEvent<HTMLDivElement>) => {
-      if (event.key !== 'Enter' || event.nativeEvent.isComposing) {
+      if (event.key !== 'Enter' || event.nativeEvent.isComposing || composing.current) {
         return
       }
 
@@ -300,11 +311,16 @@ export const RichMessageEditor = forwardRef<HTMLDivElement, RichMessageEditorPro
         return
       }
 
-      document.execCommand(
-        'insertHTML',
-        false,
-        `<span style="${style}">${selection.toString()}</span>`,
-      )
+      const range = selection.getRangeAt(0)
+      if (!editor.contains(range.commonAncestorContainer)) return
+      const span = document.createElement('span')
+      span.setAttribute('style', style)
+      span.appendChild(range.extractContents())
+      range.insertNode(span)
+      selection.removeAllRanges()
+      const selected = document.createRange()
+      selected.selectNodeContents(span)
+      selection.addRange(selected)
       emitChange()
     }
 
@@ -325,8 +341,7 @@ export const RichMessageEditor = forwardRef<HTMLDivElement, RichMessageEditorPro
         return
       }
 
-      const px =
-        fontSize === 'lg' ? '1.125rem' : fontSize === 'sm' ? '0.875rem' : '1rem'
+      const px = fontSize === 'lg' ? '1.125rem' : fontSize === 'sm' ? '0.875rem' : '1rem'
       applySpanStyle(`font-size: ${px}`)
     }
 
@@ -400,7 +415,10 @@ export const RichMessageEditor = forwardRef<HTMLDivElement, RichMessageEditorPro
                   onClick={() => {
                     const selection = window.getSelection()
                     if (!selection || selection.isCollapsed) {
-                      onMessageFormatChange({ ...messageFormat, color: option.value })
+                      onMessageFormatChange({
+                        ...messageFormat,
+                        color: option.value,
+                      })
                       return
                     }
                     applySpanStyle(`color: ${option.value}`)
@@ -466,8 +484,16 @@ export const RichMessageEditor = forwardRef<HTMLDivElement, RichMessageEditorPro
             suppressContentEditableWarning
             data-testid="message-editor"
             onInput={handleInput}
+            onPaste={handlePaste}
             onBlur={handleBlur}
             onKeyDown={handleEnter}
+            onCompositionStart={() => {
+              composing.current = true
+            }}
+            onCompositionEnd={() => {
+              composing.current = false
+              emitChange()
+            }}
             className={`relative min-h-[9rem] w-full rounded-2xl border bg-surface px-4 py-3 text-sm leading-relaxed text-bloom-ink outline-none transition focus:ring-2 ${
               invalid
                 ? 'border-brand-pink/60 focus:border-brand-pink focus:ring-brand-pink/25'
@@ -475,9 +501,7 @@ export const RichMessageEditor = forwardRef<HTMLDivElement, RichMessageEditorPro
             }`}
             style={{
               fontFamily: getMessageFontFamily(messageFormat.fontFamily),
-              ...(usesThemeInkColor(messageFormat.color)
-                ? {}
-                : { color: messageFormat.color }),
+              ...(usesThemeInkColor(messageFormat.color) ? {} : { color: messageFormat.color }),
             }}
           />
         </div>

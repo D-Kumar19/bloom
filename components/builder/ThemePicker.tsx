@@ -51,12 +51,12 @@ function ThemeDetailModal({
   const animated = isThemeAnimated(theme)
 
   return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      title={theme.name}
-    >
-      <BackdropPreview theme={theme} decorationDensity="scene" className="mx-auto mb-4 h-40 w-full max-w-sm rounded-2xl" />
+    <Modal open={open} onClose={onClose} title={theme.name}>
+      <BackdropPreview
+        theme={theme}
+        decorationDensity="scene"
+        className="mx-auto mb-4 h-40 w-full max-w-sm rounded-2xl"
+      />
       <p className="text-sm italic leading-relaxed text-bloom-ink/80">{theme.tagline}</p>
       <p className="mt-4 text-sm leading-relaxed text-bloom-ink/70">
         <span className="font-medium text-bloom-ink">Backdrop:</span>{' '}
@@ -99,7 +99,7 @@ export function ThemePicker({
   onSoundtrackSelect,
 }: ThemePickerProps) {
   const [detailTheme, setDetailTheme] = useState<ThemeType | null>(null)
-  const { play, stop, isPlaying } = useAmbientSoundtrack({ volume: 0.3 })
+  const { play, stop, isPlaying, error } = useAmbientSoundtrack({ volume: 0.3 })
 
   const closeDetail = () => setDetailTheme(null)
 
@@ -124,8 +124,8 @@ export function ThemePicker({
       <div>
         <h2 className="font-display text-2xl text-bloom-ink md:text-3xl">Choose your backdrop</h2>
         <p className="mt-1 text-sm text-bloom-ink/60">
-          The light behind your bouquet when someone opens it. Tap a swatch for details,
-          then select the atmosphere that fits your note.
+          The light behind your bouquet when someone opens it. Tap a swatch for details, then
+          select the atmosphere that fits your note.
         </p>
       </div>
 
@@ -151,11 +151,7 @@ export function ThemePicker({
                 className="group block w-full p-2 text-left"
               >
                 <div className="relative isolate overflow-hidden rounded-xl">
-                  <BackdropPreview
-                    theme={theme}
-                    showDecorations
-                    className="h-24 sm:h-28"
-                  />
+                  <BackdropPreview theme={theme} showDecorations className="h-24 sm:h-28" />
                   {animated ? (
                     <span
                       data-testid={`theme-animated-badge-${theme.id}`}
@@ -226,6 +222,7 @@ export function ThemePicker({
             )
           })}
         </div>
+        {error ? <p role="status" className="mt-3 text-sm text-bloom-ink">{error}</p> : null}
       </div>
 
       <ThemeDetailModal

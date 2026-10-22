@@ -44,11 +44,11 @@ export function MessageCard({
     return (
       <div
         data-testid="message-card-folded"
-        role="button"
-        tabIndex={0}
+        role={onClick ? 'button' : undefined}
+        tabIndex={onClick ? 0 : undefined}
         onClick={onClick}
         onKeyDown={(event) => {
-          if (event.key === 'Enter' || event.key === ' ') {
+          if (onClick && (event.key === 'Enter' || event.key === ' ')) {
             event.preventDefault()
             onClick?.()
           }
@@ -77,7 +77,7 @@ export function MessageCard({
             }
           : undefined
       }
-      className={`note-card rounded-3xl p-6 shadow-md transition ${surface} ${onClick ? 'cursor-pointer hover:scale-[1.02]' : ''} ${compact ? 'p-4 text-sm' : ''} ${className}`}
+      className={`note-card rounded-3xl p-6 shadow-md transition [overflow-wrap:anywhere] ${surface} ${onClick ? 'cursor-pointer hover:scale-[1.02]' : ''} ${compact ? 'p-4 text-sm' : ''} ${className}`}
       style={getNoteBorderStyle(noteBorder)}
     >
       {to ? (

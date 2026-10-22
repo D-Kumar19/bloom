@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bloom / D01 reference study</title>
+  <style>
+    :root { color-scheme: light; --paper: #f3efe5; --ink: #29372e; --muted: #586052; --line: #c7c5b5; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.6 Arial, sans-serif; }
+    a { color: inherit; text-underline-offset: .2em; }
+    a:focus-visible { outline: 3px solid #943b43; outline-offset: 5px; }
+    main { max-width: 1320px; margin: auto; padding: 48px 40px 80px; }
+    h1, h2, h3, p, figure { margin: 0; }
+    h1, h2, .serif { font-family: Georgia, serif; font-weight: 400; }
+    h1 { font-size: clamp(44px, 6vw, 80px); line-height: 1.08; letter-spacing: -.045em; max-width: 850px; margin: 24px 0; }
+    h2 { font-size: clamp(30px, 4vw, 42px); line-height: 1.2; margin-bottom: 16px; }
+    h3 { font-size: 17px; margin-bottom: 8px; }
+    p + p { margin-top: 12px; }
+    .eyebrow { font: 12px/1.6 "Courier New", monospace; text-transform: uppercase; letter-spacing: .12em; }
+    .intro { max-width: 760px; font-size: 19px; }
+    .status { border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); padding: 12px 0; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    section { padding-top: 48px; margin-top: 48px; border-top: 1px solid var(--line); }
+    .muted, figcaption { color: var(--muted); }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; margin-top: 24px; }
+    .sample { min-height: 280px; padding: 32px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+    .sample-note { background: #e2dac8; }
+    .note { background: #fffdf6; padding: 28px; width: 88%; border: 1px solid #d9d1bf; box-shadow: 0 8px 18px #30271512; }
+    .note p { font: 24px/1.5 Georgia, serif; }
+    .note .signature { text-align: right; margin-top: 18px; font-size: 18px; }
+    .sample-wrap { background: #d0b58c; gap: 16px; }
+    .sheet { width: 38%; height: 190px; background: #eee4cc; border: 1px solid #bfa886; }
+    .sheet + .sheet { background: #aab09b; transform: translateY(22px); }
+    .sample-label { background: #e5e7dc; justify-content: flex-start; }
+    .label { border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); width: 100%; padding: 20px 0; }
+    .label strong { display: block; font: 40px/1.2 Georgia, serif; margin: 14px 0; }
+    .sample-space { background: #33453a; color: #fffdf6; justify-content: flex-start; }
+    .sample-space p { max-width: 270px; font: 34px/1.35 Georgia, serif; }
+    .annotation { padding: 18px 0; }
+    .annotation p { font-size: 15px; }
+    .swatches { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); margin: 24px 0; gap: 12px; }
+    .swatch { border: 1px solid var(--line); }
+    .swatch i { display: block; height: 65px; background: var(--color); }
+    .swatch span { display: block; padding: 10px; font-size: 12px; }
+    .source { border-top: 1px solid var(--line); padding: 20px 0; }
+    .source h3 { font-family: Georgia, serif; font-size: 24px; font-weight: 400; }
+    .sources { margin-top: 24px; }
+    .catalog { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 24px 16px; margin-top: 24px; }
+    .catalog img { display: block; width: 100%; height: auto; aspect-ratio: 2/3; object-fit: contain; background: #e2dac8; }
+    figcaption { font-size: 13px; padding-top: 8px; }
+    .warning { border-left: 3px solid #943b43; padding: 12px 20px; background: #ede3d7; margin-top: 24px; }
+    .next { max-width: 800px; }
+    ul { padding-left: 22px; }
+    @media (max-width: 700px) {
+      main { padding: 24px 20px 48px; }
+      .grid { grid-template-columns: 1fr; }
+      .catalog { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .swatches { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      section { padding-top: 32px; margin-top: 32px; }
+      .sample { padding: 24px; min-height: 240px; }
+      .note { width: 100%; padding: 20px; }
+    }
+    @media print {
+      main { padding: 20px; }
+      .sample, figure { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div class="status">
+        <span class="eyebrow">Bloom / Design study 01</span>
+        <span class="eyebrow">References, not a proposed website</span>
+      </div>
+      <h1>A little care.<br>Something you can almost hold.</h1>
+      <p class="intro">Flowers, paper, a few words. The interface should help someone make a gesture, then get out of its way.</p>
+      <p class="muted">D01 / Prepared 20 October 2026 / Approved with refinement: more colorful, less rustic, more contemporary, less paper-like. These original material/type studies are research history, not approved brand tokens. No production screen has changed.</p>
+      <p><a href="compositions.html">Open the two contemporary D02 concepts</a></p>
+    </header>
+
+    <section aria-labelledby="materials-title">
+      <p class="eyebrow">01 / The physical vocabulary</p>
+      <h2 id="materials-title">Paper before panels. Flowers before decoration.</h2>
+      <div class="grid">
+        <article>
+          <div class="sample sample-note">
+            <div class="note">
+              <p>Happy birthday, Mira.<br>Here's to the ordinary afternoons that turn into our favourite stories.</p>
+              <p class="signature">With love, Jules</p>
+            </div>
+          </div>
+          <div class="annotation">
+            <h3>01 / Correspondence, not a dashboard card</h3>
+            <p>A readable sheet, generous margins, a quiet signature. Handwriting is optional, not the font for every label. The sender's actual words carry the emotion.</p>
+          </div>
+        </article>
+        <article>
+          <div class="sample sample-wrap" role="img" aria-label="Cream and muted green paper material studies">
+            <div class="sheet"></div><div class="sheet"></div>
+          </div>
+          <div class="annotation">
+            <h3>02 / Materials with a job</h3>
+            <p>Paper layers separate gift and surroundings. Small shadows explain depth; they are not repeated around every control. No fake wood texture or mandatory wrapping animation.</p>
+          </div>
+        </article>
+        <article>
+          <div class="sample sample-label">
+            <div class="label">
+              <span class="eyebrow">Bloom / Bouquet study</span>
+              <strong>Wildflower Field</strong>
+              <span>A loose gathering, for no particular occasion.</span>
+            </div>
+          </div>
+          <div class="annotation">
+            <h3>03 / Useful editorial hierarchy</h3>
+            <p>One expressive type role, one clear interface role. Names and descriptions sit beside the object, not inside a stack of badges. These system fonts are placeholders, not a final type selection.</p>
+          </div>
+        </article>
+        <article>
+          <div class="sample sample-space">
+            <p>No need to reply.<br>Just thinking of you today.</p>
+          </div>
+          <div class="annotation">
+            <h3>04 / Room for quieter feelings</h3>
+            <p>Sympathy is not a birthday with its confetti turned off. Give the note space, use steady contrast, and avoid playful copy or forced audio. No automatic occasion classification.</p>
+          </div>
+        </article>
+      </div>
+      <div class="swatches" role="group" aria-label="Exploratory material colors, not final UI tokens">
+        <div class="swatch" style="--color:#f3efe5"><i></i><span>Uncoated paper<br>#f3efe5</span></div>
+        <div class="swatch" style="--color:#29372e"><i></i><span>Botanical ink<br>#29372e</span></div>
+        <div class="swatch" style="--color:#d0b58c"><i></i><span>Wrapping paper<br>#d0b58c</span></div>
+        <div class="swatch" style="--color:#aab09b"><i></i><span>Muted foliage<br>#aab09b</span></div>
+        <div class="swatch" style="--color:#943b43"><i></i><span>Small warm accent<br>#943b43</span></div>
+      </div>
+      <p class="muted">The flowers supply most of the color. This is a material exercise, not a commitment to make every page beige or remove existing dark appearance.</p>
+    </section>
+
+    <section aria-labelledby="references-title">
+      <p class="eyebrow">02 / Annotated external references</p>
+      <h2 id="references-title">Borrow principles, not someone's website.</h2>
+      <p>Open the original sources below. Their photographs, logos, fonts, and layouts have not been imported, hotlinked, or licensed for Bloom. Observations describe the pages reviewed, not accessibility or performance endorsements.</p>
+      <div class="sources">
+        <article class="source">
+          <h3><a href="https://saipua.com/" target="_blank" rel="noopener noreferrer">Saipua / a working material world</a></h3>
+          <p><strong>Observed:</strong> the homepage puts worn tools, wood, cloth, and vessels before abstract brand claims.</p>
+          <p><strong>Translate:</strong> let materials and a tangible gift establish the world. <strong>Leave behind:</strong> dark photographic navigation overlays and a full-screen scenic image that hides Bloom's purpose.</p>
+        </article>
+        <article class="source">
+          <h3><a href="https://www.floretflowers.com/" target="_blank" rel="noopener noreferrer">Floret / the flowers do the work</a></h3>
+          <p><strong>Observed:</strong> large garden photography carries color and atmosphere; headings and small labels have distinct jobs.</p>
+          <p><strong>Translate:</strong> show an actual bouquet early and give it scale. <strong>Leave behind:</strong> retail countdowns, dense navigation, slideshows, and newsletter overlays.</p>
+        </article>
+        <article class="source">
+          <h3><a href="https://www.papier.com/" target="_blank" rel="noopener noreferrer">Papier / stationery as a physical object</a></h3>
+          <p><strong>Observed:</strong> the reviewed campaign places paper goods among real objects, with visible surfaces, edges, and shadows; display type differs from utility labels.</p>
+          <p><strong>Translate:</strong> make the note feel placed, not like a settings container. <strong>Leave behind:</strong> catalog-scale choice, promotions, and sign-in/shopping chrome.</p>
+        </article>
+        <article class="source">
+          <h3><a href="https://www.presentandcorrect.com/" target="_blank" rel="noopener noreferrer">Present &amp; Correct / objects and quiet structure</a></h3>
+          <p><strong>Observed:</strong> large object photography, restrained interface type, and strong dividing rules. Its <a href="https://www.presentandcorrect.com/blogs/blog/our-shop" target="_blank" rel="noopener noreferrer">shop article</a> credits physical-space photography separately.</p>
+          <p><strong>Translate:</strong> a small label and one deliberate line can organize a surface without another rounded panel. <strong>Leave behind:</strong> a collector's catalog density or an oversized image with no clear action.</p>
+        </article>
+      </div>
+    </section>
+
+    <section aria-labelledby="assets-title">
+      <p class="eyebrow">03 / Bloom's current asset collection</p>
+      <h2 id="assets-title">Keep the choice. Be honest about the image.</h2>
+      <p>All 15 existing hero images are shown uncropped below. Each is 1024 x 1536. These are opaque scenes with backgrounds, not transparent bouquet cutouts. Presence in the repository does not establish ownership or permission; provenance remains unverified.</p>
+      <div class="catalog">
+        <figure><img src="../../public/bouquets/red-rose-classic-hero.png" alt="Red roses wrapped in kraft and red paper" width="1024" height="1536"><figcaption>Red Rose Classic</figcaption></figure>
+        <figure><img src="../../public/bouquets/blush-peony-cloud-hero.png" alt="Pink peonies suspended among clouds" width="1024" height="1536"><figcaption>Blush Peony Cloud</figcaption></figure>
+        <figure><img src="../../public/bouquets/dusty-lavender-hero.png" alt="Dusty Lavender existing bouquet scene" width="1024" height="1536"><figcaption>Dusty Lavender</figcaption></figure>
+        <figure><img src="../../public/bouquets/crimson-and-cream-hero.png" alt="Crimson and Cream existing bouquet scene" width="1024" height="1536"><figcaption>Crimson and Cream</figcaption></figure>
+        <figure><img src="../../public/bouquets/sunflower-burst-hero.png" alt="Sunflower Burst existing bouquet scene" width="1024" height="1536"><figcaption>Sunflower Burst</figcaption></figure>
+        <figure><img src="../../public/bouquets/tulip-riot-hero.png" alt="Tulip Riot existing bouquet scene" width="1024" height="1536"><figcaption>Tulip Riot</figcaption></figure>
+        <figure><img src="../../public/bouquets/tropical-bright-hero.png" alt="Tropical Bright existing bouquet scene" width="1024" height="1536"><figcaption>Tropical Bright</figcaption></figure>
+        <figure><img src="../../public/bouquets/pastel-spring-hero.png" alt="Pastel Spring existing bouquet scene" width="1024" height="1536"><figcaption>Pastel Spring</figcaption></figure>
+        <figure><img src="../../public/bouquets/white-lily-still-hero.png" alt="White lilies with a sympathy tag printed into the image" width="1024" height="1536"><figcaption>White Lily Still</figcaption></figure>
+        <figure><img src="../../public/bouquets/eucalyptus-and-white-hero.png" alt="Eucalyptus and White existing bouquet scene" width="1024" height="1536"><figcaption>Eucalyptus and White</figcaption></figure>
+        <figure><img src="../../public/bouquets/dried-herbal-hero.png" alt="Dried Herbal existing bouquet scene" width="1024" height="1536"><figcaption>Dried Herbal</figcaption></figure>
+        <figure><img src="../../public/bouquets/wildflower-field-hero.png" alt="Wildflower Field existing bouquet scene" width="1024" height="1536"><figcaption>Wildflower Field</figcaption></figure>
+        <figure><img src="../../public/bouquets/cheerful-daisy-mix-hero.png" alt="Cheerful Daisy Mix existing bouquet scene" width="1024" height="1536"><figcaption>Cheerful Daisy Mix</figcaption></figure>
+        <figure><img src="../../public/bouquets/garden-herb-hero.png" alt="Garden Herb existing bouquet scene" width="1024" height="1536"><figcaption>Garden Herb</figcaption></figure>
+        <figure><img src="../../public/bouquets/single-stem-poppy-hero.png" alt="Single Stem Poppy existing bouquet scene" width="1024" height="1536"><figcaption>Single Stem Poppy</figcaption></figure>
+      </div>
+      <div class="warning">
+        <strong>The design consequence</strong>
+        <p>Start with an honest photographic print or plate. Do not fake a transparent cutout with blending, crop away half the bouquet, or animate pre-rendered wrapping as if it were separate paper. Test any future isolated imagery as a separate asset decision.</p>
+        <p>The peony clouds are a different visual world from the wrapped roses. The lily image includes fixed sympathy wording that cannot follow the sender's language or edits. Neither issue requires deleting a bouquet or breaking old links.</p>
+      </div>
+    </section>
+
+    <section class="next" aria-labelledby="next-title">
+      <p class="eyebrow">04 / Review gate</p>
+      <h2 id="next-title">Agree on the world before drawing the rooms.</h2>
+      <p><strong>Recommendation:</strong> tangible paper, botanical color, clear editorial structure, honest photographic plates. Warm without looking like a wedding shop; quiet without becoming sterile. Handwriting belongs to a personal note, not every navigation label.</p>
+      <ul>
+        <li>Show the actual gift early; avoid the abstract headline / badge / card-grid formula.</li>
+        <li>Keep five clear-purpose steps. Extra choices stay secondary, not extra mandatory tasks.</li>
+        <li>Keep current bouquet IDs, customizations, guest links, drafts, and dark appearance compatible.</li>
+        <li>In D02, compare a shared tabletop arrangement with a more editorial, sequential presentation. Neither is designed or selected yet.</li>
+      </ul>
+      <p class="muted">Reference vocabulary approved with the contemporary/colorful refinement above. Next approval: select or revise one of the two D02 concepts. No full-site implementation at this gate.</p>
+      <p><a href="../redesign-plan.md">Detailed redesign plan</a> / <a href="reference-study.md">Evidence and asset assessment</a></p>
+    </section>
+  </main>
+</body>
+</html>
