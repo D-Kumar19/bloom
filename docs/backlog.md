@@ -2,7 +2,8 @@
 
 Updated: 2026-10-22. B02 and B03 are implemented and verified locally.
 B01's code is implemented; production persistence remains blocked on deployment
-access/configuration. No changes have been deployed from this session.
+access/configuration. Reliability changes are deployed to the branch preview;
+production acceptance remains separate.
 Evidence and caveats: [audit](./audit.md). Design decisions:
 [redesign plan](./redesign-plan.md).
 
@@ -53,7 +54,9 @@ and opt-in audio must not compete with a step's primary task.
   licences and loaded through next/font/local, removing build-time Google
   downloads/parsing. Local retest passed: 51 files / 246 tests, type-check,
   lint, and production build; all 11 bundled WOFF2 assets returned HTTP 200.
-  Hosted retesting is required before merge.
+  Hosted retesting passed on commit `7bd19be`: PR CI verification and Vercel
+  preview deployment succeeded. Main push CI, including Docker, and the first
+  draft-release workflow remain to be verified after merge.
 
 ## P0 - Reliability before a visual rollout
 
@@ -84,6 +87,12 @@ and opt-in audio must not compete with a step's primary task.
   API, **not actual Redis or Vercel**. Exact deployed failure and real
   cross-instance Redis durability are still unverified. Follow the
   [production completion steps](./README.md#completing-b01-in-production).
+  **Owner preview check, 2026-10-22:** after correcting the Redis REST URL,
+  the deployed counter showed 1. The owner configured the same Redis database
+  for Production, Preview, and Development; preview activity therefore
+  contributes to the shared total. This confirms basic deployed connectivity
+  and counting, not production upgrade persistence, concurrency, deduplication,
+  or rate-limit acceptance. Keep B01/B05 open for those remaining checks.
 
 - [x] B02 - Recover real in-progress drafts.
   Covers ISSUE-002. Entry points: [state](../hooks/useBouquetState.ts),
