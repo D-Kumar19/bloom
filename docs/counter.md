@@ -96,6 +96,38 @@ reclassified under this policy.
 Do not load-test the public deployment without approval. B01/B05/B10 retain
 production acceptance gates until these results are recorded.
 
+## Diagnosing unavailable counts
+
+Server logs expose allowlisted diagnostic codes, never credentials, raw
+upstream bodies, client IPs, or arbitrary exception messages:
+
+- `redis_config_missing` / `redis_config_incomplete`: check the deployment's
+  environment scope and use one complete REST credential pair. KV variables
+  take precedence over native Upstash variables.
+- `redis_url_invalid` / `redis_token_invalid`: use individual raw values, not
+  shell assignments, quotes, spaces, or a `redis://` connection string.
+- `redis_http_error` with status 401/403: verify the token/database pairing
+  and permissions. Other statuses require provider availability/quota checks.
+- `redis_timeout` / `redis_network_error`: check provider availability and
+  connectivity; timeouts are bounded at three seconds.
+- `redis_command_error` / `redis_response_invalid` / `counter_value_invalid`:
+  inspect the provider console privately for command permissions or corrupt
+  stored values; do not reset the existing total as a troubleshooting shortcut.
+- `client_ip_missing` / `rate_limit_secret_invalid`: recording configuration
+  failed; these cannot explain a failing GET.
+- `client_platform_unsupported`: production writes lack a trusted IP adapter.
+
+Redeploy after environment changes. Start with GET `/api/count` before testing
+copies. Never paste tokens or full environment exports into support messages.
+
+An absent key (`nil` in the Redis console, `null` in REST) is valid and reads
+as zero. It does not explain an unavailable count. Owner configuration checks
+and a console read alone do not verify the deployed app's REST access.
+
+Diagnostic changes passed the full local suite (52 files / 253 tests),
+type-check, lint, and production build. The deployed Redis failure remains
+unresolved until a new deployment's diagnostic code identifies the cause.
+
 ## Local verification (2026-10-22)
 
 - 51 test files / 244 tests passed, plus type-check, lint, and production build.

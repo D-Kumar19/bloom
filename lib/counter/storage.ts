@@ -3,6 +3,7 @@ import path from 'path'
 import { randomUUID } from 'crypto'
 import { COUNT_LIMITS, isGiftId, type CountResult } from './contract'
 import { RECORD_SHARE_SCRIPT, SHARE_SCRIPT_ARGUMENTS } from './script'
+import { CounterError } from './errors'
 
 const COUNT_KEY = 'bouquet:count'
 const COUNT_FILE = path.join(process.cwd(), 'data', 'bouquet-count.json')
@@ -24,9 +25,39 @@ function getKvConfig(): { url: string; token: string } | null {
     return null
   }
   if (!url || !token) {
-    throw new Error('Both Redis REST URL and token must be configured')
+    throw new CounterError(
+      'redis_config_incomplete',
+      'Both Redis REST URL and token must be configured'
+    )
   }
 
+  let parsed: URL
+  try {
+    parsed = new URL(url)
+  } catch {
+    throw new CounterError('redis_url_invalid', 'Redis REST URL is invalid')
+  }
+  if (
+    !['https:', 'http:'].includes(parsed.protocol) ||
+    parsed.username ||
+    parsed.password ||
+    parsed.pathname !== '/' ||
+    parsed.search ||
+    parsed.hash ||
+    (parsed.protocol === 'http:' &&
+      !['localhost', '127.0.0.1', '[::1]'].includes(parsed.hostname))
+  ) {
+    throw new CounterError(
+      'redis_url_invalid',
+      'Expected a bare HTTPS Redis REST origin'
+    )
+  }
+  if (url !== url.trim() || token !== token.trim() || /[\s"'`]/.test(token)) {
+    throw new CounterError(
+      'redis_token_invalid',
+      'Redis credentials contain quotes or whitespace'
+    )
+  }
   return { url, token }
 }
 
@@ -41,32 +72,67 @@ async function kvRequest(
 ): Promise<unknown> {
   const config = getKvConfig()
   if (!config) {
-    throw new Error('KV is not configured')
+    throw new CounterError('redis_config_missing', 'KV is not configured')
   }
 
-  const response = await fetch(`${config.url}${pathSuffix}`, {
-    method,
-    cache: 'no-store',
-    signal: AbortSignal.timeout(KV_TIMEOUT_MS),
-    headers: {
-      Authorization: `Bearer ${config.token}`,
-      ...(command ? { 'Content-Type': 'application/json' } : {}),
-    },
-    ...(command ? { body: JSON.stringify(command) } : {}),
-  })
+  let response: Response
+  try {
+    response = await fetch(`${config.url}${pathSuffix}`, {
+      method,
+      cache: 'no-store',
+      signal: AbortSignal.timeout(KV_TIMEOUT_MS),
+      headers: {
+        Authorization: `Bearer ${config.token}`,
+        ...(command ? { 'Content-Type': 'application/json' } : {}),
+      },
+      ...(command ? { body: JSON.stringify(command) } : {}),
+    })
+  } catch (error) {
+    const timeout =
+      error !== null &&
+      typeof error === 'object' &&
+      'name' in error &&
+      typeof error.name === 'string' &&
+      ['TimeoutError', 'AbortError'].includes(error.name)
+    throw new CounterError(
+      timeout ? 'redis_timeout' : 'redis_network_error',
+      'Redis REST request failed'
+    )
+  }
 
   if (!response.ok) {
-    throw new Error(`KV request failed: ${response.status}`)
+    throw new CounterError(
+      'redis_http_error',
+      `KV request failed: ${response.status}`,
+      response.status
+    )
   }
 
-  const data: unknown = await response.json()
+  let data: unknown
+  try {
+    data = await response.json()
+  } catch {
+    throw new CounterError(
+      'redis_response_invalid',
+      'Invalid Redis counter response'
+    )
+  }
+  if (data && typeof data === 'object' && 'error' in data) {
+    throw new CounterError(
+      'redis_command_error',
+      'Invalid Redis counter response'
+    )
+  }
   if (
     !data ||
     typeof data !== 'object' ||
     !('result' in data) ||
     'error' in data
   ) {
-    throw new Error('Invalid Redis counter response')
+    throw new CounterError(
+      'redis_response_invalid',
+      'Invalid Redis counter response'
+    )
   }
   return data.result
 }
@@ -75,7 +141,7 @@ function parseCount(value: unknown): number {
   const count =
     typeof value === 'string' && /^\d+$/.test(value) ? Number(value) : value
   if (typeof count !== 'number' || !Number.isSafeInteger(count) || count < 0) {
-    throw new Error('Invalid bouquet count')
+    throw new CounterError('counter_value_invalid', 'Invalid bouquet count')
   }
   return count
 }
@@ -101,7 +167,10 @@ async function recordShareInKv(
     ...SHARE_SCRIPT_ARGUMENTS,
   ])
   if (!Array.isArray(result) || result.length !== 2) {
-    throw new Error('Invalid Redis recording response')
+    throw new CounterError(
+      'redis_response_invalid',
+      'Invalid Redis recording response'
+    )
   }
   const [status, value] = result
   if (status === 'counted' || status === 'duplicate') {
@@ -111,12 +180,16 @@ async function recordShareInKv(
     const retryAfter = parseCount(value)
     if (retryAfter > 0 && retryAfter <= 3600) return { status, retryAfter }
   }
-  throw new Error('Invalid Redis recording response')
+  throw new CounterError(
+    'redis_response_invalid',
+    'Invalid Redis recording response'
+  )
 }
 
 function requireLocalFileStorage(): void {
   if (process.env.NODE_ENV === 'production' || process.env.VERCEL) {
-    throw new Error(
+    throw new CounterError(
+      'redis_config_missing',
       'Production bouquet counting requires Redis REST configuration'
     )
   }

@@ -4,6 +4,7 @@ import { getBouquetCount } from '@/lib/counter'
 import { isGiftId, MAX_COUNT_BODY_BYTES } from '@/lib/counter/contract'
 import { counterClientKey } from '@/lib/counter/identity'
 import { recordBouquetShare } from '@/lib/counter/storage'
+import { logCounterFailure } from '@/lib/counter/errors'
 
 const headers = { 'Cache-Control': 'no-store' }
 
@@ -84,10 +85,8 @@ export async function POST(request: Request) {
       )
     }
     return NextResponse.json(result, { headers })
-  } catch {
-    console.error(
-      'Bouquet counter recording failed. Check Redis, trusted client IP, and rate-limit secret configuration.'
-    )
+  } catch (error) {
+    logCounterFailure('recording', error)
     return unavailable()
   }
 }

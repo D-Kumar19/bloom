@@ -134,4 +134,59 @@ describe('counter storage', () => {
     vi.mocked(fetch).mockResolvedValueOnce(new Response('', { status: 503 }))
     await expect(recordBouquetShare(giftId, clientKey)).rejects.toThrow('503')
   })
+
+  it.each([
+    {
+      url: '"https://example.upstash.io"',
+      token: 'credential',
+      code: 'redis_url_invalid',
+    },
+    {
+      url: 'redis://example.upstash.io',
+      token: 'credential',
+      code: 'redis_url_invalid',
+    },
+    {
+      url: 'https://example.upstash.io',
+      token: '"credential"',
+      code: 'redis_token_invalid',
+    },
+    {
+      url: 'https://example.upstash.io',
+      token: ' credential ',
+      code: 'redis_token_invalid',
+    },
+  ])(
+    'diagnoses malformed environment values: $code',
+    async ({ url, token, code }) => {
+      vi.stubEnv('KV_REST_API_URL', url)
+      vi.stubEnv('KV_REST_API_TOKEN', token)
+      await expect(readBouquetCount()).rejects.toMatchObject({ code })
+      expect(fetch).not.toHaveBeenCalled()
+    }
+  )
+
+  it('distinguishes authentication, network, timeout and malformed-response failures', async () => {
+    vi.mocked(fetch).mockResolvedValueOnce(new Response('', { status: 401 }))
+    await expect(readBouquetCount()).rejects.toMatchObject({
+      code: 'redis_http_error',
+      httpStatus: 401,
+    })
+    vi.mocked(fetch).mockRejectedValueOnce(
+      new TypeError('private network details')
+    )
+    await expect(readBouquetCount()).rejects.toMatchObject({
+      code: 'redis_network_error',
+    })
+    vi.mocked(fetch).mockRejectedValueOnce(
+      new DOMException('private timeout details', 'TimeoutError')
+    )
+    await expect(readBouquetCount()).rejects.toMatchObject({
+      code: 'redis_timeout',
+    })
+    vi.mocked(fetch).mockResolvedValueOnce(new Response('not json'))
+    await expect(readBouquetCount()).rejects.toMatchObject({
+      code: 'redis_response_invalid',
+    })
+  })
 })
