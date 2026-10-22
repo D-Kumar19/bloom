@@ -50,6 +50,10 @@ Updated: 2026-10-22. Original audit baseline: `4d610ab`.
 - [Product direction](./product-direction.md): purpose, feature evaluation,
   staged rollout, and media/cost boundaries.
 - [Glossary](./CONTEXT.md): gift, occasion starter, keepsake, and journal terminology.
+- Public contact now has an owner-approved address and a real Contact page.
+  Templates are tracked by L01; standalone Wander destinations by L10.
+  Their footer links now lead to matching sections on a shared Explore guide,
+  with builder and contact links rather than unavailable labels.
 
 ## Resume here
 
@@ -193,8 +197,9 @@ changed. The live website is still running its previously deployed code.
   current local origin. Real deployed URL verification remains open.
 - B07 adds real About and Privacy pages. Unavailable footer sections are
   explicitly nonlinks, with working builder choices distinguished from missing
-  standalone guides. Contact stays unavailable because no approved address
-  was provided. Privacy documents query-link exposure, local draft retention,
+  standalone guides. Contact was initially unavailable; the owner supplied
+  a public address on 2026-10-22, so a Contact page and privacy mail link now
+  replace that placeholder. Privacy documents query-link exposure, local draft retention,
   aggregate counter limitations, and absence of encryption/expiry/revocation.
   Gift responses request no-referrer and no indexing; those are not access
   controls.

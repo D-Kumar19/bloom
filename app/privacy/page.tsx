@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { CONTACT_MAILTO, CONTACT_NAME } from '@/lib/site'
 
 export const metadata = {
   title: 'Privacy',
@@ -54,8 +55,11 @@ export default function PrivacyPage() {
           without names or note text. Pages request no referrer when navigating away.
           These are precautions, not access controls or guarantees that third parties erase links.</p>
       </section>
-      <p>A public contact channel is not available yet. This notice describes the current
-        pre-release; review it again before sharing after future feature changes.</p>
+      <p>Privacy question? Contact{' '}
+        <a href={CONTACT_MAILTO} className="underline">{CONTACT_NAME}</a>.
+        {' '}Please avoid including private gift links or personal notes.
+        This notice describes the current pre-release; review it again before sharing
+        after future feature changes.</p>
       <Link href="/" className="underline">Back to Bloom</Link>
     </main>
   )

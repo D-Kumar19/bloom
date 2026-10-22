@@ -15,6 +15,16 @@ Newer runs cancel superseded CI runs, but not an in-progress draft release.
 The runtime baseline remains Node 20 and pnpm 9.15.9, matching the existing
 Dockerfile. Updating the runtime is a separate compatibility task.
 
+Font assets are bundled locally with their SIL Open Font Licenses. The
+2026-10-22 PR build failed inside Turbopack's `next/font/google` resolver
+with `next/font/google queries have exactly one entry` for Nunito.
+Webpack also failed in the Google font loader, so a bundler switch was not
+retained. Using `next/font/local` removes external font downloads and URL
+parsing from CI, Docker, and Vercel while keeping the existing font families
+and CSS variables. Default Next.js bundlers remain unchanged. Latin glyphs
+are bundled; other scripts use system fallback fonts. See
+[font sources and licences](../app/fonts/README.md).
+
 ## Next release
 
 As of 2026-10-22, the latest published release is `v0.0.3`. The reliability,

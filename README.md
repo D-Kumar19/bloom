@@ -107,7 +107,7 @@ passing CI for the exact commit and never publishes or deploys automatically.
 On the current branch's validation machine (Node 26), tests were run with
 `NODE_OPTIONS=--no-experimental-webstorage npm run test:run`.
 
-Local reliability baseline: **51 test files / 244 tests passing**, plus
+Local reliability baseline: **51 test files / 246 tests passing**, plus
 type-check, lint, and production build. These are automated checks, not
 certification of every mobile browser or the deployed site.
 

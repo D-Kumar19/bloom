@@ -1,16 +1,5 @@
 import type { Metadata } from 'next'
-import {
-  Caveat,
-  Courier_Prime,
-  EB_Garamond,
-  Fraunces,
-  Inter,
-  Lora,
-  Nunito,
-  Playfair_Display,
-  Raleway,
-  Sacramento,
-} from 'next/font/google'
+import localFont from 'next/font/local'
 
 import { AppearanceProvider } from '@/components/ui/AppearanceProvider'
 import { Footer } from '@/components/ui/Footer'
@@ -23,62 +12,76 @@ import { getSiteMetadataBase } from '@/lib/siteUrl'
 
 import './globals.css'
 
-const inter = Inter({
+const inter = localFont({
+  src: './fonts/inter/latin-100-900.woff2',
+  weight: '100 900',
+  display: 'swap',
   variable: '--font-inter',
-  subsets: ['latin'],
 })
 
-const playfair = Playfair_Display({
+const playfair = localFont({
+  src: './fonts/playfairdisplay/latin-400-900.woff2',
+  weight: '400 900',
+  display: 'swap',
   variable: '--font-playfair',
-  subsets: ['latin'],
 })
 
-const fraunces = Fraunces({
+const fraunces = localFont({
+  src: './fonts/fraunces/latin-400.woff2',
+  weight: '400 600',
+  display: 'swap',
   variable: '--font-fraunces',
-  subsets: ['latin'],
-  weight: ['400', '500', '600'],
 })
 
-const lora = Lora({
+const lora = localFont({
+  src: './fonts/lora/latin-400.woff2',
+  weight: '400 500',
+  display: 'swap',
   variable: '--font-lora',
-  subsets: ['latin'],
-  weight: ['400', '500'],
 })
 
-const ebGaramond = EB_Garamond({
+const ebGaramond = localFont({
+  src: './fonts/ebgaramond/latin-400.woff2',
+  weight: '400 500',
+  display: 'swap',
   variable: '--font-eb-garamond',
-  subsets: ['latin'],
-  weight: ['400', '500'],
 })
 
-const nunito = Nunito({
+const nunito = localFont({
+  src: './fonts/nunito/latin-400.woff2',
+  weight: '400 600',
+  display: 'swap',
   variable: '--font-nunito',
-  subsets: ['latin'],
-  weight: ['400', '600'],
 })
 
-const raleway = Raleway({
+const raleway = localFont({
+  src: './fonts/raleway/latin-400.woff2',
+  weight: '400 500',
+  display: 'swap',
   variable: '--font-raleway',
-  subsets: ['latin'],
-  weight: ['400', '500'],
 })
 
-const caveat = Caveat({
+const caveat = localFont({
+  src: './fonts/caveat/latin-400.woff2',
+  weight: '400 600',
+  display: 'swap',
   variable: '--font-caveat',
-  subsets: ['latin'],
-  weight: ['400', '600'],
 })
 
-const sacramento = Sacramento({
-  variable: '--font-sacramento',
-  subsets: ['latin'],
+const sacramento = localFont({
+  src: './fonts/sacramento/latin-400.woff2',
   weight: '400',
+  display: 'swap',
+  variable: '--font-sacramento',
 })
 
-const courierPrime = Courier_Prime({
+const courierPrime = localFont({
+  src: [
+    { path: './fonts/courierprime/latin-400.woff2', weight: '400' },
+    { path: './fonts/courierprime/latin-700.woff2', weight: '700' },
+  ],
+  display: 'swap',
   variable: '--font-courier-prime',
-  subsets: ['latin'],
-  weight: ['400', '700'],
 })
 
 const fontVariables = [

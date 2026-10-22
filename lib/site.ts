@@ -11,6 +11,10 @@ export const COPYRIGHT_LINE =
 
 export const FOOTER_TAGLINE = 'Make them feel chosen from miles away.'
 
+export const CONTACT_NAME = 'Dheeraj Kumar'
+export const CONTACT_EMAIL = 'dheeraj.2.kumar@outlook.com'
+export const CONTACT_MAILTO = `mailto:${CONTACT_EMAIL}`
+
 export const HOME_PRIVACY_LINE =
   'Free to create. No account needed. Anyone with your gift link can open it.'
 

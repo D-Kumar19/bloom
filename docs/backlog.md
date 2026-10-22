@@ -46,6 +46,14 @@ and opt-in audio must not compete with a step's primary task.
   and shell syntax were checked. Hosted execution remains pending
   merge/owner authorization; keep unchecked until then.
   See [release instructions](./releases.md).
+  **Hosted follow-up, 2026-10-22:** the first PR run passed install,
+  type-check, lint, and tests, then failed in Turbopack's Google Fonts
+  resolver. A Webpack trial also failed in the font loader, so it was not
+  retained. Existing Latin font families are now bundled with their open-font
+  licences and loaded through next/font/local, removing build-time Google
+  downloads/parsing. Local retest passed: 51 files / 246 tests, type-check,
+  lint, and production build; all 11 bundled WOFF2 assets returned HTTP 200.
+  Hosted retesting is required before merge.
 
 ## P0 - Reliability before a visual rollout
 
@@ -200,6 +208,15 @@ and opt-in audio must not compete with a step's primary task.
   local retention, and lack of encryption, expiry, or revocation.
   Gift HTTP responses use no-referrer and noindex/nofollow/noarchive; social
   previews are generic. These precautions are not access controls.
+  **Contact follow-up, 2026-10-22:** owner approved the public address
+  dheeraj.2.kumar@outlook.com for Dheeraj Kumar. Added a real Contact page,
+  footer navigation, and privacy contact link. Playful lunch copy is not a
+  response-time promise. Templates and standalone Wander guides remain open
+  under L01 and L10 respectively.
+  **Footer follow-up, 2026-10-22:** replaced unavailable labels with links
+  to matching sections on a shared Explore guide. It explains current builder
+  choices and links to creation/contact without pretending the full discovery
+  pages or selectable template collection are shipped. L01/L10 remain open.
 
 - [x] B08 - Accessible controls and dialogs.
   Covers ISSUE-011. Entry points: [modal](../components/ui/Modal.tsx),
@@ -232,6 +249,14 @@ and opt-in audio must not compete with a step's primary task.
   duplicate pending failure, switching, muting, stale promises, and cleanup.
 
 - [ ] B10 - Repeat the production release checks after fixes.
+  **Owner preview smoke pass, 2026-10-22:** reported working full gift flow,
+  draft recovery, both copy actions, recipient experience, PNG downloading,
+  audio, pages, mobile keyboard, light/dark appearance, and the 200-word
+  gate (extra text preserved; Continue blocked). Device/browser versions,
+  export visual fidelity, failure states, and real Redis acceptance are not
+  established by that report; keep this release gate open. An old recipient
+  name on a new laptop needs distinguishing browser autofill/imported profile
+  state from a preset URL; no account-backed cross-device history exists.
   Extend existing verification rather than treating an already-live site as an
   undeployed project. Check configured origin and both clipboard actions in a
   fresh browser profile; open the copied gift in a separate signed-out context.
@@ -303,6 +328,11 @@ Content, starters, personal details, and catalog additions are candidates, not
 a commitment to ship everything. Validate usefulness and simplicity first.
 
 - [ ] L01 - Ship editable occasion starters, not fixed recipient preferences.
+  **Includes the currently unavailable footer Templates destination.**
+  The footer currently links to an honest introductory Templates section on
+  the shared Explore page, not a selectable gallery. Replace it with the
+  usable templates/starter entry point and verify selecting a starter enters an editable builder
+  without silently overwriting an existing draft.
   Follow the [product direction](./product-direction.md). Reuse selected existing
   moments/guides after navigation decisions. Offer useful presentation defaults,
   optional prompts, and an obvious bouquet swap even when opening at the note
@@ -337,6 +367,18 @@ a commitment to ship everything. Validate usefulness and simplicity first.
   Verify titles/descriptions and OG previews on shipped pages; evaluate a proper
   1200 x 630 branded image. New guide/about pages need metadata if implemented.
   Recipient privacy/indexing decisions take precedence over SEO.
+
+- [ ] L10 - Complete standalone Wander discovery pages.
+  Explicitly covers footer Flowers, Note styles, Backdrops, and Ambient sound.
+  The corresponding builder choices already work; what is missing is their
+  standalone discovery/guide destinations. Reuse the actual catalogs and
+  previews, provide a clear path into the builder, and avoid duplicate
+  selection stages. Describe sound as optional and respect playback rules.
+  Verify content accuracy, desktop/mobile and keyboard access, metadata, and
+  all four footer links before replacing the introductory shared Explore
+  sections with full discovery pages. Coordinate
+  flower descriptions with L05 and the approved redesign; not a blocker for
+  the current reliability release.
 
 ## Final phase - Standout features
 

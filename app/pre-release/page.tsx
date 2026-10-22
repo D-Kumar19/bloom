@@ -32,7 +32,8 @@ export default function PreReleasePage() {
         fancy bits when they stop wobbling.
       </p>
       <p className="mt-8 rounded-2xl border border-bloom-rose/20 bg-surface px-5 py-4 text-sm leading-relaxed text-bloom-ink/75">
-        A public contact channel is not available yet. Read{' '}
+        Have a question? <Link href="/contact" className="underline">Contact Dheeraj</Link>.
+        {' '}Read{' '}
         <Link href="/privacy" className="underline">how gift links and drafts work</Link>
         {' '}before sharing anything sensitive.
       </p>

@@ -7,33 +7,27 @@ import { COPYRIGHT_LINE } from '@/lib/site'
 
 const sections = [
   { title: 'Wander', items: [
-    { label: 'Flowers' }, { label: 'Note styles' }, { label: 'Backdrops' }, { label: 'Ambient sound' },
+    { label: 'Flowers', href: '/explore#flowers' },
+    { label: 'Note styles', href: '/explore#note-styles' },
+    { label: 'Backdrops', href: '/explore#backdrops' },
+    { label: 'Ambient sound', href: '/explore#ambient-sound' },
   ] },
   { title: 'Create', items: [
-    { label: 'New bouquet', href: '/create' }, { label: 'Templates' },
+    { label: 'New bouquet', href: '/create' }, { label: 'Templates', href: '/explore#templates' },
   ] },
   { title: 'Small print', items: [
-    { label: 'About', href: '/about' }, { label: 'Privacy', href: '/privacy' }, { label: 'Contact' },
+    { label: 'About', href: '/about' }, { label: 'Privacy', href: '/privacy' }, { label: 'Contact', href: '/contact' },
   ] },
-] satisfies { title: string; items: { label: string; href?: string }[] }[]
+] satisfies { title: string; items: { label: string; href: string }[] }[]
 
 function FooterLinks() {
   return sections.map(section => (
     <div key={section.title}>
       <h2 className="font-display text-sm text-bloom-ink">{section.title}</h2>
-      {section.title === 'Wander' ? (
-        <p className="mt-2 text-xs text-bloom-ink/70">
-          Standalone guides are not ready. These choices are available in the builder.
-        </p>
-      ) : null}
       <ul className="mt-3 space-y-2 text-sm">
         {section.items.map(item => (
           <li key={item.label}>
-            {'href' in item && item.href ? (
-              <Link href={item.href} className="text-bloom-ink/80 hover:underline">{item.label}</Link>
-            ) : (
-              <span className="text-bloom-ink/70">{item.label} <span className="text-xs">(not available yet)</span></span>
-            )}
+            <Link href={item.href} className="text-bloom-ink/80 hover:underline">{item.label}</Link>
           </li>
         ))}
       </ul>
