@@ -29,7 +29,8 @@ are bundled; other scripts use system fallback fonts. See
 
 As of 2026-10-22, the latest published release is `v0.0.3`. The reliability,
 counter-protection, documentation, and CI changes are intended for a patch
-release, **`v0.0.4`**, after CI and deployment acceptance pass.
+release, **`v0.0.4`**, published by the owner on 2026-10-22.
+See the [published release](https://github.com/D-Kumar19/bloom/releases/tag/v0.0.4).
 The private application's existing package version is `0.1.0`; it predates
 this release decision and is not the source of truth for GitHub release tags.
 The draft workflow takes an explicit version and does not change that field.
@@ -90,8 +91,17 @@ and 16 shell simulations passed for validation gates, creation flags, and
 draft verification. Action pins, permissions, timeouts, checkout credential
 settings, and shell syntax were also checked.
 
-These checks do not prove GitHub permissions or API behavior at runtime.
-After merging, verify the first complete hosted CI run, then explicitly
-authorize a draft run and inspect its generated notes and exact target.
-Production Redis/origin checks and real-device acceptance remain separate
-release gates; a successful CI run does not close B01/B05/B06/B10.
+Hosted verification passed on 2026-10-22 after PR #3 merged:
+[main CI](https://github.com/D-Kumar19/bloom/actions/runs/39773818563)
+passed verification and Docker, and the
+[draft workflow](https://github.com/D-Kumar19/bloom/actions/runs/39774086677)
+created and verified `v0.0.4` targeting `22d74bb13851fe08b4b1a75838b69da779ec3e5d`.
+Vercel reported a successful production deployment.
+
+The owner confirmed production Redis, once-only repeated copying, and correct
+working links, and explicitly closed CI01/B01/B05/B06/B10. This sign-off builds
+on earlier gift-flow smoke checks and local regression evidence; it does not
+claim independent production load testing or exhaustive device/social-crawler
+coverage. Operational follow-up is tracked under O01 in the
+[backlog](./backlog.md). The owner subsequently published `v0.0.4`; the
+draft-only automation did not publish it.
