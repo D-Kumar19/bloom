@@ -2,6 +2,7 @@ import LZString from 'lz-string'
 
 import { bouquetExists } from '@/lib/bouquets'
 import { getSiteOrigin } from '@/lib/siteUrl'
+import { isGiftId } from '@/lib/counter/contract'
 import type { BouquetState } from '../types'
 
 const LEGACY_PHOTO_CARD_ID = 'photo-card'
@@ -23,6 +24,7 @@ export function isValidBouquetDraft(value: unknown): value is BouquetState {
   }
 
   return (
+    (state.giftId === undefined || isGiftId(state.giftId)) &&
     typeof state.bouquetId === 'string' &&
     bouquetExists(state.bouquetId) &&
     typeof state.cardStyle === 'string' &&

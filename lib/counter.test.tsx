@@ -6,7 +6,7 @@ import { readBouquetCount } from '@/lib/counter/storage'
 
 vi.mock('@/lib/counter/storage', () => ({
   readBouquetCount: vi.fn(),
-  incrementBouquetCountValue: vi.fn(),
+  recordBouquetShare: vi.fn(),
 }))
 
 describe('optional counter reads', () => {
@@ -22,7 +22,7 @@ describe('optional counter reads', () => {
       screen.getByText('Bouquet count temporarily unavailable')
     ).toBeInTheDocument()
     expect(
-      screen.queryByText('Be the first to send a bouquet with love')
+      screen.queryByText('Be the first to prepare a bouquet to share')
     ).not.toBeInTheDocument()
     expect(
       screen.getByRole('link', { name: 'Create your bouquet' })

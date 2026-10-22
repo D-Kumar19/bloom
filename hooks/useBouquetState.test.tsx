@@ -17,6 +17,28 @@ describe('builder draft recovery', () => {
     vi.restoreAllMocks()
   })
 
+  it('keeps a gift ID across edits/reloads, but replaces it for a new bouquet or preset', async () => {
+    const first = renderHook(useBouquetState)
+    await waitFor(() => expect(first.result.current.ready).toBe(true))
+    const id = first.result.current.state.giftId
+    expect(id).toMatch(/^[0-9a-f-]{36}$/)
+    act(() => first.result.current.setTo('An edit'))
+    await waitFor(() => expect(localStorage.getItem(BUILDER_DRAFT_STORAGE_KEY)).toContain(id!))
+    first.unmount()
+    const restored = renderHook(useBouquetState)
+    await waitFor(() => expect(restored.result.current.ready).toBe(true))
+    expect(restored.result.current.state.giftId).toBe(id)
+    act(() => restored.result.current.startNewBouquet())
+    expect(restored.result.current.state.giftId).not.toBe(id)
+    const preset = encodeBouquet({ ...restored.result.current.state, from: 'Alex' })
+    const presetId = restored.result.current.state.giftId
+    restored.unmount()
+    window.history.replaceState({}, '', `/create?preset=${preset}`)
+    const fromPreset = renderHook(useBouquetState)
+    await waitFor(() => expect(fromPreset.result.current.ready).toBe(true))
+    expect(fromPreset.result.current.state.giftId).not.toBe(presetId)
+  })
+
   it('saves partial edits and the current step, without overwriting them on remount', async () => {
     const first = renderHook(useBouquetState)
     await waitFor(() => expect(first.result.current.ready).toBe(true))

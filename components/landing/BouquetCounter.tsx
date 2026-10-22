@@ -54,8 +54,8 @@ export function BouquetCounter({
             {formatted}
           </span>{' '}
           {initialCount === 0
-            ? 'Be the first to send a bouquet with love'
-            : 'bouquets sent so far'}
+            ? 'Be the first to prepare a bouquet to share'
+            : 'bouquets prepared to share'}
         </>
       )}
     </p>

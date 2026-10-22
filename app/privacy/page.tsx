@@ -25,16 +25,25 @@ export default function PrivacyPage() {
           the last edit. Starting a new bouquet removes that draft. Expired drafts are
           removed when you next open the builder, not by a background timer.
           Shared-device users may be able to read local drafts. Clearing site data removes them.</p>
-        <p>Bloom also stores your appearance preference and uses session storage to remember
-          copied-gift fingerprints and preview return state. The current counter does not
+        <p>Bloom also stores your appearance preference and up to 500 recently counted gift
+          IDs in local storage, and uses session storage for preview return state. The counter does not
           require a tracking cookie. If storage is blocked, draft recovery may not work.</p>
       </section>
       <section className="space-y-2">
         <h2 className="font-display text-2xl">The shared counter and downloads</h2>
-        <p>Copying a gift link attempts to increment an aggregate counter stored in Redis
-          when configured. That request does not include your note or names. It does not prove
-          that a recipient received or opened a gift. Deduplication is best-effort within
-          your browser session, not an exact delivery measurement.</p>
+        <p>The first successful copy of a bouquet&apos;s link or message attempts to record
+          one bouquet prepared to share. Repeated copies, edits, and retries keep the same
+          random gift ID and do not add another count. Starting a new bouquet gives it a new
+          ID. This does not prove that a recipient received or opened the gift.</p>
+        <p>The counting request includes only that ID, not your note or names. Redis retains
+          an aggregate total and a permanent counted-ID marker to prevent duplicate increments.
+          Historical totals are preserved and were collected under earlier counting rules.</p>
+        <p>To limit abuse, the server derives a keyed hash from the client IP supplied by
+          Vercel. Redis stores short-lived quota keys based on that hash, not the raw IP:
+          10 valid counting requests per fixed minute and 50 per fixed hour, including
+          duplicates. People on a shared network share these limits. Quota keys expire at
+          their window boundary. Hosting providers may separately retain IPs in logs.
+          A failed or limited count does not stop you copying or opening a gift.</p>
         <p>Saved images are generated in your browser; Bloom does not upload the resulting
           image to a gift database. Bouquet images, fonts, and audio are requested from the site.
           Hosting providers still process ordinary request information such as IP addresses.</p>

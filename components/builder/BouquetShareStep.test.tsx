@@ -60,4 +60,17 @@ describe('BouquetShareStep', () => {
     await waitFor(() => expect(writeText).toHaveBeenCalledTimes(2))
     expect(recordBouquetSentOnce).toHaveBeenCalledTimes(2)
   })
+
+  it('does not count viewing a preview or a failed clipboard write', async () => {
+    vi.mocked(recordBouquetSentOnce).mockClear()
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText: vi.fn().mockRejectedValue(new Error('Clipboard blocked')) },
+    })
+    render(<BouquetShareStep state={baseState} onCreateAnother={vi.fn()} />)
+    expect(recordBouquetSentOnce).not.toHaveBeenCalled()
+    fireEvent.click(screen.getByTestId('copy-link-button'))
+    await waitFor(() => expect(screen.getByTestId('copy-link-button')).toBeEnabled())
+    expect(recordBouquetSentOnce).not.toHaveBeenCalled()
+  })
 })

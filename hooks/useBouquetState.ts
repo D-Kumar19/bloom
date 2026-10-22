@@ -85,6 +85,11 @@ export function useBouquetState() {
       } catch {
         reportStorageError()
       }
+      const restoredId = initialState.giftId
+      initialState = {
+        ...initialState,
+        giftId: initializedFromLink ? crypto.randomUUID() : restoredId ?? crypto.randomUUID(),
+      }
       if (initializedFromLink) {
         // Presets initialize once; reloads must recover the user's subsequent edits.
         params.delete('preset')
@@ -95,7 +100,7 @@ export function useBouquetState() {
           '',
           `${window.location.pathname}${search}${window.location.hash}`,
         )
-      } else {
+      } else if (restoredId) {
         lastSaved.current = JSON.stringify({
           state: initialState,
           step: initialStep,
@@ -207,11 +212,12 @@ export function useBouquetState() {
     } catch {
       reportStorageError()
     }
+    const newState = { ...DEFAULT_STATE, giftId: crypto.randomUUID() }
     lastSaved.current = JSON.stringify({
-      state: DEFAULT_STATE,
+      state: newState,
       step: 'bouquet',
     })
-    setState(DEFAULT_STATE)
+    setState(newState)
     setStep('bouquet')
   }, [reportStorageError])
 

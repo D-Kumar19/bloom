@@ -5,7 +5,7 @@ and design decisions; chat history is not required to understand the next step.
 
 ## Current state
 
-Updated: 2026-10-19. Baseline checkout: `4d610ab`.
+Updated: 2026-10-22. Original audit baseline: `4d610ab`.
 
 - The account-free bouquet creation, sharing, and recipient reveal flow exists.
 - The audit identified 13 findings: four high and nine medium.
@@ -16,8 +16,12 @@ Updated: 2026-10-19. Baseline checkout: `4d610ab`.
   (B04), honest pages/navigation (B07), reported control/dialog fixes (B08),
   and audio failure/retry (B09). B06's origin/generic-preview changes are
   implemented and locally verified; deployed copied/OG URLs are still pending.
-  B05 remains deferred until deployment by owner decision.
-- No application changes from this session have been committed or deployed.
+  B05's semantics, atomic gift-ID deduplication, and abuse limits were
+  implemented locally on 2026-10-22; configuration and deployed acceptance
+  remain pending. See [counter policy](./counter.md).
+- The earlier reliability fixes are committed on `fix/reliability`; README,
+  CI/release automation, and B05 changes are local follow-up work. Nothing
+  from this work has been pushed or deployed.
 - The owner selected a **florist's worktable** design direction: tactile,
   intimate, restrained, with purposeful animation and commercial-quality polish.
 - Keep the current source layout. No framework migration or rewrite is approved.
@@ -26,7 +30,8 @@ Updated: 2026-10-19. Baseline checkout: `4d610ab`.
   redesign, and polish. See the backlog; neither is being implemented now.
 - Product discovery now includes editable occasion starters, clearer descriptions,
   gentle facts/humor, personal details, curated collections, and a final-phase
-  owned domain. Photo/voice uploads and pricing remain conditional research,
+  owned domain (S03 deferred on 2026-10-22; keep the free Vercel address).
+  Photo/voice uploads and pricing remain conditional research,
   not approved infrastructure or paid-feature commitments.
 - Simplicity means a clear pipeline, not a three-screen target: five steps are
   welcome with one primary purpose each. Avoid multiple equal selection tasks
@@ -64,9 +69,9 @@ studies.
 2. Deploy the reliability changes, then complete B06's real copied/OG-origin
    checks and B10's release checks, including draft recovery, the 200-word
    behavior, actual PNG downloads, audio failures, and real mobile browsers.
-3. Resume B05's counter-semantics decision at deployment. Before a visual
-   rollout, gather references and prepare composition studies under the
-   approved design direction.
+3. Complete B05's [deployment checklist](./counter.md#deployment-checklist-owner-action):
+   configure the rate-limit secret and edge protection, then verify Redis
+   duplicates/quotas and the retained historical total.
 4. Get approval for the actual compositions and motion prototype before
    rebuilding the complete site. A direction is not an approved screen design.
 

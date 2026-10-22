@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { connection } from 'next/server'
 
 import { FooterBrand } from '@/components/ui/FooterBrand'
 import { getBouquetCount } from '@/lib/counter'
@@ -41,6 +42,7 @@ function FooterLinks() {
 }
 
 export async function Footer() {
+  await connection()
   const bouquetCount = await getBouquetCount()
   return (
     <footer className="mt-auto border-t border-bloom-rose/15 bg-surface-muted px-4 py-8 lg:py-12">

@@ -4,6 +4,7 @@ import { Footer } from '@/components/ui/Footer'
 import PrivacyPage from '@/app/privacy/page'
 
 vi.mock('@/lib/counter', () => ({ getBouquetCount: vi.fn().mockResolvedValue(null) }))
+vi.mock('next/server', () => ({ connection: vi.fn().mockResolvedValue(undefined) }))
 describe('honest navigation and privacy', () => {
   it('links to real pages and labels unavailable destinations rather than redirecting elsewhere', async () => {
     render(await Footer())

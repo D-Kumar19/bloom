@@ -1,6 +1,6 @@
 # Open work
 
-Updated: 2026-10-19. B02 and B03 are implemented and verified locally.
+Updated: 2026-10-22. B02 and B03 are implemented and verified locally.
 B01's code is implemented; production persistence remains blocked on deployment
 access/configuration. No changes have been deployed from this session.
 Evidence and caveats: [audit](./audit.md). Design decisions:
@@ -16,6 +16,36 @@ All optional feature ideas
 are subject to the [simplicity constraint](./product-direction.md#simplicity-constraint---owner-decision-2026-10-19).
 Do not add photo/voice stages everyone must visit or skip. Advanced controls
 and opt-in audio must not compete with a step's primary task.
+
+## Documentation polish
+
+- [x] DOC01 - Give the public README a visual, useful project introduction.
+  **Completed: 2026-10-22.** Uses existing bouquet artwork, a scannable gift
+  walkthrough, emojis, and expandable developer/deployment details. Explain
+  the implementation depth without presenting planned features as shipped.
+  Verified all 17 repository-relative links/artwork paths and clean diff
+  whitespace; checked product claims against implementation documentation.
+  Preserves the production-counter caveat and privacy boundaries. No
+  application redesign or new product behavior is included. Final visual
+  review in GitHub's renderer remains part of publication.
+
+## Release automation
+
+- [ ] CI01 - Harden verification and automate reviewed draft releases.
+  **Implemented locally: 2026-10-22; hosted verification pending.**
+  Pin actions to verified full commit SHAs, limit
+  permissions, bound job duration, and retain frozen installs, type-check,
+  lint, tests, Next.js build, and the main-branch Docker build. Add weekly
+  action-update proposals and a main-only manual draft workflow that requires
+  successful push CI for the exact target commit, rejects duplicate versions,
+  generates notes, and verifies that the release remains a draft. No automatic
+  publication or Vercel deployment. Actionlint v1.7.7 passed for both
+  workflows. Sixteen local shell simulations passed: version/branch/CI/API
+  rejection paths, stable/prerelease creation flags, and draft/target/version
+  verification. SHA pins, permissions, timeouts, checkout credential settings,
+  and shell syntax were checked. Hosted execution remains pending
+  merge/owner authorization; keep unchecked until then.
+  See [release instructions](./releases.md).
 
 ## P0 - Reliability before a visual rollout
 
@@ -114,8 +144,29 @@ and opt-in audio must not compete with a step's primary task.
   Choose copied/shared/opened metric; do not claim delivery that is unobservable.
   Define repeated gifts, multiple recipients, sessions, concurrent clicks, and
   retry idempotency. Display fresh data where promised, not a build snapshot.
-  **Owner decision 2026-10-19:** leave this pending until deployment. No metric,
-  idempotency, or freshness policy is changed in this phase.
+  **Owner decision and local implementation 2026-10-22:** count the first
+  successful clipboard copy for a stable random draft ID; repeated copies,
+  edits, reloads, and response-loss retries cannot increment that ID again.
+  Starting a new bouquet/preset creates a new ID. Label the total "bouquets
+  prepared to share"; retain historical counts under their earlier rules.
+  Redis atomically enforces permanent gift-ID deduplication and per-HMAC-IP
+  fixed-window quotas of 10 requests/minute and 50/hour, including duplicates.
+  The JSON-only API bounds bodies at 128 bytes and returns 429/Retry-After
+  when limited. Browser deduplication/cooldown avoids redundant requests.
+  Footer counts render at request time, not build time; an open/reused page
+  is not live-polled. Copying never waits for counting.
+  **Local verification:** 51 files / 244 tests, type-check, lint, and build
+  passed. A production-build HTTP probe against an isolated miniredis Lua/REST
+  fixture verified 30 concurrent duplicates add one, a 100-request burst
+  admits 10/rejects 90, the 50/hour limit and recovery, retained totals/IDs
+  across an app restart, fresh request-time footer data, and controlled
+  outage responses. This is a Redis-compatible emulator, not real Upstash
+  or Vercel acceptance.
+  **Pending production acceptance:** configure the server-only secret and
+  Vercel edge rule, verify real Redis scripts, trusted client IPs, cross-instance
+  duplicates/quotas, and preserve the live total. See [counter policy and
+  checklist](./counter.md). Keep unchecked until those checks pass; this
+  supersedes the earlier deployment-only deferral.
 
 - [ ] B06 - Correct origin and social previews.
   Covers ISSUE-005. Entry points: [origin](../lib/siteUrl.ts),
@@ -289,7 +340,7 @@ a commitment to ship everything. Validate usefulness and simplicity first.
 
 ## Final phase - Standout features
 
-Owner-approved roadmap additions S01-S03, recorded 2026-10-19. Implement at the end,
+Owner-approved roadmap additions S01-S02, recorded 2026-10-19. Implement at the end,
 after reliability fixes, the approved redesign, and core product polish.
 These are not prerequisites for the initial redesigned release.
 
@@ -311,11 +362,17 @@ These are not prerequisites for the initial redesigned release.
   labels: creation/copying is not proof of sending, delivery, or opening.
   Deleting a journal entry must not imply revoking an existing encoded link.
 
+### Deferred - Optional domain ownership
+
 - [ ] S03 - Select and connect an owned production domain.
-  Final brand/launch task. Shortlist names and renewal costs; get owner approval
-  before purchase. Do not assume ownership of bloom.app. Configure DNS/TLS,
-  canonical/share/OG origins, old-host redirects, and future sign-in callbacks.
-  Verify old gift links still work where their host remains controlled.
+  **Deferred by owner, 2026-10-22:** annual registration/renewal costs are not
+  justified for this personal project. Keep the free Vercel address and the
+  Bloom name. This is not a publishing, redesign, or release prerequisite;
+  revisit only if the owner wants to pay for domain ownership later.
+  If resumed: shortlist names and renewal costs, get purchase approval,
+  configure DNS/TLS and canonical/share/OG origins, assess redirects and
+  sign-in callbacks, and verify old gift links where their host remains
+  controlled. Do not assume ownership of bloom.app.
 
 ### Standout idea parking lot - not approved release scope
 

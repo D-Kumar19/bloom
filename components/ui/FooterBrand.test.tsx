@@ -13,7 +13,7 @@ describe('FooterBrand', () => {
     )
 
     expect(screen.getByTestId('site-logo')).toBeInTheDocument()
-    expect(screen.getByText(/bouquets sent so far/)).toBeInTheDocument()
+    expect(screen.getByText(/bouquets prepared to share/)).toBeInTheDocument()
     expect(screen.queryByTestId('theme-toggle')).not.toBeInTheDocument()
   })
 })

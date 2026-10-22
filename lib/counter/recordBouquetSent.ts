@@ -1,78 +1,106 @@
-import { encodeBouquet } from '@/lib/sharing'
+import { isGiftId, type CountResult } from './contract'
 import type { BouquetState } from '@/lib/types'
 
-const SESSION_KEY = 'bloom-counted-fingerprints'
+const STORAGE_KEY = 'bloom-counted-gift-ids'
+const MAX_REMEMBERED = 500
 const countedInMemory = new Set<string>()
 const inFlight = new Map<string, Promise<void>>()
+let limitedUntil = 0
 
-function readCountedFingerprints(): Set<string> {
+function readCountedIds(): string[] {
   try {
-    const raw = sessionStorage.getItem(SESSION_KEY)
-    if (!raw) {
-      return new Set()
-    }
-
+    const raw = localStorage.getItem(STORAGE_KEY)
+    if (!raw) return []
     const parsed: unknown = JSON.parse(raw)
-    if (
-      !Array.isArray(parsed) ||
-      !parsed.every((value) => typeof value === 'string')
-    ) {
-      throw new Error('Invalid counted fingerprints')
+    if (!Array.isArray(parsed) || !parsed.every(isGiftId)) {
+      throw new Error('Invalid counted gift IDs')
     }
-    return new Set(parsed)
+    return parsed.slice(-MAX_REMEMBERED)
   } catch {
-    console.warn('Bouquet counter session storage could not be read.')
-    return new Set()
+    console.warn('Bouquet counter local storage could not be read.')
+    return []
   }
 }
 
-function writeCountedFingerprints(fingerprints: Set<string>): void {
-  try {
-    sessionStorage.setItem(SESSION_KEY, JSON.stringify([...fingerprints]))
-  } catch {
-    console.warn('Bouquet counter session storage could not be saved.')
-  }
+function isCountResponse(
+  value: unknown
+): value is Exclude<CountResult, { status: 'limited' }> {
+  return Boolean(
+    value &&
+    typeof value === 'object' &&
+    'status' in value &&
+    (value.status === 'counted' || value.status === 'duplicate') &&
+    'count' in value &&
+    typeof value.count === 'number' &&
+    Number.isSafeInteger(value.count) &&
+    value.count >= 0
+  )
 }
 
-export function bouquetCountFingerprint(state: BouquetState): string {
-  return encodeBouquet(state)
-}
-
-/** Records one bouquet in the all-time counter when the user shares a link. */
+/** Records the first successful copy for a draft, not confirmed delivery. */
 export function recordBouquetSentOnce(state: BouquetState): Promise<void> {
-  const fingerprint = bouquetCountFingerprint(state)
-  const counted = readCountedFingerprints()
-
-  if (counted.has(fingerprint) || countedInMemory.has(fingerprint)) {
+  const id = state.giftId
+  if (!isGiftId(id)) {
+    console.error(
+      'Bouquet counter requires a stable gift ID; sharing is unaffected.'
+    )
     return Promise.resolve()
   }
-  const pending = inFlight.get(fingerprint)
-  if (pending) {
-    return pending
+  if (
+    countedInMemory.has(id) ||
+    readCountedIds().includes(id) ||
+    Date.now() < limitedUntil
+  ) {
+    return Promise.resolve()
   }
+  const pending = inFlight.get(id)
+  if (pending) return pending
 
-  const recording = (async () => {
-    try {
-      const response = await fetch('/api/count', {
-        method: 'POST',
-        keepalive: true,
-        signal: AbortSignal.timeout(4000),
-      })
-      if (!response.ok) {
-        throw new Error(`Counter returned ${response.status}`)
+  // Defer execution so even a synchronous fetch error cannot leave a stale entry.
+  const recording = Promise.resolve()
+    .then(async () => {
+      try {
+        const response = await fetch('/api/count', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ giftId: id }),
+          keepalive: true,
+          signal: AbortSignal.timeout(4000),
+        })
+        if (response.status === 429) {
+          const seconds = Number(response.headers.get('Retry-After'))
+          if (!Number.isInteger(seconds) || seconds < 1 || seconds > 3600) {
+            throw new Error('Invalid counter rate-limit response')
+          }
+          limitedUntil = Date.now() + seconds * 1000
+          console.warn(
+            'Bouquet counter is rate limited; sharing is unaffected.'
+          )
+          return
+        }
+        if (!response.ok || !isCountResponse(await response.json())) {
+          throw new Error('Counter could not confirm recording')
+        }
+        countedInMemory.add(id)
+        if (countedInMemory.size > MAX_REMEMBERED) {
+          const oldest = countedInMemory.values().next().value
+          if (oldest) countedInMemory.delete(oldest)
+        }
+        try {
+          const ids = [...new Set([...readCountedIds(), id])].slice(
+            -MAX_REMEMBERED
+          )
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(ids))
+        } catch {
+          console.warn('Bouquet counter local storage could not be saved.')
+        }
+      } catch {
+        console.error(
+          'Bouquet count could not be recorded; the copied gift link is unaffected.'
+        )
       }
-      countedInMemory.add(fingerprint)
-      const latest = readCountedFingerprints()
-      latest.add(fingerprint)
-      writeCountedFingerprints(latest)
-    } catch {
-      console.error(
-        'Bouquet count could not be recorded; the copied gift link is unaffected.'
-      )
-    }
-  })().finally(() => {
-    inFlight.delete(fingerprint)
-  })
-  inFlight.set(fingerprint, recording)
+    })
+    .finally(() => inFlight.delete(id))
+  inFlight.set(id, recording)
   return recording
 }

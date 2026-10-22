@@ -19,6 +19,15 @@ describe('encodeBouquet', () => {
     expect(decoded).toEqual(sampleState)
   })
 
+  it('round-trips a stable gift ID while preserving legacy links without one', () => {
+    const withId = { ...sampleState, giftId: '12345678-1234-4234-8234-123456789012' }
+    expect(decodeBouquet(encodeBouquet(withId))).toEqual(withId)
+    expect(decodeBouquet(encodeBouquet(sampleState))?.giftId).toBeUndefined()
+  })
+
+  it('rejects an invalid supplied gift ID', () => {
+    expect(decodeBouquet(encodeBouquet({ ...sampleState, giftId: 'not-a-uuid' }))).toBeNull()
+  })
   it('returns null for corrupted hash without throwing', () => {
     expect(() => decodeBouquet('not-a-valid-hash')).not.toThrow()
     expect(decodeBouquet('not-a-valid-hash')).toBeNull()
