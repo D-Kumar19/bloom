@@ -262,12 +262,6 @@ export function BouquetViewer() {
             ) : null}
           </div>
 
-          {canAdvanceReveal ? (
-            <button type="button" className={`mx-auto mt-5 min-h-11 px-4 text-sm underline underline-offset-4 ${tone.body}`} onClick={openEntireGift}>
-              Open everything now
-            </button>
-          ) : null}
-
           {canAdvanceReveal && beat > 0 ? (
             <p
               className={`mx-auto mt-4 w-fit rounded-full px-4 py-1.5 text-center text-xs font-medium backdrop-blur-sm ${tone.hint} ${tone.hintScrim}`}
@@ -276,6 +270,16 @@ export function BouquetViewer() {
             </p>
           ) : null}
         </div>
+
+        {canAdvanceReveal ? (
+          <button
+            type="button"
+            className={`mx-auto mt-5 min-h-11 px-4 text-sm underline underline-offset-4 ${tone.body}`}
+            onClick={openEntireGift}
+          >
+            Open everything now
+          </button>
+        ) : null}
 
         {revealComplete ? (
           <p className={`mt-6 text-center text-sm italic ${tone.body}`}>

@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import { useMemo, useState } from 'react'
 
+import { BouquetHero } from '@/components/bouquet/BouquetHero'
 import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
 import {
@@ -49,14 +50,12 @@ function BouquetDetailModal({
       onClose={onClose}
       title={bouquet.name}
     >
-      <div className="relative mx-auto mb-4 aspect-square w-full max-w-xs overflow-hidden rounded-2xl bg-gradient-to-b from-bloom-cream to-white shadow-md">
-        <Image
-          src={bouquet.thumbnailImage}
-          alt={bouquet.name}
-          fill
-          unoptimized
-          sizes="320px"
-          className="object-cover"
+      <div className="mx-auto mb-4 w-full max-w-xs">
+        <BouquetHero
+          bouquetId={bouquet.id}
+          theme="warm"
+          showBackdrop={false}
+          presentation="flat"
         />
       </div>
       <p className="text-sm font-medium text-bloom-ink/80">{bouquet.tagline}</p>
@@ -175,17 +174,19 @@ export function BouquetGalleryPicker({ selectedId, onSelect }: BouquetGalleryPic
                 type="button"
                 data-testid={`bouquet-image-${bouquet.id}`}
                 onClick={() => setDetailBouquet(bouquet)}
-                className="group relative aspect-[2/3] w-full text-left"
+                className="bloom-artwork group relative w-full text-left"
               >
-                <Image
-                  src={bouquet.heroImage}
-                  alt={bouquet.name}
-                  fill
-                  loading={index < 4 ? 'eager' : 'lazy'}
-                  sizes="(max-width: 768px) 50vw, 240px"
-                  className="object-contain"
-                />
-                <span className="absolute top-2 right-2 rounded-full bg-surface-muted px-2.5 py-1 text-[10px] font-semibold tracking-normal text-brand-pink shadow-sm opacity-95 transition group-hover:opacity-100 md:text-xs">
+                <span className="relative block aspect-[2/3] w-full">
+                  <Image
+                    src={bouquet.heroImage}
+                    alt={bouquet.name}
+                    fill
+                    loading={index < 4 ? 'eager' : 'lazy'}
+                    sizes="(max-width: 640px) 50vw, (max-width: 1100px) 33vw, 320px"
+                    className="object-contain"
+                  />
+                </span>
+                <span className="mt-2 block text-center text-xs font-medium text-[#512141] underline underline-offset-4">
                   Tap to learn
                 </span>
               </button>

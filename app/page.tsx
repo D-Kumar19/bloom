@@ -43,11 +43,11 @@ export default async function LandingPage() {
         </div>
         <div className="bloom-home__gallery" aria-label="A little of what you can send">
           <p className="bloom-home__aside">For a brighter day.</p>
-          <figure className="bloom-home__photo bloom-home__photo--main">
+          <figure className="bloom-artwork bloom-home__photo bloom-home__photo--main">
             <Image src={primary.heroImage} alt={primary.name} width={1024} height={1536}
               priority sizes="(max-width: 760px) 58vw, 32vw" />
           </figure>
-          <figure className="bloom-home__photo bloom-home__photo--small">
+          <figure className="bloom-artwork bloom-home__photo bloom-home__photo--small">
             <Image src={secondary.heroImage} alt={secondary.name} width={1024} height={1536}
               sizes="(max-width: 760px) 32vw, 18vw" />
           </figure>

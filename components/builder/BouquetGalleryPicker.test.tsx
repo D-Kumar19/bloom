@@ -89,6 +89,11 @@ describe('BouquetGalleryPicker', () => {
       within(dialog).getByText('Anniversaries, Valentine\'s Day, and "I still choose you" messages'),
     ).toBeInTheDocument()
     expect(within(dialog).getByText('12 long-stem red roses')).toBeInTheDocument()
+    expect(within(dialog).getByTestId('bouquet-hero')).toHaveClass('bloom-artwork')
+    expect(within(dialog).getByAltText('Red Rose Classic')).toHaveAttribute(
+      'src', '/bouquets/red-rose-classic-hero.png',
+    )
+    expect(within(dialog).getByAltText('Red Rose Classic')).toHaveClass('object-contain')
   })
 
   it('closes the detail modal when the backdrop is clicked', () => {

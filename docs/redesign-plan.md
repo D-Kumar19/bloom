@@ -7,6 +7,38 @@ Owner decisions recorded 2026-10-19 and 2026-10-20.
 
 ## Progress reconciliation - 2026-10-22
 
+### Integrated artwork pass
+
+The redesign branch has now been rebased onto released main `22d74bb`.
+Reliability changes, protected counting, local fonts, and Contact/Explore
+pages are retained. All 15 catalog portraits loaded at their original aspect
+ratio in the production-build browser check.
+
+Existing artwork includes complete backgrounds, clouds, wrapping, and a vase;
+it is presented as mounted portrait artwork rather than transparent flowers.
+A consistent neutral mount connects home, picker, detail modal, recipient,
+and export. Homepage photographs no longer overlap each other; the detail
+modal now shows the same full hero artwork, not a square thumbnail crop.
+No source image, color filter, or blending effect was added.
+
+Desktop/mobile checks covered home, all catalog moods, the cloud-background
+peony detail, a complete builder-to-share flow, and warm/dark recipient gifts.
+Two actual PNG downloads were inspected, including rich text and a dark card
+with a double border. Measured layouts had no horizontal overflow at the
+checked 390px/1440px widths; the dark recipient was also checked at 320px.
+Regression tests now cover every catalog portrait and immediate/keyboard
+opening, including a flower-only legacy gift. The immediate-open button was
+moved outside the interactive reveal stage.
+
+Validation: 54 test files / 275 tests, type-check, lint, production build,
+and diff whitespace checks passed. Existing React act warnings remain.
+The share-panel contrast findings were corrected; a full post-change
+accessibility review remains part of D06. Browser scans also reported
+contrast requiring manual review over decorative backdrops and a success
+toast contrast finding. No whole-site accessibility certification is claimed.
+No branch push, preview deployment, or production merge has been performed.
+Owner visual review, D03/D04 approval, and complete D06 acceptance remain open.
+
 The discovery sections below describe the original sequence; their
 selection-pending language is historical. The owner selected A and requested
 real application integration rather than further standalone HTML review.

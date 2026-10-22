@@ -128,14 +128,14 @@ export function BouquetShareStep({ state, onCreateAnother }: BouquetShareStepPro
       </BackdropLayer>
 
       <section className="bloom-share__actions border border-bloom-rose/30 bg-surface p-5 sm:p-6" aria-label="Share your bouquet">
-        <p className="mb-3 text-xs font-medium uppercase tracking-wide text-bloom-ink/50">
+        <p className="mb-3 text-xs font-medium uppercase tracking-wide text-bloom-ink/75">
           Ready to send
         </p>
         <div className="overflow-hidden rounded-xl border border-bloom-rose/15 bg-bloom-cream/40 px-3 py-3 sm:px-4">
           <p className="text-sm leading-relaxed whitespace-pre-wrap break-words text-bloom-ink/80 [overflow-wrap:anywhere]">
             {shareMessagePreview}
           </p>
-          <p className="mt-2 text-xs text-bloom-ink/55">
+          <p className="mt-2 text-xs text-bloom-ink/75">
             The full link is copied when you tap the button.
           </p>
         </div>
