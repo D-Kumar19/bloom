@@ -13,7 +13,7 @@ export function BloomLogo({ className = '', showWordmark = true }: BloomLogoProp
       data-testid="site-logo"
       aria-label="Bloom home"
     >
-      <span className="relative flex h-10 w-10 items-center justify-center rounded-full bg-brand-pink/10 ring-1 ring-brand-pink/15 transition duration-300 group-hover:bg-brand-pink/15 group-hover:ring-brand-pink/25">
+      <span className="bloom-mark" aria-hidden="true">
         <svg
           width="22"
           height="22"
@@ -21,7 +21,7 @@ export function BloomLogo({ className = '', showWordmark = true }: BloomLogoProp
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           aria-hidden
-          className="transition duration-300 group-hover:scale-105"
+          className="h-6 w-6"
         >
           <path
             d="M11 4.5c-1.4 2.4-2.8 4.6-2.8 7a2.8 2.8 0 0 0 5.6 0c0-2.4-1.4-4.6-2.8-7z"
@@ -51,14 +51,7 @@ export function BloomLogo({ className = '', showWordmark = true }: BloomLogoProp
         </svg>
       </span>
       {showWordmark ? (
-        <span className="flex flex-col leading-none">
-          <span className="font-display text-[1.4rem] tracking-tight text-bloom-ink">
-            Bloom
-          </span>
-          <span className="mt-0.5 text-[10px] font-medium uppercase tracking-[0.22em] text-bloom-ink/72">
-            bouquets
-          </span>
-        </span>
+        <span className="bloom-wordmark">bloom</span>
       ) : null}
     </Link>
   )

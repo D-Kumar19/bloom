@@ -183,8 +183,21 @@ export function ThemePicker({
         })}
       </div>
 
-      <div>
-        <h3 className="font-display text-xl text-bloom-ink md:text-2xl">Ambient sound</h3>
+      <details
+        className="bloom-sound-options"
+        onToggle={(event) => {
+          if (!event.currentTarget.open) {
+            stop()
+          }
+        }}
+      >
+        <summary className="cursor-pointer py-4 text-base font-semibold text-bloom-ink">
+          Ambient sound{' '}
+          <span className="ml-2 text-sm font-normal">
+            Optional /{' '}
+            {SOUNDTRACK_OPTIONS.find((option) => option.id === soundtrackId)?.label ?? 'Silent'}
+          </span>
+        </summary>
         <p className="mt-1 text-sm text-bloom-ink/60">
           Optional. Tap to select and hear a short preview. Recipients can play or mute it when they
           open the bouquet.
@@ -223,7 +236,7 @@ export function ThemePicker({
           })}
         </div>
         {error ? <p role="status" className="mt-3 text-sm text-bloom-ink">{error}</p> : null}
-      </div>
+      </details>
 
       <ThemeDetailModal
         theme={detailTheme}

@@ -80,7 +80,7 @@ export function MessageForm({
 
   return (
     <div className="mx-auto w-full max-w-6xl" data-testid="message-form">
-      <div className="mb-6 text-center md:mb-8">
+      <div className="mb-6 md:mb-8">
         <h2 className="font-display text-2xl text-bloom-ink md:text-3xl">Write your words</h2>
         <p className="mt-2 text-sm leading-relaxed text-bloom-ink/60">
           Watch them land on the card you chose. That is the satisfying part.
@@ -88,7 +88,7 @@ export function MessageForm({
       </div>
 
       <div className="grid items-start gap-8 lg:grid-cols-2 lg:gap-10">
-        <div className="space-y-5 rounded-3xl border border-bloom-rose/15 bg-surface-muted p-5 shadow-sm ring-1 ring-bloom-rose/10 md:p-7">
+        <div className="bloom-message-editor space-y-5 border border-bloom-rose/30 bg-surface p-5 md:p-7">
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <label
@@ -161,7 +161,7 @@ export function MessageForm({
             ) : null}
           </div>
 
-          <div className="rounded-2xl border border-bloom-rose/25 bg-surface p-4 shadow-sm">
+          <div className="border-t border-bloom-rose/30 pt-4">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div>
                 <p className="text-sm font-semibold text-bloom-ink">Need inspiration?</p>

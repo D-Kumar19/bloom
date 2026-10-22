@@ -1,9 +1,10 @@
 # Open work
 
-Updated: 2026-10-22. B02 and B03 are implemented and verified locally.
-B01's code is implemented; production persistence remains blocked on deployment
-access/configuration. Reliability changes are deployed to the branch preview;
-production acceptance remains separate.
+Updated: 2026-10-22. CI01 and B01-B10 are closed. Reliability changes are
+merged and deployed to production; the owner accepted the release checks.
+Closure combines recorded local/hosted evidence with owner production sign-off,
+not a claim that every device or operational scenario was independently tested.
+Remaining operational hardening is tracked separately under O01.
 Evidence and caveats: [audit](./audit.md). Design decisions:
 [redesign plan](./redesign-plan.md).
 
@@ -32,8 +33,8 @@ and opt-in audio must not compete with a step's primary task.
 
 ## Release automation
 
-- [ ] CI01 - Harden verification and automate reviewed draft releases.
-  **Implemented locally: 2026-10-22; hosted verification pending.**
+- [x] CI01 - Harden verification and automate reviewed draft releases.
+  **Completed: 2026-10-22; hosted verification passed.**
   Pin actions to verified full commit SHAs, limit
   permissions, bound job duration, and retain frozen installs, type-check,
   lint, tests, Next.js build, and the main-branch Docker build. Add weekly
@@ -44,8 +45,7 @@ and opt-in audio must not compete with a step's primary task.
   workflows. Sixteen local shell simulations passed: version/branch/CI/API
   rejection paths, stable/prerelease creation flags, and draft/target/version
   verification. SHA pins, permissions, timeouts, checkout credential settings,
-  and shell syntax were checked. Hosted execution remains pending
-  merge/owner authorization; keep unchecked until then.
+  and shell syntax were checked.
   See [release instructions](./releases.md).
   **Hosted follow-up, 2026-10-22:** the first PR run passed install,
   type-check, lint, and tests, then failed in Turbopack's Google Fonts
@@ -55,17 +55,20 @@ and opt-in audio must not compete with a step's primary task.
   downloads/parsing. Local retest passed: 51 files / 246 tests, type-check,
   lint, and production build; all 11 bundled WOFF2 assets returned HTTP 200.
   Hosted retesting passed on commit `7bd19be`: PR CI verification and Vercel
-  preview deployment succeeded. Main push CI, including Docker, and the first
-  draft-release workflow remain to be verified after merge.
+  preview deployment succeeded. After PR #3 merged, main push
+  [CI 39773818563](https://github.com/D-Kumar19/bloom/actions/runs/39773818563)
+  passed verification and Docker for `22d74bb`.
+  [Draft workflow 39774086677](https://github.com/D-Kumar19/bloom/actions/runs/39774086677)
+  created and verified the `v0.0.4` draft for that exact commit.
+  Owner subsequently published it on 2026-10-22 and approved closure.
 
 ## P0 - Reliability before a visual rollout
 
-- [ ] B01 - Durable counter and controlled failure handling.
-  **Status: pending deployment verification (owner decision, 2026-10-19).**
-  Code changes are locally verified; revisit when deploying. Record the total
-  before deployment, deploy the new version using the same Redis store and
-  `bouquet:count` key, then verify the total has not reset and the next share
-  increments it. Do not mark complete until this live upgrade check passes.
+- [x] B01 - Durable counter and controlled failure handling.
+  **Closed by owner production sign-off: 2026-10-22.**
+  Owner confirmed the deployed Redis counter is working after merge and
+  explicitly accepted B01. Detailed before/after totals and cold-instance
+  traces were not supplied; do not present these as independently measured.
   Covers ISSUE-001, ISSUE-004, ISSUE-013.
   Entry points: [storage](../lib/counter/storage.ts),
   [API](../app/api/count/route.ts), [homepage](../app/page.tsx),
@@ -84,15 +87,17 @@ and opt-in audio must not compete with a step's primary task.
   Local HTTP protocol-fixture checks passed: 30 unique concurrent increments,
   fresh reads, persistence across an app restart, upstream error/timeout, and
   homepage HTTP 200 during outage. The fixture used SQLite behind a Redis-shaped
-  API, **not actual Redis or Vercel**. Exact deployed failure and real
-  cross-instance Redis durability are still unverified. Follow the
+  API, **not actual Redis or Vercel**. The later safe diagnostic identified
+  `redis_url_invalid`; correcting the configured REST URL restored counting.
+  For future upgrades, follow the
   [production completion steps](./README.md#completing-b01-in-production).
   **Owner preview check, 2026-10-22:** after correcting the Redis REST URL,
   the deployed counter showed 1. The owner configured the same Redis database
   for Production, Preview, and Development; preview activity therefore
   contributes to the shared total. This confirms basic deployed connectivity
   and counting, not production upgrade persistence, concurrency, deduplication,
-  or rate-limit acceptance. Keep B01/B05 open for those remaining checks.
+  or rate-limit acceptance. Later owner production sign-off closes B01/B05;
+  remaining operational checks are tracked in O01.
 
 - [x] B02 - Recover real in-progress drafts.
   Covers ISSUE-002. Entry points: [state](../hooks/useBouquetState.ts),
@@ -154,7 +159,7 @@ and opt-in audio must not compete with a step's primary task.
   cleaned up, and left retry enabled. Blank-note omission has regression
   coverage. Native file downloads on deployed/mobile browsers remain B10.
 
-- [ ] B05 - Decide and implement honest counter semantics.
+- [x] B05 - Decide and implement honest counter semantics.
   Covers ISSUE-006. Depends on B01 and an owner decision.
   Entry points: [recording](../lib/counter/recordBouquetSent.ts),
   [display](../components/landing/BouquetCounter.tsx).
@@ -179,19 +184,20 @@ and opt-in audio must not compete with a step's primary task.
   across an app restart, fresh request-time footer data, and controlled
   outage responses. This is a Redis-compatible emulator, not real Upstash
   or Vercel acceptance.
-  **Pending production acceptance:** configure the server-only secret and
-  Vercel edge rule, verify real Redis scripts, trusted client IPs, cross-instance
-  duplicates/quotas, and preserve the live total. See [counter policy and
-  checklist](./counter.md). Keep unchecked until those checks pass; this
-  supersedes the earlier deployment-only deferral.
+  **Closed by owner production sign-off, 2026-10-22:** owner reports the same
+  bouquet increments only once even after 100 copy clicks. This verifies the
+  visible repeated-copy behavior, not 100 distinct API requests or a live
+  quota/load test (browser deduplication avoids redundant requests).
+  Remaining edge-protection and cross-instance quota checks move to O01.
+  See [counter policy and checklist](./counter.md).
 
-- [ ] B06 - Correct origin and social previews.
+- [x] B06 - Correct origin and social previews.
   Covers ISSUE-005. Entry points: [origin](../lib/siteUrl.ts),
   [deployment](../vercel.json), [metadata](../app/bouquet/page.tsx).
   Verify real production origin in copied URLs and rendered OG URLs independently.
   Choose generic versus personalized preview intentionally; do not expose note
   text as an accidental metadata feature. No parked-domain fallback.
-  **Implemented and verified locally 2026-10-19; checkbox awaits deployment:**
+  **Implemented and verified locally 2026-10-19:**
   browser links use the current origin; server metadata uses the configured
   canonical origin, Vercel deployment origin, or the real existing live site,
   never the unowned bloom.app domain. Removed the deployment's parked-domain
@@ -199,7 +205,11 @@ and opt-in audio must not compete with a step's primary task.
   Both copy handlers generated the local production origin; raw server
   metadata independently used the real live canonical OG URL.
   The OG endpoint returned a 1200 x 630 PNG with byte-identical output despite
-  personal query parameters. Real deployed copied/OG URLs still need B10.
+  personal query parameters.
+  **Closed by owner production sign-off, 2026-10-22:** owner confirms links
+  are correct and open correctly, and accepts B06. No separate production
+  social-crawler screenshot or raw metadata capture was supplied; generic
+  preview behavior retains the local verification evidence above.
 
 - [x] B07 - Ship honest privacy/contact/navigation.
   Covers ISSUE-009, ISSUE-010. Entry points: [copy](../lib/site.ts),
@@ -257,13 +267,17 @@ and opt-in audio must not compete with a step's primary task.
   cleared Playing. Regression tests cover rejection/retry, late errors,
   duplicate pending failure, switching, muting, stale promises, and cleanup.
 
-- [ ] B10 - Repeat the production release checks after fixes.
+- [x] B10 - Repeat the production release checks after fixes.
+  **Closed by owner production sign-off, 2026-10-22:** after deployment,
+  owner confirmed delivery/gift flow and Redis work and explicitly accepted
+  B10. The preview report below and local regression checks support this
+  acceptance; this is not an exhaustive device/failure-state certification.
   **Owner preview smoke pass, 2026-10-22:** reported working full gift flow,
   draft recovery, both copy actions, recipient experience, PNG downloading,
   audio, pages, mobile keyboard, light/dark appearance, and the 200-word
   gate (extra text preserved; Continue blocked). Device/browser versions,
   export visual fidelity, failure states, and real Redis acceptance are not
-  established by that report; keep this release gate open. An old recipient
+  established by that report alone. An old recipient
   name on a new laptop needs distinguishing browser autofill/imported profile
   state from a preset URL; no account-backed cross-device history exists.
   Extend existing verification rather than treating an already-live site as an
@@ -276,6 +290,18 @@ and opt-in audio must not compete with a step's primary task.
   Record browsers/devices and results; the audit's 390px layout check is not a
   complete mobile pass. Counter verification follows B01/B05, not an assumed
   increment-on-create policy. Existing gift links do not expire.
+
+## Operational follow-up
+
+- [ ] O01 - Verify deployed counter abuse protection beyond the happy path.
+  Follow-up to the owner-accepted B01/B05 release work, not a reopened release
+  gate. Confirm Vercel edge-rule availability/configuration and exercise
+  distinct API requests across instances: same gift ID counts once, unique
+  IDs respect 10/minute and 50/hour quotas, and 429 includes Retry-After.
+  Record retained totals across a future redeploy and controlled outage
+  behavior. Local fixture coverage exists; owner repeated-copy checks do not
+  independently establish these operational results. Do not stress the shared
+  production database without an agreed bounded test plan.
 
 ## Design track - Approval before broad implementation
 
@@ -292,24 +318,31 @@ and opt-in audio must not compete with a step's primary task.
   Owner approved proceeding with **more colorful, less rustic, more contemporary,
   less paper-like**. The board's material examples are not an approved palette.
 
-- [ ] D02 - Present two genuinely different compositions.
+- [x] D02 - Present two genuinely different compositions.
   [Plan:2.2] Depends on D01. Prepare desktop/mobile homepage and recipient
   studies with real representative content. Include birthday and sympathy
   treatments. Owner approves one or requests revision; no full-site build yet.
-  **Two studies ready 2026-10-20; selection pending:** open the
+  **Completed: owner selected A, "Color, delivered."** Open the
   [interactive comparison](./design/compositions.html) and
   [review notes](./design/composition-review.md).
   A is a graphic gallery/paired recipient; B is a single-object presentation
   followed by a separate reading field. Both include desktop/mobile,
   birthday/sympathy, and short/long notes using comparable fixtures.
-  D03 awaits a composition decision. No application redesign shipped.
+  Application integration started on the isolated local
+  `redesign/color-delivered` branch (`cb3f62c`); no redesign is deployed.
 
 - [ ] D03 - Prototype the signature interaction.
+  **In progress:** the WIP branch adapts the existing staged reveal and adds
+  an immediate-open action. Motion, keyboard/touch, and reduced-motion
+  acceptance remain unverified; this is not a completed signature prototype.
   [Plan:2.3] Depends on D02. A small recipient opening prototype and static
   reduced-motion equivalent. Verify keyboard/touch use and immediate content
   access. Approval includes motion behavior, not only a screenshot.
 
 - [ ] D04 - Specify the approved visual system and screen contracts.
+  **Partial:** WIP CSS/layout choices exist, but an approved implementation
+  specification, measured contrast/performance budgets, and full state
+  contracts are not complete.
   [Plan:3.1] Depends on D02/D03. Record actual typography, contrast-safe palette,
   layout, photography treatment, loading/error/empty states, export appearance,
   and current-link compatibility. Resolve open decisions before decomposition.
@@ -318,6 +351,11 @@ and opt-in audio must not compete with a step's primary task.
   into one overloaded screen to reduce the step count.
 
 - [ ] D05 - Implement one end-to-end vertical slice.
+  **In progress:** WIP changes touch home, builder, share, recipient, and
+  export, with a shared gift composition. Limited focused tests passed before
+  the branch split; full redesign regression/build/browser/export validation
+  and owner approval remain outstanding. First integrate current main's
+  reliability, counter protection, local fonts, and new public pages.
   [Plan:3.2] Depends on D04 and B02/B03. Scope: one bouquet, one note, one
   atmosphere, share, recipient reveal, saved image. Reuse current domain logic;
   review against approved studies before extending every option.
@@ -326,6 +364,8 @@ and opt-in audio must not compete with a step's primary task.
   with today, not only the number of transitions.
 
 - [ ] D06 - Extend and verify the complete product.
+  **Not complete:** initial changes span several surfaces, but complete
+  product coverage and release acceptance have not been established.
   [Plan:4.1] Depends on D05 and B01-B09. Carry the approved system through
   all current choices/states. Validate desktop/mobile, keyboard/reduced motion,
   dark appearance, old links, copy failure, audio failure, and real exports.
@@ -425,12 +465,13 @@ These are not prerequisites for the initial redesigned release.
   sign-in callbacks, and verify old gift links where their host remains
   controlled. Do not assume ownership of bloom.app.
 
-### Standout idea parking lot - not approved release scope
+### Later features - F01-F10 (open)
 
-Imported ideas are retained here so they are not lost, not because every idea
-should ship. Revisit only after reliability and core UX; discard ideas that fail
-the simplicity, privacy, or art-direction constraints. No effort estimates from
-the external checklist have been adopted.
+Owner confirmed on 2026-10-22 that F01-F10 remain open later-feature TODOs,
+not deferred items. Schedule after the redesign and core UX work; resolve each
+item's product/privacy/cost decisions before implementation. Only S03 is
+explicitly deferred. No effort estimates from the external checklist have
+been adopted.
 
 - [ ] F01 - Consider an optional sender name.
   This is a product change, not a confirmed bug: current builder validation and
@@ -474,9 +515,11 @@ the external checklist have been adopted.
   mounted in the builder. Define relevance across moods, valid results, empty
   states, and whether search improves finding flowers before adding a new control.
 
-## Conditional research - Personal media and sustainable pricing
+## Later features - Personal media and sustainable pricing (R01-R02 open)
 
-These are recorded ideas, not approved upload infrastructure or paid features.
+Owner confirmed on 2026-10-22 that R01-R02 remain open later-feature TODOs,
+not deferred. Their prototype/value and ownership/cost gates still apply;
+this does not approve production upload infrastructure or paid features.
 Follow the [media discovery constraints](./product-direction.md).
 
 - [ ] R01 - Validate photo/voice value with a bounded prototype.
@@ -496,4 +539,4 @@ Follow the [media discovery constraints](./product-direction.md).
 
 Checkout, scheduling, verified delivery receipts, 3D scenes, revocable link
 storage, and expiry remain outside approved scope. The parking lot records
-possibilities, not promises or prerequisites for a reliable release.
+later work, not prerequisites for the reliability release.

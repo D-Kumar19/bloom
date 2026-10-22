@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import { useMemo, useState } from 'react'
 
+import { BouquetHero } from '@/components/bouquet/BouquetHero'
 import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
 import {
@@ -49,14 +50,12 @@ function BouquetDetailModal({
       onClose={onClose}
       title={bouquet.name}
     >
-      <div className="relative mx-auto mb-4 aspect-square w-full max-w-xs overflow-hidden rounded-2xl bg-gradient-to-b from-bloom-cream to-white shadow-md">
-        <Image
-          src={bouquet.thumbnailImage}
-          alt={bouquet.name}
-          fill
-          unoptimized
-          sizes="320px"
-          className="object-cover"
+      <div className="mx-auto mb-4 w-full max-w-xs">
+        <BouquetHero
+          bouquetId={bouquet.id}
+          theme="warm"
+          showBackdrop={false}
+          presentation="flat"
         />
       </div>
       <p className="text-sm font-medium text-bloom-ink/80">{bouquet.tagline}</p>
@@ -145,7 +144,7 @@ export function BouquetGalleryPicker({ selectedId, onSelect }: BouquetGalleryPic
               aria-selected={isActive}
               data-testid={`bouquet-mood-${mood.id}`}
               onClick={() => setActiveMood(mood.id)}
-              className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+              className={`min-h-11 border px-4 py-2 text-sm font-medium transition ${
                 isActive
                   ? 'bg-brand-pink text-white shadow-sm'
                   : 'border border-bloom-rose/20 bg-surface text-bloom-ink/75 hover:border-brand-pink/40'
@@ -157,7 +156,7 @@ export function BouquetGalleryPicker({ selectedId, onSelect }: BouquetGalleryPic
         })}
       </div>
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
         {visibleBouquets.map((bouquet, index) => {
           const isActive = selectedId === bouquet.id
 
@@ -165,7 +164,7 @@ export function BouquetGalleryPicker({ selectedId, onSelect }: BouquetGalleryPic
             <article
               key={bouquet.id}
               data-testid={`bouquet-tile-${bouquet.id}`}
-              className={`flex flex-col overflow-hidden rounded-2xl border-2 transition ${
+              className={`bloom-bouquet-tile flex flex-col overflow-hidden border-2 transition ${
                 isActive
                   ? 'border-brand-pink/50 bg-brand-pink/[0.06] shadow-md shadow-brand-pink/10'
                   : 'border-bloom-rose/15 bg-surface shadow-sm'
@@ -175,18 +174,19 @@ export function BouquetGalleryPicker({ selectedId, onSelect }: BouquetGalleryPic
                 type="button"
                 data-testid={`bouquet-image-${bouquet.id}`}
                 onClick={() => setDetailBouquet(bouquet)}
-                className="group relative aspect-square w-full text-left"
+                className="bloom-artwork group relative w-full text-left"
               >
-                <Image
-                  src={bouquet.thumbnailImage}
-                  alt={bouquet.name}
-                  fill
-                  unoptimized
-                  loading={index < 4 ? 'eager' : 'lazy'}
-                  sizes="(max-width: 768px) 50vw, 240px"
-                  className="object-cover transition duration-300 group-hover:scale-[1.03]"
-                />
-                <span className="absolute top-2 right-2 rounded-full bg-surface-muted px-2.5 py-1 text-[10px] font-semibold tracking-normal text-brand-pink shadow-sm opacity-95 transition group-hover:opacity-100 md:text-xs">
+                <span className="relative block aspect-[2/3] w-full">
+                  <Image
+                    src={bouquet.heroImage}
+                    alt={bouquet.name}
+                    fill
+                    loading={index < 4 ? 'eager' : 'lazy'}
+                    sizes="(max-width: 640px) 50vw, (max-width: 1100px) 33vw, 320px"
+                    className="object-contain"
+                  />
+                </span>
+                <span className="mt-2 block text-center text-xs font-medium text-[#512141] underline underline-offset-4">
                   Tap to learn
                 </span>
               </button>
@@ -200,7 +200,7 @@ export function BouquetGalleryPicker({ selectedId, onSelect }: BouquetGalleryPic
                   data-testid={`bouquet-select-${bouquet.id}`}
                   aria-pressed={isActive}
                   onClick={() => onSelect(bouquet.id)}
-                  className={`mx-auto min-h-8 rounded-full px-4 py-1.5 text-xs font-semibold transition ${
+                  className={`mx-auto min-h-11 w-full px-4 py-1.5 text-sm font-semibold transition ${
                     isActive
                       ? 'bg-brand-pink text-white'
                       : 'border border-bloom-rose/25 bg-surface text-bloom-ink hover:border-brand-pink/40'

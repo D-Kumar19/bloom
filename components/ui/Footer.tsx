@@ -39,7 +39,7 @@ export async function Footer() {
   await connection()
   const bouquetCount = await getBouquetCount()
   return (
-    <footer className="mt-auto border-t border-bloom-rose/15 bg-surface-muted px-4 py-8 lg:py-12">
+    <footer className="bloom-footer mt-auto px-4 py-8 lg:py-12">
       <div className="mx-auto max-w-6xl">
         <div className="hidden gap-10 lg:grid lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <FooterBrand initialCount={bouquetCount} />

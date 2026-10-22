@@ -1,7 +1,62 @@
 # Bloom: a florist's worktable
 
-Status: reference vocabulary approved with refinement; composition selection pending.
+Status: D01/D02 complete; A ("Color, delivered") selected. Partial application
+integration exists on local `redesign/color-delivered` at `cb3f62c`.
+No redesign deployment or complete redesign acceptance yet.
 Owner decisions recorded 2026-10-19 and 2026-10-20.
+
+## Progress reconciliation - 2026-10-22
+
+### Integrated artwork pass
+
+The redesign branch has now been rebased onto released main `22d74bb`.
+Reliability changes, protected counting, local fonts, and Contact/Explore
+pages are retained. All 15 catalog portraits loaded at their original aspect
+ratio in the production-build browser check.
+
+Existing artwork includes complete backgrounds, clouds, wrapping, and a vase;
+it is presented as mounted portrait artwork rather than transparent flowers.
+A consistent neutral mount connects home, picker, detail modal, recipient,
+and export. Homepage photographs no longer overlap each other; the detail
+modal now shows the same full hero artwork, not a square thumbnail crop.
+No source image, color filter, or blending effect was added.
+
+Desktop/mobile checks covered home, all catalog moods, the cloud-background
+peony detail, a complete builder-to-share flow, and warm/dark recipient gifts.
+Two actual PNG downloads were inspected, including rich text and a dark card
+with a double border. Measured layouts had no horizontal overflow at the
+checked 390px/1440px widths; the dark recipient was also checked at 320px.
+Regression tests now cover every catalog portrait and immediate/keyboard
+opening, including a flower-only legacy gift. The immediate-open button was
+moved outside the interactive reveal stage.
+
+Validation: 54 test files / 275 tests, type-check, lint, production build,
+and diff whitespace checks passed. Existing React act warnings remain.
+The share-panel contrast findings were corrected; a full post-change
+accessibility review remains part of D06. Browser scans also reported
+contrast requiring manual review over decorative backdrops and a success
+toast contrast finding. No whole-site accessibility certification is claimed.
+No branch push, preview deployment, or production merge has been performed.
+Owner visual review, D03/D04 approval, and complete D06 acceptance remain open.
+
+The discovery sections below describe the original sequence; their
+selection-pending language is historical. The owner selected A and requested
+real application integration rather than further standalone HTML review.
+The WIP branch touches home, builder, share, recipient, export, and shared
+chrome. D03/D04/D05 have partial implementation, not completed approval;
+D06 remains outstanding.
+
+Before a review deployment, integrate current main without losing the shipped
+v0.0.4 reliability work, counter protections, local fonts, and Contact/Explore
+pages. Validate the example link stays on the preview origin, staged opening
+and immediate-open controls, contrast, reduced motion, draft/copy behavior,
+and actual exported layout. Run targeted tests, then the full suite,
+type-check, lint, build, and desktop/mobile browser checks. The older focused
+9-test pass does not establish release readiness.
+
+Deploy a branch preview for review after that integration and validation;
+production waits for full-flow owner approval and D06 acceptance. New later
+features are not prerequisites for shipping the redesign.
 
 ## D01 review material - 2026-10-20
 
