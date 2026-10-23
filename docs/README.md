@@ -59,10 +59,11 @@ hardening. Earlier deployment-pending notes below are historical.
 Current branch: `feat/experience-polish`, based on released main, not the
 rejected replacement UI. A first D01-D06 batch improves contrast, rounded
 selection controls, keyboard mood navigation, full portrait fit, and access to
-sharing. See the [batch evidence and remaining checks](./redesign-plan.md#first-polish-batch---2026-10-23).
-Next: finish local acceptance and obtain owner before/after preview review
-before extending or merging. Do not repeat the full redesign. A sidebar is a
-candidate only if it solves observed friction.
+sharing. D01-D06 are closed following owner Vercel preview approval on
+2026-10-23. See the [acceptance evidence and coverage limitations](./redesign-plan.md#first-polish-batch---2026-10-23).
+Next: merge PR #6 after checks pass, monitor main CI/production, then prioritize
+O01 operational hardening and L03 sharing fallback before larger additions
+such as L01 editable starters and L10 discovery pages. Do not repeat the redesign.
 Only S03 is deferred; F01-F10 and R01-R02 remain open later work.
 
 ## Keeping this useful

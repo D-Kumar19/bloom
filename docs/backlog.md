@@ -309,15 +309,23 @@ and opt-in audio must not compete with a step's primary task.
 direction. Keep released v0.0.4's softer UI, rounded controls, five-step flow,
 and gentle interactions as the foundation. Preserve the experiment separately;
 do not merge its visual changes. D01-D06 below supersede the old redesign
-tasks and are reopened for their new acceptance criteria. Historical reference
+tasks. Historical reference
 studies and composition reviews remain evidence, not current approval.
 See the [experience improvement plan](./redesign-plan.md).
 
-- [ ] D01 - Audit the existing experience and prioritize concrete friction.
+**Accepted and closed by owner, 2026-10-23:** the Vercel preview looks good;
+proceed with [PR #6](https://github.com/D-Kumar19/bloom/pull/6).
+D01-D06 close the agreed incremental polish scope, not a whole-product visual
+or accessibility certification. The criteria below record the review intent;
+unsampled devices, combinations, and manual contrast checks are limitations
+listed in the plan, not claims of completed testing or blockers requiring
+another redesign batch.
+
+- [x] D01 - Audit the existing experience and prioritize concrete friction.
   **2026-10-23: first scoped audit recorded** in the
   [polish batch report](./redesign-plan.md#first-polish-batch---2026-10-23).
-  Concrete findings were prioritized over a new visual concept. Broader
-  baseline coverage and owner review remain open.
+  Concrete findings were prioritized over a new visual concept. Owner accepted
+  this scoped audit and resulting preview on 2026-10-23.
   Start from current main, not the rejected branch's UI. Capture desktop/mobile
   and light/dark baselines for home, builder, share, recipient, and export.
   Record what already works and specific problems in spacing, hierarchy,
@@ -325,7 +333,7 @@ See the [experience improvement plan](./redesign-plan.md).
   usability issues from aesthetic preferences. Rank by user impact and effort;
   propose a small first batch rather than a new site-wide concept.
 
-- [ ] D02 - Refine color composition and visual hierarchy.
+- [x] D02 - Refine color composition and visual hierarchy.
   **First batch implemented:** reuse the existing dark rose for selected actions,
   improve helper/progress text contrast, and correct toast color pairs.
   The warm/light and charcoal/dark palettes and serif hierarchy are retained;
@@ -338,11 +346,11 @@ See the [experience improvement plan](./redesign-plan.md).
   Review changes on real screens before applying tokens globally. No automatic
   adoption of the rejected coral/plum/acid palette or oversized typography.
 
-- [ ] D03 - Polish rounded controls and interaction feedback.
+- [x] D03 - Polish rounded controls and interaction feedback.
   **First batch implemented:** rounded 44px bouquet/backdrop selectors,
   explicit focus and pressed states, keyboard mood tabs, readable feedback,
-  and reduced-motion-aware step scrolling/entry. Complete control/state and
-  motion review remains open.
+  and reduced-motion-aware step scrolling/entry. Owner accepted the preview;
+  exhaustive control/state and motion coverage is not claimed.
   Depends on D01. Review button radius, height, padding, labels, visual weight,
   icon alignment, and primary/secondary/ghost consistency. Preserve rounded
   controls; no square-button replacement. Check hover, focus, pressed, selected,
@@ -350,12 +358,13 @@ See the [experience improvement plan](./redesign-plan.md).
   Preserve successful gentle transitions; remove jank or delays where observed.
   Respect reduced motion and never add animation merely to appear distinctive.
 
-- [ ] D04 - Improve artwork fit, reading comfort, and gift fidelity.
+- [x] D04 - Improve artwork fit, reading comfort, and gift fidelity.
   **First batch implemented and locally checked:** retain the existing rounded,
   gently swaying photo; show the full 2:3 portrait in gift/detail views and
   exports instead of cropping it. Verified all 15 source dimensions and added
   catalog-wide component coverage; downloaded warm peony and dark sympathy
-  PNGs. Full catalog/browser and long-note visual acceptance remain open.
+  PNGs. Owner accepted the preview; exhaustive catalog/browser and long-note
+  visual coverage is not claimed.
   Depends on D01. Inspect all 15 bouquets against actual surrounding surfaces,
   including cloud backgrounds, the vase, and sympathy artwork. Address awkward
   scale, cropping, spacing, or competing borders without filtering flowers or
@@ -364,11 +373,11 @@ See the [experience improvement plan](./redesign-plan.md).
   PNGs. Check short/long notes, dark cards, rich formatting, and mobile reading;
   preserve existing gift choices and old links.
 
-- [ ] D05 - Reduce builder/navigation friction only where it is demonstrated.
+- [x] D05 - Reduce builder/navigation friction only where it is demonstrated.
   **First batch implemented:** reopen the current bouquet's mood, allow
   keyboard mood navigation, and provide a focused "Jump to sharing" anchor.
   Fixed share-panel grid overflow at 320px. No sidebar or extra step added.
-  Owner comparison of the working flow remains open.
+  Owner approved the working preview on 2026-10-23.
   Depends on D01. Keep one clear task per step and the five-step pipeline.
   Review progress/back navigation, draft recovery cues, selection visibility,
   advanced-control disclosure, and share-action discoverability. Evaluate a
@@ -377,11 +386,11 @@ See the [experience improvement plan](./redesign-plan.md).
   A sidebar is not approved or required. Review one small working improvement
   with the owner before expanding its scope; coordinate new sharing with L03.
 
-- [ ] D06 - Validate and ship approved polish in small increments.
-  **Local first-batch acceptance in progress:** regression/type/lint/build
-  checks and production-build browser/export evidence are recorded in the
-  plan. No production merge, branch push, or hosted preview acceptance yet.
-  All D02-D05 changes remain subject to owner review before rollout.
+- [x] D06 - Validate and ship approved polish in small increments.
+  **Accepted, 2026-10-23:** 277 local tests, type/lint/build and sampled browser/
+  export checks passed; hosted PR verification and Vercel preview succeeded.
+  Owner approved the preview and authorized merging PR #6. Main push CI and
+  production deployment are monitored separately from this visual acceptance.
   Depends on the specific D02-D05 work included in each increment, not completion
   of every candidate. Compare before/after screenshots and the same user task
   on main and the preview; owner must prefer the result before merge.

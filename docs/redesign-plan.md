@@ -49,6 +49,14 @@ Keep shipping independent of Templates, Wander, accounts, or later features.
 
 ## First polish batch - 2026-10-23
 
+**Owner acceptance, 2026-10-23:** the hosted Vercel preview looks good and the
+owner authorized closing D01-D06 and merging
+[PR #6](https://github.com/D-Kumar19/bloom/pull/6).
+[Hosted verification](https://github.com/D-Kumar19/bloom/actions/runs/39951446249)
+and Vercel passed for implementation `5d1cfdb`. The closed scope is the
+increment below, not an exhaustive device/combination audit. The original
+readiness notes below describe the pre-approval state.
+
 ### D01: observations and priorities
 
 The previous implementation session left an uncommitted first pass. This batch
@@ -119,11 +127,11 @@ Evidence screenshots and the two PNGs are stored in the session files with
 the `polish-` prefix, not committed as repository assets. No external imagery
 or additional dependencies were introduced.
 
-Remaining before closing this track: owner preview comparison; remaining
-catalog/long-note and state matrix; complete manual keyboard/reduced-motion
-review; real-device Safari/Brave verification; hosted CI/preview acceptance.
-Keep D01-D06 open for these broader criteria. Do not merge until the owner
-prefers this increment to released main.
+Owner preview comparison and hosted CI/preview acceptance are now complete.
+D01-D06 are closed for the accepted increment. Remaining coverage limitations:
+exhaustive catalog/long-note and state matrices, complete manual keyboard/
+contrast/motion review, and real-device Safari/Brave verification. No further
+visual batch is required without a concrete finding or new owner request.
 
 ## Historical redesign experiment - not approved for rollout
 
