@@ -47,6 +47,11 @@ describe('ThemePicker', () => {
     expect(
       screen.getByText(/Tap a swatch for details/i),
     ).toBeInTheDocument()
+    expect(screen.getByTestId('theme-select-warm')).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByTestId('theme-select-warm')).toHaveClass('min-h-11', 'rounded-full', 'bg-action-rose')
+    expect(screen.getByTestId('theme-select-ocean')).toHaveAttribute('aria-pressed', 'false')
+    expect(screen.getByTestId('soundtrack-none')).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByTestId('soundtrack-rain')).toHaveAttribute('aria-pressed', 'false')
   })
 
   it('does not show the bouquet composition preview', () => {

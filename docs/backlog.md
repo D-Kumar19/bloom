@@ -314,6 +314,10 @@ studies and composition reviews remain evidence, not current approval.
 See the [experience improvement plan](./redesign-plan.md).
 
 - [ ] D01 - Audit the existing experience and prioritize concrete friction.
+  **2026-10-23: first scoped audit recorded** in the
+  [polish batch report](./redesign-plan.md#first-polish-batch---2026-10-23).
+  Concrete findings were prioritized over a new visual concept. Broader
+  baseline coverage and owner review remain open.
   Start from current main, not the rejected branch's UI. Capture desktop/mobile
   and light/dark baselines for home, builder, share, recipient, and export.
   Record what already works and specific problems in spacing, hierarchy,
@@ -322,6 +326,10 @@ See the [experience improvement plan](./redesign-plan.md).
   propose a small first batch rather than a new site-wide concept.
 
 - [ ] D02 - Refine color composition and visual hierarchy.
+  **First batch implemented:** reuse the existing dark rose for selected actions,
+  improve helper/progress text contrast, and correct toast color pairs.
+  The warm/light and charcoal/dark palettes and serif hierarchy are retained;
+  this is not approval of a new global visual system.
   Depends on D01. Keep the existing soft identity; review background/surface,
   text, accent, border, and selected-state colors together in both appearances.
   Improve primary-action emphasis, secondary-text readability, heading scale,
@@ -331,6 +339,10 @@ See the [experience improvement plan](./redesign-plan.md).
   adoption of the rejected coral/plum/acid palette or oversized typography.
 
 - [ ] D03 - Polish rounded controls and interaction feedback.
+  **First batch implemented:** rounded 44px bouquet/backdrop selectors,
+  explicit focus and pressed states, keyboard mood tabs, readable feedback,
+  and reduced-motion-aware step scrolling/entry. Complete control/state and
+  motion review remains open.
   Depends on D01. Review button radius, height, padding, labels, visual weight,
   icon alignment, and primary/secondary/ghost consistency. Preserve rounded
   controls; no square-button replacement. Check hover, focus, pressed, selected,
@@ -339,6 +351,11 @@ See the [experience improvement plan](./redesign-plan.md).
   Respect reduced motion and never add animation merely to appear distinctive.
 
 - [ ] D04 - Improve artwork fit, reading comfort, and gift fidelity.
+  **First batch implemented and locally checked:** retain the existing rounded,
+  gently swaying photo; show the full 2:3 portrait in gift/detail views and
+  exports instead of cropping it. Verified all 15 source dimensions and added
+  catalog-wide component coverage; downloaded warm peony and dark sympathy
+  PNGs. Full catalog/browser and long-note visual acceptance remain open.
   Depends on D01. Inspect all 15 bouquets against actual surrounding surfaces,
   including cloud backgrounds, the vase, and sympathy artwork. Address awkward
   scale, cropping, spacing, or competing borders without filtering flowers or
@@ -348,6 +365,10 @@ See the [experience improvement plan](./redesign-plan.md).
   preserve existing gift choices and old links.
 
 - [ ] D05 - Reduce builder/navigation friction only where it is demonstrated.
+  **First batch implemented:** reopen the current bouquet's mood, allow
+  keyboard mood navigation, and provide a focused "Jump to sharing" anchor.
+  Fixed share-panel grid overflow at 320px. No sidebar or extra step added.
+  Owner comparison of the working flow remains open.
   Depends on D01. Keep one clear task per step and the five-step pipeline.
   Review progress/back navigation, draft recovery cues, selection visibility,
   advanced-control disclosure, and share-action discoverability. Evaluate a
@@ -357,6 +378,10 @@ See the [experience improvement plan](./redesign-plan.md).
   with the owner before expanding its scope; coordinate new sharing with L03.
 
 - [ ] D06 - Validate and ship approved polish in small increments.
+  **Local first-batch acceptance in progress:** regression/type/lint/build
+  checks and production-build browser/export evidence are recorded in the
+  plan. No production merge, branch push, or hosted preview acceptance yet.
+  All D02-D05 changes remain subject to owner review before rollout.
   Depends on the specific D02-D05 work included in each increment, not completion
   of every candidate. Compare before/after screenshots and the same user task
   on main and the preview; owner must prefer the result before merge.

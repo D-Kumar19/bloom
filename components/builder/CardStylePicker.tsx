@@ -73,7 +73,7 @@ function CardOption({
       }}
       role="button"
       tabIndex={surprising ? -1 : 0}
-      className={`relative rounded-2xl border-2 p-2 text-left transition hover:-translate-y-0.5 hover:shadow-lg ${surprising ? 'cursor-wait opacity-90' : 'cursor-pointer'} ${
+      className={`relative rounded-2xl border-2 p-2 text-left transition hover:-translate-y-0.5 hover:shadow-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bloom-ink ${surprising ? 'cursor-wait opacity-90' : 'cursor-pointer'} ${
         isActive
           ? 'border-brand-pink/50 bg-brand-pink/[0.04] shadow-md shadow-brand-pink/10 ring-2 ring-brand-pink/15'
           : isSurpriseHighlight
@@ -84,7 +84,7 @@ function CardOption({
       {isActive ? (
         <span
           data-testid={`card-check-${styleId}`}
-          className="absolute top-3 left-3 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-brand-pink text-xs font-bold text-white shadow-sm"
+          className="absolute top-3 left-3 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-action-rose text-xs font-bold text-white shadow-sm"
           aria-hidden
         >
           ✓
@@ -148,7 +148,7 @@ export function CardStylePicker({ selectedId, onSelect }: CardStylePickerProps) 
           data-testid="surprise-me-button"
           disabled={surprising}
           onClick={() => void handleSurpriseMe()}
-          className="rounded-full border border-brand-pink/30 bg-surface px-4 py-2 text-sm font-semibold text-brand-pink shadow-sm transition hover:border-brand-pink hover:bg-brand-pink/5 disabled:opacity-60"
+          className="min-h-11 rounded-full border border-brand-pink/30 bg-surface px-4 py-2 text-sm font-semibold text-bloom-ink shadow-sm transition hover:border-brand-pink hover:bg-brand-pink/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bloom-ink disabled:opacity-60"
         >
           {surprising ? 'Picking...' : '✨ Surprise me'}
         </button>

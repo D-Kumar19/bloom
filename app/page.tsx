@@ -11,7 +11,7 @@ export default async function LandingPage() {
   return (
     <main className="flex flex-1 flex-col">
       <section className="mx-auto flex w-full max-w-2xl flex-1 flex-col items-center justify-center px-4 py-20 text-center md:py-28">
-        <p className="text-xs font-medium uppercase tracking-[0.35em] text-bloom-ink/45">
+        <p className="text-xs font-medium uppercase tracking-[0.35em] text-bloom-ink/70">
           Digital bouquets
         </p>
         <h1 className="mt-6 font-display text-4xl leading-tight text-bloom-ink md:text-6xl">
@@ -25,7 +25,7 @@ export default async function LandingPage() {
         <Button href="/create" className="mt-10 rounded-full px-10 py-3 text-base">
           Create your bouquet
         </Button>
-        <p className="mx-auto mt-5 max-w-sm text-xs leading-relaxed text-bloom-ink/45">
+        <p className="mx-auto mt-5 max-w-sm text-xs leading-relaxed text-bloom-ink/70">
           {HOME_PRIVACY_LINE}
         </p>
       </section>

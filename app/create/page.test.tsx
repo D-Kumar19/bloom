@@ -9,6 +9,11 @@ import { DEFAULT_BOUQUET_ID } from '@/lib/bouquets'
 
 const push = vi.fn()
 const mockUseBouquetState = vi.fn()
+const motion = vi.hoisted(() => ({ reduced: false }))
+
+vi.mock('@/hooks/usePrefersReducedMotion', () => ({
+  usePrefersReducedMotion: () => motion.reduced,
+}))
 
 vi.mock('next/navigation', () => ({
   useRouter: () => ({
@@ -70,6 +75,7 @@ describe('CreatePage transitions', () => {
   beforeEach(() => {
     push.mockReset()
     mockUseBouquetState.mockReset()
+    motion.reduced = false
   })
 
   it('attaches the progress bar to the site header', () => {
@@ -137,6 +143,23 @@ describe('CreatePage transitions', () => {
     renderCreatePage()
 
     expect(screen.getByTestId('step-panel')).toHaveClass('animate-step-enter')
+    expect(screen.getByTestId('step-panel')).toHaveClass('min-w-0')
+  })
+
+  it('changes steps without animated scrolling when reduced motion is preferred', () => {
+    motion.reduced = true
+    const scrollTo = vi.fn()
+    Object.defineProperty(window, 'scrollTo', { value: scrollTo, writable: true })
+    mockUseBouquetState.mockReturnValue(buildState('bouquet'))
+    const { rerender } = renderCreatePage(false)
+    mockUseBouquetState.mockReturnValue(buildState('card'))
+    rerender(
+      <AppearanceProvider>
+        <ToastProvider><CreatePage /></ToastProvider>
+      </AppearanceProvider>
+    )
+    expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'instant' })
+    expect(screen.getByTestId('step-panel')).not.toHaveClass('animate-step-enter')
   })
 
   it('advances when continue is clicked', () => {

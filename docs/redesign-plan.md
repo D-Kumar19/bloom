@@ -21,10 +21,10 @@ small approved increments. Their former redesign definitions are superseded.
 Previous discovery work remains historical evidence, not completion of these
 new tasks.
 
-Start implementation on a fresh branch from current main. Do not use this
-experimental branch's replacement UI as the baseline. Transfer these updated
-planning documents separately when starting that branch; do not cherry-pick
-the visual experiment wholesale. Keep its code and screenshots for comparison.
+Implementation now uses `feat/experience-polish`, created from released main
+`22d74bb`. Only planning/release-status documents were transferred from the
+experiment. Its replacement UI was not imported. The experiment is retained
+on `redesign/color-delivered`; keep its code and screenshots for comparison.
 Any independently useful fix found there must be re-evaluated and tested
 against main, not treated as an approved visual change.
 
@@ -46,6 +46,84 @@ mobile and light/dark screenshots, and get owner review on the working preview.
 Owner preference and task comfort matter alongside contrast and regression
 checks. No fresh concept-board phase or full-site replacement is required.
 Keep shipping independent of Templates, Wander, accounts, or later features.
+
+## First polish batch - 2026-10-23
+
+### D01: observations and priorities
+
+The previous implementation session left an uncommitted first pass. This batch
+reviewed and completed it against the released UI, not the rejected composition.
+Retain the existing warm/charcoal surfaces, serif headings, rounded controls,
+five-step pipeline, stacked note, and gently swaying photograph.
+
+| Priority | Observed issue | Bounded change |
+| --- | --- | --- |
+| High | Homepage helper text, inactive progress labels, and white-on-light-rose selections failed automated contrast checks. | Increase supporting-text contrast; reuse the existing primary button's dark rose for filled selected controls. |
+| High | Success/warning feedback and dark-mode informational toasts had unsuitable foreground/background pairings. | Keep rounded toasts and existing lifetimes; use readable green, amber, and appearance-aware neutral pairs. |
+| High | 2:3 hero images were cropped into 4:5 gift frames; the detail modal showed a square thumbnail. | Preserve the complete portrait, including wrapping/vase/clouds, without replacing the existing photo treatment. |
+| Medium | Returning to a celebration/calm bouquet reopened the Romantic tab. Mood tabs lacked arrow-key navigation. | Initialize the current mood from the selected bouquet; implement roving focus, arrow/Home/End keys, and a labelled panel. |
+| Medium | Bouquet and backdrop selection actions were small/inconsistent; backdrop and sound choices lacked pressed-state semantics. | Rounded 44px selection actions, consistent selected fill, explicit focus/pressed states; retain separate learn/select actions. |
+| Medium | The long preview separates senders from copy actions; step navigation always animated scrolling. | Add an optional native sharing anchor that transfers focus below the sticky header; honor reduced motion on step scrolling/entry. |
+| Medium | At 320px the share panel's intrinsic grid size forced horizontal scrolling. | Allow the step panel to shrink with `min-width: 0`; keep the hanging photograph fluid within its existing maximum size. |
+
+No evidence currently justifies a sidebar, new page layout, new palette, or
+replacing the opening animation. Square catalog thumbnails remain intentional
+browsing summaries; full artwork is available in details and the gift itself.
+Source images are unchanged. Custom note-color controls are also unchanged.
+
+### D02-D05: implementation and preservation
+
+The action token is the already-shipped primary-button color `#9a4a50`
+with hover `#7f3b41`, not a newly selected brand palette. Decorative brand
+colors and gradients remain available separately. The homepage spacing and
+primary pill button, five steps, advanced controls, gift URL contract, counter
+semantics, and PNG capture pipeline are preserved.
+
+The share anchor is supplementary, not a new required interaction. Its target
+is focusable programmatically and offset below the sticky progress header.
+Portrait sizing now preserves all 15 assets' verified 1024x1536 proportions.
+The taller complete images are an intentional trade-off for not cropping;
+the anchor avoids requiring repeated scrolling for senders ready to share.
+
+### D06: evidence and remaining acceptance
+
+Local automated validation: 54 files / 277 tests passed, plus type-check,
+lint, production build, and whitespace checks. Targeted coverage includes
+keyboard tabs, selected-mood initialization, all catalog heroes, rounded button
+contracts, sharing target, pressed states, toast dismissal/colors, and reduced
+motion step scrolling. Existing asynchronous StepIndicator test warnings remain;
+passing tests do not establish visual approval.
+
+Production-build Chromium checks covered the five-step peony flow, draft
+restoration after restart, light/dark picker, detail modal, sharing anchor,
+creator preview, a normal recipient link, and warm/dark PNG downloads.
+The dark sympathy fixture intentionally omitted a gift ID to exercise legacy
+links. Both PNGs were opened and inspected; the rich note, full portrait, dark
+card, and double border survived capture.
+
+The final build measured 320px document width at a 320px share viewport and
+1440px at a 1440px picker viewport. The sharing anchor focused its section
+below the sticky header. Reduced-motion emulation confirmed the step panel's
+computed animation was `none`; a utility-only attempt did not override the
+custom animation, so the component now omits that animation when preferred.
+Desktop arrow-key navigation moved both focus and selection to Celebration.
+
+Settled mobile scans reported no automated WCAG A/AA violations on the home,
+picker, backdrop, share, and dark-recipient samples. Decorative gradients,
+animated progress, and some backdrop text still require manual contrast review.
+Do not interpret these sampled checks as a whole-site accessibility certification.
+The local server was started with Redis variables blank; production counters
+were not exercised or increased.
+
+Evidence screenshots and the two PNGs are stored in the session files with
+the `polish-` prefix, not committed as repository assets. No external imagery
+or additional dependencies were introduced.
+
+Remaining before closing this track: owner preview comparison; remaining
+catalog/long-note and state matrix; complete manual keyboard/reduced-motion
+review; real-device Safari/Brave verification; hosted CI/preview acceptance.
+Keep D01-D06 open for these broader criteria. Do not merge until the owner
+prefers this increment to released main.
 
 ## Historical redesign experiment - not approved for rollout
 

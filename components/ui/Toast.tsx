@@ -37,10 +37,10 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
             role="status"
             className={`rounded-2xl px-4 py-3 text-sm shadow-lg ${
               toast.type === 'success'
-                ? 'bg-green-600 text-white'
+                ? 'bg-green-800 text-white'
                 : toast.type === 'warning'
-                  ? 'bg-amber-500 text-white'
-                  : 'bg-bloom-ink text-white'
+                  ? 'bg-amber-100 text-amber-950'
+                  : 'border border-bloom-rose/30 bg-surface text-bloom-ink'
             }`}
           >
             {toast.message}

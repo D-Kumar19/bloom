@@ -34,6 +34,8 @@ describe('BouquetShareStep', () => {
     expect(screen.getByTestId('share-reveal-backdrop')).toBeInTheDocument()
     expect(screen.getByTestId('bouquet-hero')).toBeInTheDocument()
     expect(screen.getByTestId('soundtrack-inline')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Happy with your gift? Jump to sharing' })).toHaveAttribute('href', '#share-actions')
+    expect(screen.getByRole('region', { name: 'Share your bouquet' })).toHaveAttribute('id', 'share-actions')
     expect(
       screen.getByRole('link', { name: 'preview as recipient' })
     ).toHaveAttribute(

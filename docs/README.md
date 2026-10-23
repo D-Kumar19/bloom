@@ -5,7 +5,7 @@ and design decisions; chat history is not required to understand the next step.
 
 ## Current state
 
-Updated: 2026-10-22. Original audit baseline: `4d610ab`.
+Updated: 2026-10-23. Original audit baseline: `4d610ab`.
 
 - The account-free bouquet creation, sharing, and recipient reveal flow exists.
 - The audit identified 13 findings: four high and nine medium.
@@ -56,12 +56,13 @@ v0.0.4 is published. CI01/B01-B10 are closed with recorded local/hosted
 verification and owner production sign-off; O01 tracks remaining operational
 hardening. Earlier deployment-pending notes below are historical.
 
-Next: begin D01's experience audit from current main on a fresh polish branch,
-carrying only the updated planning documents from the rejected experiment.
-Prioritize a small set of improvements to color composition, rounded controls,
-spacing/hierarchy, artwork fit, and navigation based on concrete observations.
-Review a working before/after slice before extending changes; do not repeat
-the full redesign. A sidebar is a candidate only if it solves observed friction.
+Current branch: `feat/experience-polish`, based on released main, not the
+rejected replacement UI. A first D01-D06 batch improves contrast, rounded
+selection controls, keyboard mood navigation, full portrait fit, and access to
+sharing. See the [batch evidence and remaining checks](./redesign-plan.md#first-polish-batch---2026-10-23).
+Next: finish local acceptance and obtain owner before/after preview review
+before extending or merging. Do not repeat the full redesign. A sidebar is a
+candidate only if it solves observed friction.
 Only S03 is deferred; F01-F10 and R01-R02 remain open later work.
 
 ## Keeping this useful
