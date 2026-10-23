@@ -151,10 +151,10 @@ export function StepIndicator({ currentStep, onStepClick }: StepIndicatorProps) 
 
             const badgeClassName = `flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-semibold transition-colors duration-500 ${
               isActive
-                ? 'bg-brand-pink text-white shadow-md shadow-brand-pink/30'
+                ? 'bg-action-rose text-white shadow-md shadow-brand-pink/30'
                 : isComplete
                   ? 'bg-bloom-sage text-bloom-ink'
-                  : 'bg-surface text-bloom-ink/40 ring-1 ring-bloom-rose/20'
+                  : 'bg-surface text-bloom-ink/70 ring-1 ring-bloom-rose/20'
             } ${isPulsing ? 'animate-step-pulse' : ''}`
 
             const labelClassName = `text-[10px] font-medium sm:text-xs ${
@@ -162,7 +162,7 @@ export function StepIndicator({ currentStep, onStepClick }: StepIndicatorProps) 
                 ? 'text-bloom-ink'
                 : isComplete
                   ? 'text-bloom-ink/70'
-                  : 'text-bloom-ink/40'
+                  : 'text-bloom-ink/70'
             }`
 
             return (
@@ -173,7 +173,7 @@ export function StepIndicator({ currentStep, onStepClick }: StepIndicatorProps) 
                     data-testid={`step-nav-${step.id}`}
                     aria-label={`Go back to ${step.label}`}
                     onClick={() => onStepClick?.(step.id)}
-                    className="group flex flex-col items-center rounded-lg px-1 py-0.5 text-center transition hover:bg-bloom-rose/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-pink/40"
+                    className="group flex min-h-11 min-w-11 flex-col items-center rounded-lg px-1 py-0.5 text-center transition hover:bg-bloom-rose/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bloom-ink"
                   >
                     <span className="relative mb-1 inline-flex">
                       <span className={`${badgeClassName} group-hover:bg-bloom-sage/90`}>

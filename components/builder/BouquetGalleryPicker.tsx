@@ -1,8 +1,9 @@
 'use client'
 
 import Image from 'next/image'
-import { useMemo, useState } from 'react'
+import { useId, useMemo, useRef, useState } from 'react'
 
+import { BouquetHero } from '@/components/bouquet/BouquetHero'
 import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
 import {
@@ -49,15 +50,8 @@ function BouquetDetailModal({
       onClose={onClose}
       title={bouquet.name}
     >
-      <div className="relative mx-auto mb-4 aspect-square w-full max-w-xs overflow-hidden rounded-2xl bg-gradient-to-b from-bloom-cream to-white shadow-md">
-        <Image
-          src={bouquet.thumbnailImage}
-          alt={bouquet.name}
-          fill
-          unoptimized
-          sizes="320px"
-          className="object-cover"
-        />
+      <div className="mx-auto mb-4 w-full max-w-xs">
+        <BouquetHero bouquetId={bouquet.id} theme="warm" showBackdrop={false} presentation="flat" />
       </div>
       <p className="text-sm font-medium text-bloom-ink/80">{bouquet.tagline}</p>
       <p className="mt-4 text-sm leading-relaxed text-bloom-ink/70">{bouquet.description}</p>
@@ -94,8 +88,12 @@ function BouquetDetailModal({
 }
 
 export function BouquetGalleryPicker({ selectedId, onSelect }: BouquetGalleryPickerProps) {
-  const [activeMood, setActiveMood] = useState<BouquetMood>('romantic')
+  const [activeMood, setActiveMood] = useState<BouquetMood>(
+    () => getBouquetById(selectedId)?.mood ?? 'romantic',
+  )
   const [detailBouquet, setDetailBouquet] = useState<Bouquet | null>(null)
+  const moodButtons = useRef(new Map<BouquetMood, HTMLButtonElement>())
+  const moodPanelId = useId()
 
   const closeDetail = () => setDetailBouquet(null)
 
@@ -114,7 +112,7 @@ export function BouquetGalleryPicker({ selectedId, onSelect }: BouquetGalleryPic
         <h2 className="font-display text-2xl text-bloom-ink md:text-3xl">
           Pick your bouquet
         </h2>
-        <p className="mt-1 text-sm text-bloom-ink/60">
+        <p className="mt-1 text-sm text-bloom-ink/70">
           Browse by mood, tap to learn more, then choose the one that fits.
         </p>
       </div>
@@ -142,12 +140,34 @@ export function BouquetGalleryPicker({ selectedId, onSelect }: BouquetGalleryPic
               key={mood.id}
               type="button"
               role="tab"
+              id={`${moodPanelId}-${mood.id}`}
+              aria-controls={moodPanelId}
               aria-selected={isActive}
+              tabIndex={isActive ? 0 : -1}
+              ref={(element) => {
+                if (element) moodButtons.current.set(mood.id, element)
+                else moodButtons.current.delete(mood.id)
+              }}
               data-testid={`bouquet-mood-${mood.id}`}
               onClick={() => setActiveMood(mood.id)}
-              className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+              onKeyDown={(event) => {
+                const index = BOUQUET_MOODS.findIndex((entry) => entry.id === mood.id)
+                const targetIndices: Partial<Record<string, number>> = {
+                  ArrowRight: (index + 1) % BOUQUET_MOODS.length,
+                  ArrowLeft: (index + BOUQUET_MOODS.length - 1) % BOUQUET_MOODS.length,
+                  Home: 0,
+                  End: BOUQUET_MOODS.length - 1,
+                }
+                const targetIndex = targetIndices[event.key]
+                if (targetIndex === undefined) return
+                event.preventDefault()
+                const target = BOUQUET_MOODS[targetIndex].id
+                setActiveMood(target)
+                moodButtons.current.get(target)?.focus()
+              }}
+              className={`min-h-11 rounded-full px-4 py-2 text-sm font-medium transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bloom-ink ${
                 isActive
-                  ? 'bg-brand-pink text-white shadow-sm'
+                  ? 'bg-action-rose text-white shadow-sm'
                   : 'border border-bloom-rose/20 bg-surface text-bloom-ink/75 hover:border-brand-pink/40'
               }`}
             >
@@ -157,7 +177,7 @@ export function BouquetGalleryPicker({ selectedId, onSelect }: BouquetGalleryPic
         })}
       </div>
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+      <div id={moodPanelId} role="tabpanel" aria-labelledby={`${moodPanelId}-${activeMood}`} className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
         {visibleBouquets.map((bouquet, index) => {
           const isActive = selectedId === bouquet.id
 
@@ -175,7 +195,7 @@ export function BouquetGalleryPicker({ selectedId, onSelect }: BouquetGalleryPic
                 type="button"
                 data-testid={`bouquet-image-${bouquet.id}`}
                 onClick={() => setDetailBouquet(bouquet)}
-                className="group relative aspect-square w-full text-left"
+                className="group relative aspect-square w-full text-left focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-action-rose"
               >
                 <Image
                   src={bouquet.thumbnailImage}
@@ -186,7 +206,7 @@ export function BouquetGalleryPicker({ selectedId, onSelect }: BouquetGalleryPic
                   sizes="(max-width: 768px) 50vw, 240px"
                   className="object-cover transition duration-300 group-hover:scale-[1.03]"
                 />
-                <span className="absolute top-2 right-2 rounded-full bg-surface-muted px-2.5 py-1 text-[10px] font-semibold tracking-normal text-brand-pink shadow-sm opacity-95 transition group-hover:opacity-100 md:text-xs">
+                <span className="absolute top-2 right-2 rounded-full bg-surface px-2.5 py-1 text-[10px] font-semibold tracking-normal text-bloom-ink shadow-sm md:text-xs">
                   Tap to learn
                 </span>
               </button>
@@ -200,9 +220,9 @@ export function BouquetGalleryPicker({ selectedId, onSelect }: BouquetGalleryPic
                   data-testid={`bouquet-select-${bouquet.id}`}
                   aria-pressed={isActive}
                   onClick={() => onSelect(bouquet.id)}
-                  className={`mx-auto min-h-8 rounded-full px-4 py-1.5 text-xs font-semibold transition ${
+                  className={`mx-auto min-h-11 w-full rounded-full px-4 py-2 text-sm font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bloom-ink ${
                     isActive
-                      ? 'bg-brand-pink text-white'
+                      ? 'bg-action-rose text-white'
                       : 'border border-bloom-rose/25 bg-surface text-bloom-ink hover:border-brand-pink/40'
                   }`}
                 >

@@ -34,9 +34,9 @@ export function HangingBouquetDisplay({
         <div
           id={id}
           data-testid="bouquet-hero"
-          className="relative mx-auto w-fit -rotate-2 rounded-[1.75rem] bg-white/95 p-2.5 shadow-[0_20px_50px_-12px_rgba(42,36,32,0.35)] ring-1 ring-white/80"
+          className="relative mx-auto w-full max-w-[16.75rem] -rotate-2 rounded-[1.75rem] bg-white/95 p-2.5 shadow-[0_20px_50px_-12px_rgba(42,36,32,0.35)] ring-1 ring-white/80 sm:max-w-[18.25rem]"
         >
-          <div className="relative aspect-[4/5] w-[15.5rem] overflow-hidden rounded-2xl sm:w-[17rem]">
+          <div className="relative aspect-[2/3] w-full overflow-hidden rounded-2xl">
             <Image
               src={bouquet.heroImage}
               alt={bouquet.name}
@@ -44,7 +44,7 @@ export function HangingBouquetDisplay({
               unoptimized
               priority
               sizes="(max-width: 768px) 70vw, 272px"
-              className="object-cover"
+              className="object-contain"
             />
           </div>
           <p className="mt-2 text-center font-display text-sm text-[#2a2420]/80">

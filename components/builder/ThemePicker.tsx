@@ -123,7 +123,7 @@ export function ThemePicker({
     <div className="mx-auto w-full max-w-6xl space-y-10">
       <div>
         <h2 className="font-display text-2xl text-bloom-ink md:text-3xl">Choose your backdrop</h2>
-        <p className="mt-1 text-sm text-bloom-ink/60">
+        <p className="mt-1 text-sm text-bloom-ink/70">
           The light behind your bouquet when someone opens it. Tap a swatch for details, then
           select the atmosphere that fits your note.
         </p>
@@ -148,30 +148,31 @@ export function ThemePicker({
                 type="button"
                 data-testid={`theme-${theme.id}`}
                 onClick={() => setDetailTheme(theme)}
-                className="group block w-full p-2 text-left"
+                className="group block w-full rounded-xl p-2 text-left focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-bloom-ink"
               >
                 <div className="relative isolate overflow-hidden rounded-xl">
                   <BackdropPreview theme={theme} showDecorations className="h-24 sm:h-28" />
                   {animated ? (
                     <span
                       data-testid={`theme-animated-badge-${theme.id}`}
-                      className="absolute top-2 left-2 z-20 rounded-full bg-[#fffcf8] px-2.5 py-1 text-[10px] font-semibold tracking-wide text-brand-pink shadow-[0_1px_4px_rgb(42_36_32/0.18)] ring-1 ring-[#2a2420]/10 md:text-xs"
+                      className="absolute top-2 left-2 z-20 rounded-full bg-[#fffcf8] px-2.5 py-1 text-[10px] font-semibold tracking-wide text-action-rose shadow-[0_1px_4px_rgb(42_36_32/0.18)] ring-1 ring-[#2a2420]/10 md:text-xs"
                     >
                       Animated
                     </span>
                   ) : null}
                 </div>
                 <p className="mt-2 px-1 text-xs font-medium text-bloom-ink">{theme.name}</p>
-                <p className="px-1 pb-1 text-[10px] text-bloom-ink/60 italic">{theme.tagline}</p>
+                <p className="px-1 pb-1 text-xs text-bloom-ink/70 italic">{theme.tagline}</p>
               </button>
               <div className="border-t border-bloom-rose/10 px-2 pb-2">
                 <button
                   type="button"
                   data-testid={`theme-select-${theme.id}`}
+                  aria-pressed={isActive}
                   onClick={() => onSelect(theme.id)}
-                  className={`w-full rounded-lg px-2 py-1.5 text-xs font-semibold transition ${
+                  className={`min-h-11 w-full rounded-full px-3 py-2 text-sm font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bloom-ink ${
                     isActive
-                      ? 'bg-brand-pink/10 text-brand-pink'
+                      ? 'bg-action-rose text-white'
                       : 'text-bloom-ink/70 hover:bg-bloom-rose/8 hover:text-bloom-ink'
                   }`}
                 >
@@ -185,7 +186,7 @@ export function ThemePicker({
 
       <div>
         <h3 className="font-display text-xl text-bloom-ink md:text-2xl">Ambient sound</h3>
-        <p className="mt-1 text-sm text-bloom-ink/60">
+        <p className="mt-1 text-sm text-bloom-ink/70">
           Optional. Tap to select and hear a short preview. Recipients can play or mute it when they
           open the bouquet.
         </p>
@@ -199,8 +200,9 @@ export function ThemePicker({
                 key={option.id}
                 type="button"
                 data-testid={`soundtrack-${option.id}`}
+                aria-pressed={active}
                 onClick={() => handleSoundtrackClick(option.id)}
-                className={`rounded-xl border-2 px-3 py-3 text-left transition ${
+                className={`rounded-xl border-2 px-3 py-3 text-left transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bloom-ink ${
                   active
                     ? 'border-brand-pink bg-brand-pink/5'
                     : 'border-bloom-rose/15 hover:border-bloom-rose/40'
@@ -217,7 +219,7 @@ export function ThemePicker({
                     </span>
                   ) : null}
                 </div>
-                <p className="mt-0.5 text-[11px] text-bloom-ink/60">{option.description}</p>
+                <p className="mt-0.5 text-xs text-bloom-ink/70">{option.description}</p>
               </button>
             )
           })}

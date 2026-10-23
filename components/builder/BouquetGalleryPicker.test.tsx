@@ -13,6 +13,29 @@ describe('BouquetGalleryPicker', () => {
   beforeEach(() => {
     push.mockReset()
   })
+  it('opens the selected bouquet mood when returning to the picker', () => {
+    render(<BouquetGalleryPicker selectedId="sunflower-burst" onSelect={vi.fn()} />)
+    expect(screen.getByRole('tab', { name: 'Celebration' })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByTestId('bouquet-selected-summary')).toHaveTextContent('Sunflower Burst')
+  })
+
+  it('supports arrow, Home and End navigation with one tab stop', () => {
+    render(<BouquetGalleryPicker selectedId="red-rose-classic" onSelect={vi.fn()} />)
+    const romantic = screen.getByRole('tab', { name: 'Romantic' })
+    fireEvent.keyDown(romantic, { key: 'ArrowLeft' })
+    const justBecause = screen.getByRole('tab', { name: 'Just Because' })
+    expect(justBecause).toHaveFocus()
+    expect(justBecause).toHaveAttribute('tabindex', '0')
+    expect(romantic).toHaveAttribute('tabindex', '-1')
+    fireEvent.keyDown(justBecause, { key: 'Home' })
+    expect(romantic).toHaveFocus()
+    fireEvent.keyDown(romantic, { key: 'ArrowRight' })
+    expect(screen.getByRole('tab', { name: 'Celebration' })).toHaveFocus()
+    fireEvent.keyDown(screen.getByRole('tab', { name: 'Celebration' }), { key: 'End' })
+    expect(justBecause).toHaveFocus()
+    expect(screen.getByRole('tabpanel', { name: 'Just Because' })).toBeInTheDocument()
+  })
+
   it('filters bouquets by mood tab', () => {
     render(
       <BouquetGalleryPicker
@@ -89,6 +112,8 @@ describe('BouquetGalleryPicker', () => {
       within(dialog).getByText('Anniversaries, Valentine\'s Day, and "I still choose you" messages'),
     ).toBeInTheDocument()
     expect(within(dialog).getByText('12 long-stem red roses')).toBeInTheDocument()
+    expect(within(dialog).getByAltText('Red Rose Classic')).toHaveClass('object-contain')
+    expect(within(dialog).getByAltText('Red Rose Classic')).toHaveAttribute('src', '/bouquets/red-rose-classic-hero.png')
   })
 
   it('closes the detail modal when the backdrop is clicked', () => {

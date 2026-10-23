@@ -11,6 +11,7 @@ import { ThemePicker } from '@/components/builder/ThemePicker'
 import { Button } from '@/components/ui/Button'
 import { useBouquetState } from '@/hooks/useBouquetState'
 import { useHeaderSlot } from '@/hooks/useHeaderSlot'
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { BUILDER_STEPS } from '@/lib/builder/steps'
 import { DEFAULT_NOTE_BORDER } from '@/lib/cards'
 import { DEFAULT_MESSAGE_FORMAT } from '@/lib/message'
@@ -38,16 +39,17 @@ export default function CreatePage() {
     ready,
   } = useBouquetState()
   const previousStepRef = useRef(step)
+  const reducedMotion = usePrefersReducedMotion()
 
   useEffect(() => {
     if (previousStepRef.current !== step) {
       window.scrollTo({
         top: 0,
-        behavior: 'smooth',
+        behavior: reducedMotion ? 'instant' : 'smooth',
       })
       previousStepRef.current = step
     }
-  }, [step])
+  }, [step, reducedMotion])
 
   const progressBar = useMemo(
     () => (
@@ -83,7 +85,7 @@ export default function CreatePage() {
       {!isShareStep ? (
         <div className="text-center">
           <h1 className="font-display text-3xl text-bloom-ink md:text-4xl">Create your bouquet</h1>
-          <p className="mt-2 text-sm text-bloom-ink/60">
+          <p className="mt-2 text-sm text-bloom-ink/70">
             Step {stepNumber} of {BUILDER_STEPS.length}
           </p>
         </div>
@@ -99,7 +101,7 @@ export default function CreatePage() {
       ) : null}
 
       <div className="grid gap-6">
-        <div key={step} data-testid="step-panel" className="animate-step-enter">
+        <div key={step} data-testid="step-panel" className={`min-w-0 ${reducedMotion ? '' : 'animate-step-enter'}`}>
           {step === 'bouquet' ? (
             <BouquetGalleryPicker selectedId={state.bouquetId} onSelect={setBouquet} />
           ) : null}

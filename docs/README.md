@@ -5,29 +5,24 @@ and design decisions; chat history is not required to understand the next step.
 
 ## Current state
 
-Updated: 2026-10-22. Original audit baseline: `4d610ab`.
+Updated: 2026-10-23. Original audit baseline: `4d610ab`.
 
 - The account-free bouquet creation, sharing, and recipient reveal flow exists.
 - The audit identified 13 findings: four high and nine medium.
-- P0 draft recovery (B02) and message integrity (B03) are implemented and
-  verified locally. B01's counter code is implemented, but production Redis
-  configuration, original failure logs, and deployed verification remain open.
-- Phase two (the backlog's P1) now includes locally verified image fidelity
-  (B04), honest pages/navigation (B07), reported control/dialog fixes (B08),
-  and audio failure/retry (B09). B06's origin/generic-preview changes are
-  implemented and locally verified; deployed copied/OG URLs are still pending.
-  B05's semantics, atomic gift-ID deduplication, and abuse limits were
-  implemented locally on 2026-10-22; configuration and deployed acceptance
-  remain pending. See [counter policy](./counter.md).
-- The earlier reliability fixes are committed on `fix/reliability`; README,
-  CI/release automation, and B05 changes are local follow-up work. Nothing
-  from this work has been pushed or deployed.
-- The owner selected a **florist's worktable** design direction: tactile,
-  intimate, restrained, with purposeful animation and commercial-quality polish.
+- Reliability work is merged and deployed; v0.0.4 is published. CI01/B01-B10
+  are closed with recorded local/hosted evidence and owner production sign-off.
+  Redis counting and once-only copying are working. O01 retains the separate
+  operational abuse-protection checks. See [counter policy](./counter.md)
+  and the [backlog](./backlog.md) for evidence and limitations.
+- **Current visual direction (owner decision, 2026-10-22):** keep the released
+  UI and improve its experience incrementally. The "Color, delivered" experiment
+  was rejected; do not merge its replacement UI. Preserve rounded controls,
+  softness, and smooth interactions. D01-D06 have been rephrased and reopened
+  for experience polish, not a wholesale redesign.
 - Keep the current source layout. No framework migration or rewrite is approved.
 - Email-ready sharing and optional accounts with a private animated bouquet
   journal are approved as final-phase standout features, after core fixes,
-  redesign, and polish. See the backlog; neither is being implemented now.
+  experience polish. See the backlog; neither is being implemented now.
 - Product discovery now includes editable occasion starters, clearer descriptions,
   gentle facts/humor, personal details, curated collections, and a final-phase
   owned domain (S03 deferred on 2026-10-22; keep the free Vercel address).
@@ -45,8 +40,8 @@ Updated: 2026-10-22. Original audit baseline: `4d610ab`.
 - [Audit](./audit.md): evidence, limitations, source entry points, and
   reconciliation of the owner's external 42-item checklist.
 - [Backlog](./backlog.md): the single checklist for implementation status.
-- [Redesign plan](./redesign-plan.md): direction, constraints, staged work,
-  approval gates, and repository cleanup assessment.
+- [Experience improvement plan](./redesign-plan.md): current polish direction,
+  approval boundaries, and clearly separated historical redesign evidence.
 - [Product direction](./product-direction.md): purpose, feature evaluation,
   staged rollout, and media/cost boundaries.
 - [Glossary](./CONTEXT.md): gift, occasion starter, keepsake, and journal terminology.
@@ -57,27 +52,19 @@ Updated: 2026-10-22. Original audit baseline: `4d610ab`.
 
 ## Resume here
 
-The owner chose to begin the redesign track rather than prioritize later
-maintenance tasks while deployment is deferred. D01's
-[reference study](./design/reference-study.md) and
-[visual board](./design/reference-board.html) were approved with the refinement
-**more colorful, less rustic, more contemporary, less paper-like**.
-D02's [two interactive composition studies](./design/compositions.html) and
-[comparison notes](./design/composition-review.md) are ready.
-**Next design action: select/revise a composition, then prototype its opening
-interaction in D03.** No application redesign implementation is approved yet.
-The production work below remains pending, not a prerequisite for reference
-studies.
+v0.0.4 is published. CI01/B01-B10 are closed with recorded local/hosted
+verification and owner production sign-off; O01 tracks remaining operational
+hardening. Earlier deployment-pending notes below are historical.
 
-1. Complete B01's production steps below; do not call the live counter fixed yet.
-2. Deploy the reliability changes, then complete B06's real copied/OG-origin
-   checks and B10's release checks, including draft recovery, the 200-word
-   behavior, actual PNG downloads, audio failures, and real mobile browsers.
-3. Complete B05's [deployment checklist](./counter.md#deployment-checklist-owner-action):
-   configure the rate-limit secret and edge protection, then verify Redis
-   duplicates/quotas and the retained historical total.
-4. Get approval for the actual compositions and motion prototype before
-   rebuilding the complete site. A direction is not an approved screen design.
+Current branch: `feat/experience-polish`, based on released main, not the
+rejected replacement UI. A first D01-D06 batch improves contrast, rounded
+selection controls, keyboard mood navigation, full portrait fit, and access to
+sharing. D01-D06 are closed following owner Vercel preview approval on
+2026-10-23. See the [acceptance evidence and coverage limitations](./redesign-plan.md#first-polish-batch---2026-10-23).
+Next: merge PR #6 after checks pass, monitor main CI/production, then prioritize
+O01 operational hardening and L03 sharing fallback before larger additions
+such as L01 editable starters and L10 discovery pages. Do not repeat the redesign.
+Only S03 is deferred; F01-F10 and R01-R02 remain open later work.
 
 ## Keeping this useful
 

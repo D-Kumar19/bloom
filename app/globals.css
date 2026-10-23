@@ -7,6 +7,8 @@
   --foreground: #2a2420;
   --brand-pink: #b85c63;
   --brand-pink-dark: #9a4a50;
+  --action-rose: #9a4a50;
+  --action-rose-hover: #7f3b41;
   --surface: #fffcf8;
   --surface-muted: rgb(255 252 248 / 0.88);
 }
@@ -45,6 +47,8 @@ body.bouquet-immersive {
   --color-bloom-ink: var(--foreground);
   --color-brand-pink: var(--brand-pink);
   --color-brand-pink-dark: var(--brand-pink-dark);
+  --color-action-rose: var(--action-rose);
+  --color-action-rose-hover: var(--action-rose-hover);
   --color-surface: var(--surface);
   --color-surface-muted: var(--surface-muted);
   --font-sans: var(--font-inter);
