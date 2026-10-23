@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useRef, useState, useSyncExternalStore } from 'react'
 
 import { BackdropLayer } from '@/components/backdrop/BackdropLayer'
 import { BouquetHero } from '@/components/bouquet/BouquetHero'
@@ -25,12 +25,32 @@ type BouquetShareStepProps = {
   onCreateAnother: () => void
 }
 
-export function BouquetShareStep({ state, onCreateAnother }: BouquetShareStepProps) {
+function subscribeToNativeShare() {
+  return () => {}
+}
+
+function isNativeShareAvailable() {
+  return (
+    typeof navigator !== 'undefined' && typeof navigator.share === 'function'
+  )
+}
+
+export function BouquetShareStep({
+  state,
+  onCreateAnother,
+}: BouquetShareStepProps) {
   const { showToast } = useToast()
   const [copiedMessage, setCopiedMessage] = useState(false)
   const [copiedLink, setCopiedLink] = useState(false)
   const [copyingMessage, setCopyingMessage] = useState(false)
   const [copyingLink, setCopyingLink] = useState(false)
+  const canShare = useSyncExternalStore(
+    subscribeToNativeShare,
+    isNativeShareAvailable,
+    () => false
+  )
+  const [showManualLink, setShowManualLink] = useState(false)
+  const manualLinkRef = useRef<HTMLTextAreaElement>(null)
   const shareMessage = buildShareMessage(state)
   const shareMessagePreview = formatShareMessagePreview(shareMessage)
   const shareUrl = buildShareUrl(state)
@@ -51,6 +71,25 @@ export function BouquetShareStep({ state, onCreateAnother }: BouquetShareStepPro
         scrim: 'bg-white/88 ring-1 ring-[#2a2420]/8 shadow-sm',
       }
 
+  const handleNativeShare = async () => {
+    try {
+      await navigator.share({
+        title: 'A bouquet for you',
+        text: 'I made something for you.\nOpen this when you need a smile:',
+        url: shareUrl,
+      })
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') {
+        return
+      }
+      setShowManualLink(true)
+      showToast(
+        'Could not open sharing. Select the link below or copy it.',
+        'warning'
+      )
+    }
+  }
+
   const handleCopyMessage = async () => {
     if (copyingMessage) {
       return
@@ -64,7 +103,11 @@ export function BouquetShareStep({ state, onCreateAnother }: BouquetShareStepPro
       showToast('Copied with love! Paste into WhatsApp or iMessage.', 'success')
       window.setTimeout(() => setCopiedMessage(false), 2000)
     } catch {
-      showToast('Could not copy. Try again or copy the link manually.', 'warning')
+      setShowManualLink(true)
+      showToast(
+        'Could not copy. Try again or copy the link manually.',
+        'warning'
+      )
     } finally {
       setCopyingMessage(false)
     }
@@ -83,6 +126,7 @@ export function BouquetShareStep({ state, onCreateAnother }: BouquetShareStepPro
       showToast('Link copied.', 'success')
       window.setTimeout(() => setCopiedLink(false), 2000)
     } catch {
+      setShowManualLink(true)
       showToast('Could not copy link. Try again.', 'warning')
     } finally {
       setCopyingLink(false)
@@ -90,16 +134,25 @@ export function BouquetShareStep({ state, onCreateAnother }: BouquetShareStepPro
   }
 
   return (
-    <div className="relative mx-auto w-full max-w-3xl" data-testid="bouquet-share-step">
+    <div
+      className="relative mx-auto w-full max-w-3xl"
+      data-testid="bouquet-share-step"
+    >
       <header className="mb-5 text-center">
-        <h2 className="font-display text-3xl text-bloom-ink md:text-4xl">Preview and share</h2>
+        <h2 className="font-display text-3xl text-bloom-ink md:text-4xl">
+          Preview and share
+        </h2>
         <p className="mt-2 text-sm text-bloom-ink/70">
           This is what they will see, with your backdrop and ambient sound.
         </p>
       </header>
 
       <div className="mb-5">
-        <SoundtrackPlayer soundtrackId={state.soundtrack} autoPlay variant="inline" />
+        <SoundtrackPlayer
+          soundtrackId={state.soundtrack}
+          autoPlay
+          variant="inline"
+        />
       </div>
 
       <a
@@ -149,14 +202,22 @@ export function BouquetShareStep({ state, onCreateAnother }: BouquetShareStepPro
             className={`mx-auto mt-6 max-w-md rounded-2xl px-4 py-3 text-center text-sm backdrop-blur-sm ${previewTone.scrim} ${previewTone.body}`}
           >
             Open the full reveal in{' '}
-            <Link href={previewPath} className={`underline underline-offset-2 ${previewTone.link}`}>
+            <Link
+              href={previewPath}
+              className={`underline underline-offset-2 ${previewTone.link}`}
+            >
               preview as recipient
             </Link>
           </p>
         </div>
       </BackdropLayer>
 
-      <section id="share-actions" tabIndex={-1} className="scroll-mt-64 rounded-2xl border border-bloom-rose/20 bg-surface p-4 shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bloom-ink sm:p-5" aria-label="Share your bouquet">
+      <section
+        id="share-actions"
+        tabIndex={-1}
+        className="scroll-mt-64 rounded-2xl border border-bloom-rose/20 bg-surface p-4 shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bloom-ink sm:p-5"
+        aria-label="Share your bouquet"
+      >
         <p className="mb-3 text-xs font-medium uppercase tracking-wide text-bloom-ink/75">
           Ready to send
         </p>
@@ -169,6 +230,16 @@ export function BouquetShareStep({ state, onCreateAnother }: BouquetShareStepPro
           </p>
         </div>
         <div className="mt-4 space-y-3">
+          {canShare ? (
+            <Button
+              data-testid="native-share-button"
+              variant="secondary"
+              onClick={handleNativeShare}
+              className="w-full"
+            >
+              Share bouquet
+            </Button>
+          ) : null}
           <Button
             data-testid="copy-share-button"
             onClick={handleCopyMessage}
@@ -186,6 +257,42 @@ export function BouquetShareStep({ state, onCreateAnother }: BouquetShareStepPro
           >
             {copiedLink ? 'Copied!' : 'Copy link only'}
           </Button>
+          <Button
+            data-testid="manual-link-toggle"
+            variant="ghost"
+            onClick={() => setShowManualLink((shown) => !shown)}
+            className="w-full"
+            aria-expanded={showManualLink}
+            aria-controls="manual-share-link"
+          >
+            {showManualLink ? 'Hide manual link' : 'Show link to copy manually'}
+          </Button>
+          {showManualLink ? (
+            <div className="space-y-2">
+              <label htmlFor="manual-share-link" className="sr-only">
+                Full bouquet link
+              </label>
+              <textarea
+                id="manual-share-link"
+                ref={manualLinkRef}
+                readOnly
+                rows={3}
+                value={shareUrl}
+                onFocus={(event) => event.currentTarget.select()}
+                className="w-full resize-y rounded-xl border border-bloom-rose/20 bg-surface px-3 py-2 text-xs leading-relaxed text-bloom-ink [overflow-wrap:anywhere] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bloom-ink"
+              />
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  manualLinkRef.current?.focus()
+                  manualLinkRef.current?.select()
+                }}
+                className="w-full"
+              >
+                Select link
+              </Button>
+            </div>
+          ) : null}
           <button
             type="button"
             onClick={onCreateAnother}
