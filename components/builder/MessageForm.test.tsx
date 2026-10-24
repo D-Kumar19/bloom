@@ -51,6 +51,14 @@ describe('MessageForm', () => {
     expect(screen.getByTestId('change-card-style')).toBeInTheDocument()
   })
 
+  it('offers a clear path back to choose a different bouquet', () => {
+    const onChangeBouquet = vi.fn()
+    renderMessageForm({ onChangeBouquet })
+
+    fireEvent.click(screen.getByRole('button', { name: 'Change bouquet' }))
+    expect(onChangeBouquet).toHaveBeenCalledOnce()
+  })
+
   it('shows an empty card preview with To and From placeholders before the message is written', () => {
     renderMessageForm({
       cardStyle: 'classic-cream',

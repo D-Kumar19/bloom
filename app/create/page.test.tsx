@@ -54,6 +54,9 @@ function buildState(step: 'bouquet' | 'card' | 'message' | 'theme') {
     goToStep: vi.fn(),
     startNewBouquet: vi.fn(),
     maxMessageWords: 200,
+    pendingStarter: null,
+    keepDraft: vi.fn(),
+    startWithStarter: vi.fn(),
   }
 }
 
@@ -100,6 +103,26 @@ describe('CreatePage transitions', () => {
       'Draft recovery is unavailable'
     )
     expect(screen.getByTestId('next-button')).toBeEnabled()
+  })
+
+  it('asks before replacing a saved draft with an occasion starter', () => {
+    const state = {
+      ...buildState('card'),
+      pendingStarter: {
+        title: 'Celebrate the day they arrived',
+      },
+    }
+    mockUseBouquetState.mockReturnValue(state)
+
+    renderCreatePage()
+
+    expect(screen.getByRole('dialog', { name: 'Keep your saved bouquet?' })).toHaveTextContent(
+      'Your saved bouquet will only be replaced if you choose to start with this idea.'
+    )
+    fireEvent.click(screen.getByRole('button', { name: 'Keep my draft' }))
+    expect(state.keepDraft).toHaveBeenCalled()
+    fireEvent.click(screen.getByRole('button', { name: 'Start with this idea' }))
+    expect(state.startWithStarter).toHaveBeenCalled()
   })
 
   it('falls back to a sticky progress shell without site chrome', () => {
