@@ -27,9 +27,10 @@ describe('honest navigation and privacy', () => {
     expect(screen.queryByText(/not available yet/)).not.toBeInTheDocument()
     expect(document.querySelector('a[href="/pre-release"]')).toBeNull()
   })
-  it('explains the shared guide honestly and offers builder and contact destinations', () => {
+  it('offers editable occasion starters, the builder, and contact destinations', () => {
     render(<ExplorePage />)
-    expect(screen.getByText(/ideas, not selectable presets/)).toBeInTheDocument()
+    expect(screen.getByText(/The note is yours to write/)).toBeInTheDocument()
+    expect(screen.getAllByRole('link', { name: 'Start with this idea' })).toHaveLength(6)
     expect(screen.getByRole('link', { name: 'Create your bouquet' })).toHaveAttribute('href', '/create')
     expect(screen.getByRole('link', { name: 'Tell Dheeraj' })).toHaveAttribute('href', '/contact')
   })
