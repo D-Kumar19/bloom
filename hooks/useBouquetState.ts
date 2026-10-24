@@ -15,6 +15,7 @@ import { DEFAULT_NOTE_BORDER } from '@/lib/cards'
 import { DEFAULT_MESSAGE_FORMAT, sanitizeMessageHtml } from '@/lib/message'
 import { canProceedMessageStep } from '@/lib/message'
 import { applyMoodPreset, isMoodId } from '@/lib/moods'
+import { GUIDE_MAP, type GuidePreset } from '@/lib/guides'
 import {
   MAX_MESSAGE_WORDS,
   type BouquetState,
@@ -39,6 +40,7 @@ export function useBouquetState() {
   const [state, setState] = useState<BouquetState>(DEFAULT_STATE)
   const [step, setStep] = useState<BuilderStep>('bouquet')
   const [ready, setReady] = useState(false)
+  const [pendingStarter, setPendingStarter] = useState<GuidePreset | null>(null)
   const [storageError, setStorageError] = useState<string | null>(null)
   const lastSaved = useRef(JSON.stringify({ state: DEFAULT_STATE, step: 'bouquet' }))
   const storageErrorReported = useRef(false)
@@ -60,10 +62,12 @@ export function useBouquetState() {
       const params = new URLSearchParams(window.location.search)
       const preset = params.get('preset')
       const moodParam = params.get('mood')
+      const starter = GUIDE_MAP.get(params.get('starter') ?? '')
 
       let initialState = DEFAULT_STATE
       let initialStep: BuilderStep = 'bouquet'
       let initializedFromLink = false
+      let restoredDraft = false
       try {
         const decoded = preset ? decodeBouquet(preset) : null
         if (decoded) {
@@ -72,8 +76,24 @@ export function useBouquetState() {
         } else if (moodParam && isMoodId(moodParam)) {
           initialState = applyMoodPreset(DEFAULT_STATE, moodParam)
           initializedFromLink = true
+        } else if (starter) {
+          restoredDraft = restoreBuilderDraft(
+            (value) => {
+              initialState = typeof value === 'function' ? value(DEFAULT_STATE) : value
+            },
+            (value) => {
+              initialStep = value
+            },
+          )
+          if (restoredDraft) {
+            setPendingStarter(starter)
+          } else {
+            initialState = { ...DEFAULT_STATE, ...starter.state }
+            initialStep = 'message'
+            initializedFromLink = true
+          }
         } else {
-          restoreBuilderDraft(
+          restoredDraft = restoreBuilderDraft(
             (value) => {
               initialState = typeof value === 'function' ? value(DEFAULT_STATE) : value
             },
@@ -94,13 +114,14 @@ export function useBouquetState() {
         // Presets initialize once; reloads must recover the user's subsequent edits.
         params.delete('preset')
         params.delete('mood')
+        params.delete('starter')
         const search = params.size ? `?${params.toString()}` : ''
         window.history.replaceState(
           window.history.state,
           '',
           `${window.location.pathname}${search}${window.location.hash}`,
         )
-      } else if (restoredId) {
+      } else if (restoredDraft) {
         lastSaved.current = JSON.stringify({
           state: initialState,
           step: initialStep,
@@ -221,11 +242,57 @@ export function useBouquetState() {
     setStep('bouquet')
   }, [reportStorageError])
 
+  const consumeStarterParam = useCallback(() => {
+    const params = new URLSearchParams(window.location.search)
+    params.delete('starter')
+    const search = params.size ? `?${params.toString()}` : ''
+    window.history.replaceState(
+      window.history.state,
+      '',
+      `${window.location.pathname}${search}${window.location.hash}`,
+    )
+  }, [])
+
+  const keepDraft = useCallback(() => {
+    consumeStarterParam()
+    setPendingStarter(null)
+  }, [consumeStarterParam])
+
+  const startWithStarter = useCallback(() => {
+    if (!pendingStarter) return
+    try {
+      clearBuilderDraft()
+    } catch {
+      reportStorageError()
+      return
+    }
+
+    const newState = {
+      ...DEFAULT_STATE,
+      ...pendingStarter.state,
+      giftId: crypto.randomUUID(),
+    }
+    const snapshot = JSON.stringify({ state: newState, step: 'message' })
+    try {
+      saveBuilderDraft(newState, 'message')
+      lastSaved.current = snapshot
+    } catch {
+      reportStorageError()
+    }
+    setState(newState)
+    setStep('message')
+    setPendingStarter(null)
+    consumeStarterParam()
+  }, [consumeStarterParam, pendingStarter, reportStorageError])
+
   return {
     state,
     step,
     ready,
     storageError,
+    pendingStarter,
+    keepDraft,
+    startWithStarter,
     setStep,
     setBouquet,
     setCardStyle,

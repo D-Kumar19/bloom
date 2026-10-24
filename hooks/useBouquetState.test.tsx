@@ -169,6 +169,91 @@ describe('builder draft recovery', () => {
     expect(next.result.current.step).toBe('message')
   })
 
+  it('starts a guide starter at the editable message step and preserves unrelated URL state', async () => {
+    window.history.replaceState({ preserved: true }, '', '/create?starter=birthday&campaign=test#builder')
+    const { result } = renderHook(useBouquetState)
+    await waitFor(() => expect(result.current.ready).toBe(true))
+
+    expect(result.current.pendingStarter).toBeNull()
+    expect(result.current.step).toBe('message')
+    expect(result.current.state).toMatchObject({
+      bouquetId: 'sunflower-burst',
+      cardStyle: 'garden',
+      theme: 'sunset',
+      to: '',
+      from: '',
+      message: '',
+    })
+    expect(window.location.search).toBe('?campaign=test')
+    expect(window.location.hash).toBe('#builder')
+    expect(window.history.state).toEqual({ preserved: true })
+  })
+
+  it('asks before replacing a saved draft and can keep it without changing its data', async () => {
+    const initial = renderHook(useBouquetState)
+    await waitFor(() => expect(initial.result.current.ready).toBe(true))
+    act(() => {
+      initial.result.current.setTo('Keep this recipient')
+      initial.result.current.setStep('card')
+    })
+    await waitFor(() =>
+      expect(localStorage.getItem(BUILDER_DRAFT_STORAGE_KEY)).toContain('Keep this recipient')
+    )
+    const savedDraft = localStorage.getItem(BUILDER_DRAFT_STORAGE_KEY)
+    initial.unmount()
+
+    window.history.replaceState({}, '', '/create?starter=birthday&campaign=test#builder')
+    const resumed = renderHook(useBouquetState)
+    await waitFor(() => expect(resumed.result.current.ready).toBe(true))
+
+    expect(resumed.result.current.pendingStarter?.slug).toBe('birthday')
+    expect(resumed.result.current.step).toBe('card')
+    expect(resumed.result.current.state.to).toBe('Keep this recipient')
+    expect(localStorage.getItem(BUILDER_DRAFT_STORAGE_KEY)).toBe(savedDraft)
+
+    act(() => resumed.result.current.keepDraft())
+    expect(resumed.result.current.pendingStarter).toBeNull()
+    expect(window.location.search).toBe('?campaign=test')
+    expect(window.location.hash).toBe('#builder')
+    expect(localStorage.getItem(BUILDER_DRAFT_STORAGE_KEY)).toBe(savedDraft)
+  })
+
+  it('replaces a saved draft with the selected starter only after confirmation', async () => {
+    const initial = renderHook(useBouquetState)
+    await waitFor(() => expect(initial.result.current.ready).toBe(true))
+    act(() => {
+      initial.result.current.setTo('Old recipient')
+      initial.result.current.setStep('message')
+    })
+    await waitFor(() =>
+      expect(localStorage.getItem(BUILDER_DRAFT_STORAGE_KEY)).toContain('Old recipient')
+    )
+    const oldGiftId = initial.result.current.state.giftId
+    initial.unmount()
+
+    window.history.replaceState({}, '', '/create?starter=birthday')
+    const resumed = renderHook(useBouquetState)
+    await waitFor(() => expect(resumed.result.current.ready).toBe(true))
+    expect(resumed.result.current.pendingStarter?.slug).toBe('birthday')
+    expect(localStorage.getItem(BUILDER_DRAFT_STORAGE_KEY)).toContain('Old recipient')
+
+    act(() => resumed.result.current.startWithStarter())
+    expect(resumed.result.current.pendingStarter).toBeNull()
+    expect(resumed.result.current.step).toBe('message')
+    expect(resumed.result.current.state).toMatchObject({
+      bouquetId: 'sunflower-burst',
+      to: '',
+      from: '',
+      message: '',
+    })
+    expect(resumed.result.current.state.giftId).not.toBe(oldGiftId)
+    expect(window.location.search).toBe('')
+    expect(JSON.parse(localStorage.getItem(BUILDER_DRAFT_STORAGE_KEY)!)).toMatchObject({
+      step: 'message',
+      state: { bouquetId: 'sunflower-burst', to: '' },
+    })
+  })
+
   it('consumes mood initialization so reload preserves edits and start-new stays new', async () => {
     window.history.replaceState({}, '', '/create?mood=grateful')
     const first = renderHook(useBouquetState)

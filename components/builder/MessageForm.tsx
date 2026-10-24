@@ -6,6 +6,7 @@ import { CardStyleQuickPicker } from '@/components/builder/CardStyleQuickPicker'
 import { NoteBorderPicker } from '@/components/builder/NoteBorderPicker'
 import { RichMessageEditor, focusMessageEditorEnd } from '@/components/builder/RichMessageEditor'
 import { MessageCard } from '@/components/cards/MessageCard'
+import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
 import {
   INSPIRATION_PROMPTS,
@@ -30,6 +31,7 @@ type MessageFormProps = {
   onMessageFormatChange: (format: MessageFormat) => void
   onNoteBorderChange: (border: NoteBorder) => void
   onCardStyleChange: (styleId: string) => void
+  onChangeBouquet?: () => void
 }
 
 const inputClassName =
@@ -51,6 +53,7 @@ export function MessageForm({
   onMessageFormatChange,
   onNoteBorderChange,
   onCardStyleChange,
+  onChangeBouquet,
 }: MessageFormProps) {
   const [showInspiration, setShowInspiration] = useState(false)
   const [showAdvanced, setShowAdvanced] = useState(false)
@@ -85,6 +88,15 @@ export function MessageForm({
         <p className="mt-2 text-sm leading-relaxed text-bloom-ink/60">
           Watch them land on the card you chose. That is the satisfying part.
         </p>
+        {onChangeBouquet ? (
+          <Button
+            variant="ghost"
+            className="mt-4 rounded-full"
+            onClick={onChangeBouquet}
+          >
+            Change bouquet
+          </Button>
+        ) : null}
       </div>
 
       <div className="grid items-start gap-8 lg:grid-cols-2 lg:gap-10">
