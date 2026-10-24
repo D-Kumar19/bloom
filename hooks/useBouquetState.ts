@@ -15,7 +15,7 @@ import { DEFAULT_NOTE_BORDER } from '@/lib/cards'
 import { DEFAULT_MESSAGE_FORMAT, sanitizeMessageHtml } from '@/lib/message'
 import { canProceedMessageStep } from '@/lib/message'
 import { applyMoodPreset, isMoodId } from '@/lib/moods'
-import { GUIDE_MAP, type GuidePreset } from '@/lib/guides'
+import { GUIDE_MAP } from '@/lib/guides'
 import {
   MAX_MESSAGE_WORDS,
   type BouquetState,
@@ -36,11 +36,17 @@ const DEFAULT_STATE: BouquetState = {
   soundtrack: 'none',
 }
 
+type PendingStarter = {
+  title: string
+  state: Partial<BouquetState>
+  step: BuilderStep
+}
+
 export function useBouquetState() {
   const [state, setState] = useState<BouquetState>(DEFAULT_STATE)
   const [step, setStep] = useState<BuilderStep>('bouquet')
   const [ready, setReady] = useState(false)
-  const [pendingStarter, setPendingStarter] = useState<GuidePreset | null>(null)
+  const [pendingStarter, setPendingStarter] = useState<PendingStarter | null>(null)
   const [storageError, setStorageError] = useState<string | null>(null)
   const lastSaved = useRef(JSON.stringify({ state: DEFAULT_STATE, step: 'bouquet' }))
   const storageErrorReported = useRef(false)
@@ -70,13 +76,28 @@ export function useBouquetState() {
       let restoredDraft = false
       try {
         const decoded = preset ? decodeBouquet(preset) : null
+        let linkedStarter: PendingStarter | null = null
         if (decoded) {
-          initialState = { ...DEFAULT_STATE, ...decoded }
-          initializedFromLink = true
+          linkedStarter = {
+            title: 'the bouquet in this link',
+            state: decoded,
+            step: 'bouquet',
+          }
         } else if (moodParam && isMoodId(moodParam)) {
-          initialState = applyMoodPreset(DEFAULT_STATE, moodParam)
-          initializedFromLink = true
+          linkedStarter = {
+            title: 'this mood starter',
+            state: applyMoodPreset(DEFAULT_STATE, moodParam),
+            step: 'bouquet',
+          }
         } else if (starter) {
+          linkedStarter = {
+            title: starter.subtitle,
+            state: starter.state,
+            step: 'message',
+          }
+        }
+
+        if (linkedStarter) {
           restoredDraft = restoreBuilderDraft(
             (value) => {
               initialState = typeof value === 'function' ? value(DEFAULT_STATE) : value
@@ -86,10 +107,10 @@ export function useBouquetState() {
             },
           )
           if (restoredDraft) {
-            setPendingStarter(starter)
+            setPendingStarter(linkedStarter)
           } else {
-            initialState = { ...DEFAULT_STATE, ...starter.state }
-            initialStep = 'message'
+            initialState = { ...DEFAULT_STATE, ...linkedStarter.state }
+            initialStep = linkedStarter.step
             initializedFromLink = true
           }
         } else {
@@ -242,9 +263,11 @@ export function useBouquetState() {
     setStep('bouquet')
   }, [reportStorageError])
 
-  const consumeStarterParam = useCallback(() => {
+  const consumeStarterParams = useCallback(() => {
     const params = new URLSearchParams(window.location.search)
     params.delete('starter')
+    params.delete('preset')
+    params.delete('mood')
     const search = params.size ? `?${params.toString()}` : ''
     window.history.replaceState(
       window.history.state,
@@ -254,9 +277,9 @@ export function useBouquetState() {
   }, [])
 
   const keepDraft = useCallback(() => {
-    consumeStarterParam()
+    consumeStarterParams()
     setPendingStarter(null)
-  }, [consumeStarterParam])
+  }, [consumeStarterParams])
 
   const startWithStarter = useCallback(() => {
     if (!pendingStarter) return
@@ -272,18 +295,18 @@ export function useBouquetState() {
       ...pendingStarter.state,
       giftId: crypto.randomUUID(),
     }
-    const snapshot = JSON.stringify({ state: newState, step: 'message' })
+    const snapshot = JSON.stringify({ state: newState, step: pendingStarter.step })
     try {
-      saveBuilderDraft(newState, 'message')
+      saveBuilderDraft(newState, pendingStarter.step)
       lastSaved.current = snapshot
     } catch {
       reportStorageError()
     }
     setState(newState)
-    setStep('message')
+    setStep(pendingStarter.step)
     setPendingStarter(null)
-    consumeStarterParam()
-  }, [consumeStarterParam, pendingStarter, reportStorageError])
+    consumeStarterParams()
+  }, [consumeStarterParams, pendingStarter, reportStorageError])
 
   return {
     state,

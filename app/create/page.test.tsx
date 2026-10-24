@@ -109,8 +109,7 @@ describe('CreatePage transitions', () => {
     const state = {
       ...buildState('card'),
       pendingStarter: {
-        slug: 'birthday',
-        subtitle: 'Celebrate the day they arrived',
+        title: 'Celebrate the day they arrived',
       },
     }
     mockUseBouquetState.mockReturnValue(state)

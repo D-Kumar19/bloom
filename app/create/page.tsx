@@ -93,7 +93,7 @@ export default function CreatePage() {
       >
         <p className="text-sm leading-relaxed text-bloom-ink/75">
           You already have a bouquet in progress. Keep working on it, or replace it
-          with “{pendingStarter?.subtitle}”? Your saved bouquet will only be replaced
+          with “{pendingStarter?.title}”? Your saved bouquet will only be replaced
           if you choose to start with this idea.
         </p>
         <div className="mt-6 flex flex-col-reverse justify-end gap-3 sm:flex-row">
