@@ -47,7 +47,6 @@ export function BouquetHero({
         alt={bouquet.name}
         width={1024}
         height={1536}
-        unoptimized
         priority
         sizes="(max-width: 768px) 100vw, 448px"
         className="block h-auto w-full object-contain"

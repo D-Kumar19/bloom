@@ -205,7 +205,6 @@ export function BouquetGalleryPicker({ selectedId, onSelect }: BouquetGalleryPic
                   src={bouquet.thumbnailImage}
                   alt={bouquet.name}
                   fill
-                  unoptimized
                   loading={index < 4 ? 'eager' : 'lazy'}
                   sizes="(max-width: 768px) 50vw, 240px"
                   className="object-cover transition duration-300 group-hover:scale-[1.03]"

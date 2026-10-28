@@ -34,11 +34,13 @@ const fraunces = localFont({
   variable: '--font-fraunces',
 })
 
+// Note-only fonts load when a note uses them instead of on every page.
 const lora = localFont({
   src: './fonts/lora/latin-400.woff2',
   weight: '400 500',
   display: 'swap',
   variable: '--font-lora',
+  preload: false,
 })
 
 const ebGaramond = localFont({
@@ -46,6 +48,7 @@ const ebGaramond = localFont({
   weight: '400 500',
   display: 'swap',
   variable: '--font-eb-garamond',
+  preload: false,
 })
 
 const nunito = localFont({
@@ -53,6 +56,7 @@ const nunito = localFont({
   weight: '400 600',
   display: 'swap',
   variable: '--font-nunito',
+  preload: false,
 })
 
 const raleway = localFont({
@@ -60,6 +64,7 @@ const raleway = localFont({
   weight: '400 500',
   display: 'swap',
   variable: '--font-raleway',
+  preload: false,
 })
 
 const caveat = localFont({
@@ -67,6 +72,7 @@ const caveat = localFont({
   weight: '400 600',
   display: 'swap',
   variable: '--font-caveat',
+  preload: false,
 })
 
 const sacramento = localFont({
@@ -74,6 +80,7 @@ const sacramento = localFont({
   weight: '400',
   display: 'swap',
   variable: '--font-sacramento',
+  preload: false,
 })
 
 const courierPrime = localFont({
@@ -83,6 +90,7 @@ const courierPrime = localFont({
   ],
   display: 'swap',
   variable: '--font-courier-prime',
+  preload: false,
 })
 
 const fontVariables = [
