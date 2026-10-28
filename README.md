@@ -187,14 +187,14 @@ missing or unavailable. Use a separate Redis store for Preview deployments.
 The core experience is shipped and verified in production. What comes next is
 deliberately small and optional. More choices are not automatically a better gift.
 
-| ✅ Shipped | 🌱 Being considered, not built |
+| ✅ Shipped | 🌱 Planned next, not built yet |
 | :--- | :--- |
-| Draft recovery, faithful notes and PNGs, accessible soft UI | 📧 Email-ready sharing (compose links, no server email) |
-| Templates and the Wander discovery pages | 👤 Optional accounts and a private bouquet journey |
-| One-tap sharing, link previews, lighter pages | 🎙️ Photo or voice notes, only after a privacy and cost review |
-| A persistent, abuse-limited share counter | 💡 Smaller ideas like QR codes or a sender name |
+| Draft recovery, faithful notes and PNGs, accessible soft UI | 📧 Email-ready sharing: open your email app with the link ready |
+| Templates and the Wander discovery pages | 🕊️ An optional sender name, for gifts from "someone" |
+| One-tap sharing, link previews, lighter pages | 💌 Share Bloom itself with a friend |
+| A persistent, abuse-limited share counter | ✨ A gentle moment when your bouquet is ready to send |
 
-There are no accounts, automatic email delivery, or journey timelines today.
+Bloom stays account-free: no sign-ins, uploads, or emails sent on your behalf.
 See [releases](./docs/releases.md) for what changed in each version.
 
 **[📋 All TODOs and acceptance criteria](./docs/backlog.md)** ·

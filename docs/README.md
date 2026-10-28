@@ -21,14 +21,14 @@ Updated: 2026-10-28. Original audit baseline: `4d610ab`.
   softness, and smooth interactions. D01-D06 were accepted and merged in PR #6,
   not a wholesale redesign.
 - Keep the current source layout. No framework migration or rewrite is approved.
-- Email-ready sharing and optional accounts with a private animated bouquet
-  journal are approved as final-phase standout features, after core fixes,
-  experience polish. See the backlog; neither is being implemented now.
+- **Next (owner triage, 2026-10-28):** S01 email-ready sharing, F01 optional
+  sender name, F03 share Bloom with a friend, and F09 a gentle completion
+  animation. Accounts/journal (S02), the domain (S03), and photo/voice media
+  (R01/R02) are not planned; F02, F04-F08, and F10 are not
+  prioritized. See the backlog's Next and Deferred sections.
 - Product discovery now includes editable occasion starters, clearer descriptions,
   gentle facts/humor, personal details, and curated collections. Keep the free
-  Vercel address; domain ownership (S03) is not planned.
-  Photo/voice uploads and pricing remain conditional research,
-  not approved infrastructure or paid-feature commitments.
+  Vercel address. No uploads, accounts, or paid features are planned.
 - Simplicity means a clear pipeline, not a three-screen target: five steps are
   welcome with one primary purpose each. Avoid multiple equal selection tasks
   disguised as one step. Advanced controls and future media must not burden the
@@ -71,8 +71,8 @@ button. O01 is closed: a Vercel Firewall rule limits POST /api/count to 20
 per minute per IP, verified on Preview.
 DOC02 rewrote the public README for the shipped product (PR #15).
 Do not repeat the redesign.
-F01-F10, S01-S02, and R01-R02 remain open later work. S03 is not planned and
-lives under the backlog's Deferred section; leave it out of open-work summaries.
+Open work is S01, F01, F03, and F09 only. Everything else lives under the
+backlog's Deferred sections; leave it out of open-work summaries.
 
 ## Keeping this useful
 

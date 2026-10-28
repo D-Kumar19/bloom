@@ -293,6 +293,11 @@ authentication is needed only if Bloom later sends mail itself.
 | Final standout | Email sharing, optional journal/accounts, owned domain | Explicit feature/design/operations approval |
 | Conditional media | Photo/voice prototype, then constrained upload capability | Evidence of value, privacy/cost/retention decisions |
 
+**Owner backlog triage, 2026-10-28:** only S01, F01, F03, and F09 remain
+planned. S02, S03, R01, and R02 are not planned; F02, F04-F08,
+and F10 are not prioritized. See the backlog's Deferred sections.
+Rows below that mention accounts, journals, the domain, or media are historical.
+
 These are stages, not calendar promises. Media and monetization are conditional,
 not requirements to finish the redesign. Accounts and email retain their
 previously requested end-of-roadmap placement.

@@ -30,6 +30,15 @@ and opt-in audio must not compete with a step's primary task.
   Preserves the production-counter caveat and privacy boundaries. No
   application redesign or new product behavior is included. Final visual
   review in GitHub's renderer remains part of publication.
+- [x] DOC02 - Reformat and improve the public README.
+  **Done 2026-10-28 at the D/L release checkpoint (PR #15).** Removed the
+  stale pre-release/redesign banner and unverified-counter claims; added
+  Templates, the Wander discovery pages, the one-button share step, link
+  previews, lighter pages, and the counter Firewall rule; replaced the roadmap
+  with shipped vs. planned work. Added a composed bouquet banner and phone
+  screenshots in Bloom's palette (owner feedback). Links checked against
+  production; shipped in v0.0.5. Revisit the README at later release
+  checkpoints if the product changes.
 
 ## Release automation
 
@@ -690,11 +699,12 @@ a commitment to ship everything. Validate usefulness and simplicity first.
   flower descriptions with L05 and the approved redesign; not a blocker for
   the current reliability release.
 
-## Final phase - Standout features
+## Next - Planned features (S01, F01, F03, F09)
 
-Owner-approved roadmap additions S01-S02, recorded 2026-10-19. Implement at the end,
-after reliability fixes, the approved redesign, and core product polish.
-These are not prerequisites for the initial redesigned release.
+Owner decision, 2026-10-28, after publishing v0.0.5: these four are the only
+open feature TODOs. Implement each as a focused, Preview-reviewed PR that keeps
+Bloom account-free and preserves existing gift links. Resolve the product
+questions noted in each item before coding.
 
 - [ ] S01 - Email-ready sharing.
   Open the default email app or Gmail/Outlook web composer with a prepared subject,
@@ -702,8 +712,27 @@ These are not prerequisites for the initial redesigned release.
   Include a copy-text fallback and verify desktop/mobile behavior and long links.
   No Bloom account, inbox permissions, or server-side email sending required.
   Opening a composer must not be recorded as confirmed delivery.
+- [ ] F01 - Consider an optional sender name.
+  This is a product change, not a confirmed bug: current builder validation and
+  link decoding require a sender. Decide the recipient heading, metadata,
+  "With love" fallback, draft validation, and old-link behavior together before
+  implementation. Do not weaken validation in only one surface.
+- [ ] F03 - Evaluate sharing Bloom itself with a friend.
+  An unmounted sharing component already exists. Reuse it only if it fits the
+  homepage, with explicit clipboard failures and benign share-sheet cancellation.
+  Do not put promotional friction in the recipient's gift.
+- [ ] F09 - Consider a restrained completion animation.
+  No default celebratory confetti on sympathy/support gifts, no blocking delay,
+  and a reduced-motion equivalent. Review with D03 instead of adding a second
+  unrelated motion language. Existing step sparkles are not missing work.
 
-- [ ] S02 - Optional accounts and a private bouquet journey.
+## Deferred - not planned
+
+Not open TODOs. Owner decided not to pursue these; omit them from open-work
+summaries unless the owner explicitly revives one. Their notes are kept so a
+revival does not start from zero.
+
+- S02 - Optional accounts and a private bouquet journey.
   Let users save created bouquets and recover drafts across devices, then revisit
   them in an animated floral journal/timeline with a reduced-motion alternative.
   Keep creation, sharing, and recipient viewing available without login.
@@ -713,104 +742,8 @@ These are not prerequisites for the initial redesigned release.
   deletion. Update privacy disclosures for server-stored gifts. Use honest event
   labels: creation/copying is not proof of sending, delivery, or opening.
   Deleting a journal entry must not imply revoking an existing encoded link.
-
-### Later features - F01-F10 (open)
-
-Owner confirmed on 2026-10-22 that F01-F10 remain open later-feature TODOs,
-not deferred items. Schedule after the redesign and core UX work; resolve each
-item's product/privacy/cost decisions before implementation. S03 is not
-planned; see [Deferred - not planned](#deferred---not-planned). No effort estimates from the external checklist have
-been adopted.
-
-- [ ] F01 - Consider an optional sender name.
-  This is a product change, not a confirmed bug: current builder validation and
-  link decoding require a sender. Decide the recipient heading, metadata,
-  "With love" fallback, draft validation, and old-link behavior together before
-  implementation. Do not weaken validation in only one surface.
-- [ ] F02 - Consider server-sent email, separate from S01 compose links.
-  Evaluate a provider such as Resend only if users need Bloom to send mail.
-  Requires sender identity/domain setup, consent, abuse controls, rate limits,
-  privacy, delivery/bounce handling, and operating-cost review. No provider chosen.
-- [ ] F03 - Evaluate sharing Bloom itself with a friend.
-  An unmounted sharing component already exists. Reuse it only if it fits the
-  homepage, with explicit clipboard failures and benign share-sheet cancellation.
-  Do not put promotional friction in the recipient's gift.
-- [ ] F04 - Explore illustrated/watercolor asset direction or composition.
-  Optional art-direction research, not an approved asset regeneration or engine
-  rewrite. Review consistent imagery, provenance, performance, and the florist
-  worktable direction before replacing functioning assets.
-- [ ] F05 - Consider privacy-conscious gift-open analytics.
-  Opening/prefetching by preview bots is not proof that a person read a gift.
-  Specify consent, data minimization, bot/repeat handling, retention, and whether
-  any event is exposed to senders. No covert tracking or assumed read receipts.
-- [ ] F06 - Consider creator support/donations.
-  Default placement should not compete with a personal recipient message.
-  Evaluate an unobtrusive site-level location, provider, disclosure, and fees;
-  no payment integration is approved.
-- [ ] F07 - Consider internationalization.
-  Validate demand and initial locales; cover UI, content, text direction,
-  locale-aware formatting, and word-limit behavior. Preserve existing links and
-  sender-written text. Do not confuse translating the UI with translating notes.
-- [ ] F08 - Consider a downloadable QR code for a gift.
-  Verify actual scanning with realistic encoded-link lengths and export sizes.
-  Dense codes may require a short-link service, which is a separate storage/
-  privacy/lifetime decision. Never send private gift URLs to a public QR service.
-- [ ] F09 - Consider a restrained completion animation.
-  No default celebratory confetti on sympathy/support gifts, no blocking delay,
-  and a reduced-motion equivalent. Review with D03 instead of adding a second
-  unrelated motion language. Existing step sparkles are not missing work.
-- [ ] F10 - Consider feeling-based bouquet discovery.
-  Existing search returns flower IDs, not curated bouquet matches, and is not
-  mounted in the builder. Define relevance across moods, valid results, empty
-  states, and whether search improves finding flowers before adding a new control.
-
-## Later features - Personal media and sustainable pricing (R01-R02 open)
-
-Owner confirmed on 2026-10-22 that R01-R02 remain open later-feature TODOs,
-not deferred. Their prototype/value and ownership/cost gates still apply;
-this does not approve production upload infrastructure or paid features.
-Follow the [media discovery constraints](./product-direction.md).
-
-- [ ] R01 - Validate photo/voice value with a bounded prototype.
-  "VM" is assumed to mean voice message; confirm scope first. Explore one personal
-  photo or a short voice note, preview/delete controls, no forced playback, and
-  a text alternative. Use consented sample assets without production uploads.
-  Decide whether it improves recipient experience before funding storage.
-  Expose only through user-opened personalization, never new default/skippable
-  stages. Reject the concept if it makes a simple text gift harder to complete.
-- [ ] R02 - Specify media ownership, access, lifetime, limits, and costs.
-  Depends on R01 showing value. Compare per-gift storage/processing/bandwidth and
-  operating costs; define validation, metadata stripping, quotas, abuse handling,
-  deletion, retention, and expired-media fallback. Plan media references rather
-  than bytes in URLs; account ownership is not recipient access control.
-  Preserve existing text-only links. Pricing and payment integration require
-  separate approval and willingness-to-pay evidence; no assumed free/paid cap.
-
-Checkout, scheduling, verified delivery receipts, 3D scenes, revocable link
-storage, and expiry remain outside approved scope. The parking lot records
-later work, not prerequisites for the reliability release.
-
-## Documentation cleanup - At the release checkpoint where we pause
-
-- [x] DOC02 - Reformat and improve the public README.
-  **Done 2026-10-28 at the D/L release checkpoint (PR #15).** Removed the
-  stale pre-release/redesign banner and unverified-counter claims; added
-  Templates, the Wander discovery pages, the one-button share step, link
-  previews, lighter pages, and the counter Firewall rule; replaced the roadmap
-  with shipped vs. considered work (S01/S02, R, F). Links checked against
-  production. Revisit at a later release checkpoint if the product changes.
-  **Owner request, 2026-10-23:** the current README's presentation is not
-  satisfactory. **Updated 2026-10-23:** revisit [README.md](../README.md)
-  whenever the owner pauses at a release checkpoint, whether after the D/L
-  milestone or a later release, rather than waiting for the entire roadmap.
-  Improve formatting, structure, readability, and visual consistency to reflect
-  what actually shipped. Do not start now or block ongoing feature PRs.
-
-## Deferred - not planned
-
-Not open TODOs. Owner decided not to pursue these; omit them from open-work
-summaries unless the owner explicitly revives one.
-
+  **Not planned (owner decision, 2026-10-28).** Accounts, server-stored
+  gifts, and a journal conflict with Bloom's account-free design.
 - S03 - Select and connect an owned production domain.
   **Deferred by owner, 2026-10-22:** annual registration/renewal costs are not
   justified for this personal project. Keep the free Vercel address and the
@@ -820,3 +753,64 @@ summaries unless the owner explicitly revives one.
   configure DNS/TLS and canonical/share/OG origins, assess redirects and
   sign-in callbacks, and verify old gift links where their host remains
   controlled. Do not assume ownership of bloom.app.
+- R01 - Validate photo/voice value with a bounded prototype.
+  "VM" is assumed to mean voice message; confirm scope first. Explore one personal
+  photo or a short voice note, preview/delete controls, no forced playback, and
+  a text alternative. Use consented sample assets without production uploads.
+  Decide whether it improves recipient experience before funding storage.
+  Expose only through user-opened personalization, never new default/skippable
+  stages. Reject the concept if it makes a simple text gift harder to complete.
+  **Not planned (owner decision, 2026-10-28).** Media storage, moderation,
+  and costs are out of scope.
+- R02 - Specify media ownership, access, lifetime, limits, and costs.
+  Depends on R01 showing value. Compare per-gift storage/processing/bandwidth and
+  operating costs; define validation, metadata stripping, quotas, abuse handling,
+  deletion, retention, and expired-media fallback. Plan media references rather
+  than bytes in URLs; account ownership is not recipient access control.
+  Preserve existing text-only links. Pricing and payment integration require
+  separate approval and willingness-to-pay evidence; no assumed free/paid cap.
+  **Not planned (owner decision, 2026-10-28).** Depends on R01.
+
+Checkout, scheduling, verified delivery receipts, 3D scenes, revocable link
+storage, and expiry remain outside approved scope.
+
+## Deferred - not prioritized
+
+Not open TODOs. Possible someday, but the owner has no plan to start them; omit
+them from open-work summaries unless the owner moves one to Next.
+
+- F02 - Consider server-sent email, separate from S01 compose links.
+  Evaluate a provider such as Resend only if users need Bloom to send mail.
+  Requires sender identity/domain setup, consent, abuse controls, rate limits,
+  privacy, delivery/bounce handling, and operating-cost review. No provider chosen.
+  **Not prioritized (owner decision, 2026-10-28).**
+- F04 - Explore illustrated/watercolor asset direction or composition.
+  Optional art-direction research, not an approved asset regeneration or engine
+  rewrite. Review consistent imagery, provenance, performance, and the florist
+  worktable direction before replacing functioning assets.
+  **Not prioritized (owner decision, 2026-10-28).**
+- F05 - Consider privacy-conscious gift-open analytics.
+  Opening/prefetching by preview bots is not proof that a person read a gift.
+  Specify consent, data minimization, bot/repeat handling, retention, and whether
+  any event is exposed to senders. No covert tracking or assumed read receipts.
+  **Not prioritized (owner decision, 2026-10-28).**
+- F06 - Consider creator support/donations.
+  Default placement should not compete with a personal recipient message.
+  Evaluate an unobtrusive site-level location, provider, disclosure, and fees;
+  no payment integration is approved.
+  **Not prioritized (owner decision, 2026-10-28).**
+- F07 - Consider internationalization.
+  Validate demand and initial locales; cover UI, content, text direction,
+  locale-aware formatting, and word-limit behavior. Preserve existing links and
+  sender-written text. Do not confuse translating the UI with translating notes.
+  **Not prioritized (owner decision, 2026-10-28).**
+- F08 - Consider a downloadable QR code for a gift.
+  Verify actual scanning with realistic encoded-link lengths and export sizes.
+  Dense codes may require a short-link service, which is a separate storage/
+  privacy/lifetime decision. Never send private gift URLs to a public QR service.
+  **Not prioritized (owner decision, 2026-10-28).**
+- F10 - Consider feeling-based bouquet discovery.
+  Existing search returns flower IDs, not curated bouquet matches, and is not
+  mounted in the builder. Define relevance across moods, valid results, empty
+  states, and whether search improves finding flowers before adding a new control.
+  **Not prioritized (owner decision, 2026-10-28).**
