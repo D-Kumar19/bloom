@@ -6,11 +6,14 @@ import { getBouquetById } from '@/lib/bouquets'
 import { getCardStyleById } from '@/lib/cards'
 import { GUIDES } from '@/lib/guides'
 import { THEMES } from '@/lib/themes'
+import { publicPageMetadata } from '@/lib/pageMetadata'
 
-export const metadata = {
+export const metadata = publicPageMetadata({
   title: 'Templates',
-  description: 'Editable occasion starters for a birthday, thank-you, or just-because bouquet. Your words, your choices.',
-}
+  description:
+    'Editable occasion starters for a birthday, thank-you, or just-because bouquet. Your words, your choices.',
+  path: '/templates',
+})
 
 export default function TemplatesPage() {
   return (

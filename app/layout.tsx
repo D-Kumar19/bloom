@@ -7,7 +7,8 @@ import { FooterGate } from '@/components/layout/FooterGate'
 import { SiteChrome } from '@/components/layout/SiteChrome'
 import { ToastProvider } from '@/components/ui/Toast'
 import { APPEARANCE_STORAGE_KEY, DEFAULT_APPEARANCE } from '@/lib/appearance'
-import { SITE_TITLE } from '@/lib/site'
+import { SITE_DESCRIPTION, SITE_NAME, SITE_TITLE } from '@/lib/site'
+import { SITE_OG_IMAGE } from '@/lib/pageMetadata'
 import { getSiteMetadataBase } from '@/lib/siteUrl'
 
 import './globals.css'
@@ -33,11 +34,13 @@ const fraunces = localFont({
   variable: '--font-fraunces',
 })
 
+// Note-only fonts load when a note uses them instead of on every page.
 const lora = localFont({
   src: './fonts/lora/latin-400.woff2',
   weight: '400 500',
   display: 'swap',
   variable: '--font-lora',
+  preload: false,
 })
 
 const ebGaramond = localFont({
@@ -45,6 +48,7 @@ const ebGaramond = localFont({
   weight: '400 500',
   display: 'swap',
   variable: '--font-eb-garamond',
+  preload: false,
 })
 
 const nunito = localFont({
@@ -52,6 +56,7 @@ const nunito = localFont({
   weight: '400 600',
   display: 'swap',
   variable: '--font-nunito',
+  preload: false,
 })
 
 const raleway = localFont({
@@ -59,6 +64,7 @@ const raleway = localFont({
   weight: '400 500',
   display: 'swap',
   variable: '--font-raleway',
+  preload: false,
 })
 
 const caveat = localFont({
@@ -66,6 +72,7 @@ const caveat = localFont({
   weight: '400 600',
   display: 'swap',
   variable: '--font-caveat',
+  preload: false,
 })
 
 const sacramento = localFont({
@@ -73,6 +80,7 @@ const sacramento = localFont({
   weight: '400',
   display: 'swap',
   variable: '--font-sacramento',
+  preload: false,
 })
 
 const courierPrime = localFont({
@@ -82,6 +90,7 @@ const courierPrime = localFont({
   ],
   display: 'swap',
   variable: '--font-courier-prime',
+  preload: false,
 })
 
 const fontVariables = [
@@ -103,14 +112,19 @@ export const metadata: Metadata = {
     default: SITE_TITLE,
     template: '%s | Bloom',
   },
-  description:
-    'Bloom turns a feeling into a link. Pick a bouquet, write a note, share a private link.',
+  description: SITE_DESCRIPTION,
   openGraph: {
     title: SITE_TITLE,
-    description:
-      'Bloom turns a feeling into a link. Pick a bouquet, write a note, share a private link.',
-    images: [{ url: '/bouquet/og', width: 1200, height: 630 }],
+    description: SITE_DESCRIPTION,
+    siteName: SITE_NAME,
+    images: [SITE_OG_IMAGE],
     type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    images: [SITE_OG_IMAGE.url],
   },
 }
 

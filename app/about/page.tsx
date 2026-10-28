@@ -1,10 +1,13 @@
 import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
+import { publicPageMetadata } from '@/lib/pageMetadata'
 
-export const metadata = {
+export const metadata = publicPageMetadata({
   title: 'About',
-  description: 'Why Bloom exists: a simple, account-free way to send a digital bouquet and a personal note.',
-}
+  description:
+    'Why Bloom exists: a simple, account-free way to send a digital bouquet and a personal note.',
+  path: '/about',
+})
 
 export default function AboutPage() {
   return (

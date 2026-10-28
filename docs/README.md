@@ -63,7 +63,10 @@ catalog expansion without a concrete gap. See the
 [catalog and brand decisions](./product-direction.md#catalog-and-brand-review---2026-10-28).
 Owner marked L04-L08 done on 2026-10-28 (PR #9). PR #9 also fixes a CI test
 type error and simplifies the final share step to one primary action plus a
-collapsed "More ways to share". O01, L02, and L09 remain open.
+collapsed "More ways to share". PR #10 counts every share path once per
+bouquet. PR #11 closes L09 (page metadata and the broken production preview
+image), PR #12 closes L02 (lighter pages), and PR #13 removes the manual-link
+button. O01 remains open.
 The last main CI after PR #8 passed 331 tests and Docker; production deployed.
 No release after v0.0.4 has been published. DOC02 public README cleanup remains
 at the release checkpoint where development pauses. Do not repeat the redesign.

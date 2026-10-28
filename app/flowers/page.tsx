@@ -2,11 +2,14 @@ import Image from 'next/image'
 
 import { DiscoveryPage } from '@/components/discovery/DiscoveryPage'
 import { BOUQUETS, BOUQUET_MEANING_NOTE } from '@/lib/bouquets'
+import { publicPageMetadata } from '@/lib/pageMetadata'
 
-export const metadata = {
+export const metadata = publicPageMetadata({
   title: 'Flowers',
-  description: 'Explore Bloom bouquets, their colors, textures, and the gestures they can accompany.',
-}
+  description:
+    'Explore Bloom bouquets, their colors, textures, and the gestures they can accompany.',
+  path: '/flowers',
+})
 
 export default function FlowersPage() {
   return (

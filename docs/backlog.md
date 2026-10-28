@@ -513,8 +513,29 @@ a commitment to ship everything. Validate usefulness and simplicity first.
   Evaluate guide pages and a small example gallery as entry points, reusing
   existing content/components instead of duplicating the starter implementation.
   Current preset decoding expects an encoded gift, not a plain guide slug.
-- [ ] L02 - Profile image/audio/font costs; optimize against measured budgets
+- [x] L02 - Profile image/audio/font costs; optimize against measured budgets
   agreed in the design specification.
+  **Measured 2026-10-28 (PR #12):** no budgets had been agreed, so this
+  records a profile and fixes only what it showed. Profile: local production
+  build, 390x844 viewport, cold cache, transferred bytes from the Resource
+  Timing API after scrolling to the bottom.
+
+  | Page | Before | After |
+  | --- | --- | --- |
+  | Home | 606 KB | 305 KB |
+  | Create (bouquet step) | 6,466 KB | 447 KB |
+  | Gift link (before reveal) | 622 KB | 321 KB |
+  | Templates | 783 KB | 482 KB |
+  | Flowers (all 15 thumbnails) | ~690 KB | 690 KB |
+
+  Fixes: the builder gallery and bouquet heroes no longer bypass Next image
+  optimization (`unoptimized`), so phones get resized WebP instead of the 1.6-2
+  MB source PNGs; seven note-only fonts are no longer preloaded on every page
+  (fonts 423 KB to 121 KB) and still load when a note uses them or the font
+  picker previews them. Ambient audio already downloads only after play, so it
+  was unchanged. Save as Image still exports the full bouquet and note.
+  Budgets (owner approved with PR #12, 2026-10-28): under 500 KB for home,
+  create, and an unopened gift; under 1 MB for discovery pages.
 - [x] L03 - Native mobile sharing and a selectable manual-link fallback.
   **Implemented in PR #7 (merged 2026-10-23):** uses the native share sheet
   where supported and reveals a selectable full link when sharing or clipboard
@@ -594,11 +615,29 @@ a commitment to ship everything. Validate usefulness and simplicity first.
   `next build` skips test files, so the earlier local build missed it. Fixed
   with a typed query. Local note: run the suite on Node 20 to match CI; Node 26
   produced unrelated environment failures (341/341 pass on Node 20).
-- [ ] L09 - Review metadata for actual public routes.
+- [x] L09 - Review metadata for actual public routes.
   Extend B06/B07 rather than creating indexable recipient gift content by default.
   Verify titles/descriptions and OG previews on shipped pages; evaluate a proper
   1200 x 630 branded image. New guide/about pages need metadata if implemented.
   Recipient privacy/indexing decisions take precedence over SEO.
+  **Implemented for Preview review, 2026-10-28 (PR #11):** a production audit
+  found every page's link preview reused the home title, and production
+  `og:image` pointed at the per-deployment `VERCEL_URL` host, which redirects
+  to Vercel login (HTTP 302), so crawlers got no preview image on any link,
+  gift links included. Server metadata now uses `VERCEL_PROJECT_PRODUCTION_URL`
+  in production (explicit `NEXT_PUBLIC_SITE_URL` still wins; previews keep
+  their own host). Each indexed public page has its own title, description,
+  canonical URL, Open Graph and Twitter card via `lib/pageMetadata.ts`.
+  New `/og` site image (1200 x 630, same card style as the gift image)
+  replaces the gift image on non-gift pages; the unused placeholder
+  `public/og-image.png` and dead bouquet-layout metadata were removed.
+  Added `/create` metadata, `robots.txt` (blocks `/api/`, `/create/result`;
+  gift pages stay crawlable so their noindex is read), and `sitemap.xml` for
+  the 11 indexed pages. `/pre-release` title no longer repeats "Bloom" and is
+  noindex. Gift metadata is unchanged: generic, noindex, no-referrer.
+  Verified with a production build under simulated Vercel production env:
+  rendered tags for all 14 routes, robots, sitemap, and both images.
+  Remaining: confirm on the deployed site that a shared link shows its image.
 
 - [x] L10 - Complete standalone Wander discovery pages.
   **Closed by owner Preview approval, 2026-10-28, PR #8.** Owner accepted the
