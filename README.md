@@ -9,9 +9,7 @@ No account. No app to install. Just a small way to show up.
 
 **[🌷 Open Bloom](https://bloom-delta-nine.vercel.app) · [🛠️ Run locally](#grow-it-locally) · [📓 Project notebook](./docs/README.md)**
 
-<img src="./public/bouquets/blush-peony-cloud-thumb.png" width="180" alt="Blush peony bouquet from Bloom's flower collection" />
-<img src="./public/bouquets/sunflower-burst-thumb.png" width="180" alt="Bright sunflower bouquet from Bloom's flower collection" />
-<img src="./public/bouquets/dusty-lavender-thumb.png" width="180" alt="Dusty lavender bouquet from Bloom's flower collection" />
+<img src="./docs/assets/readme-banner.webp" width="100%" alt="Five Bloom bouquets fanned out as rounded photo cards: Sunflower Burst, Dusty Lavender, Blush Peony Cloud, Red Rose Classic and Tulip Riot" />
 
 *For birthdays. For random Tuesdays. For “wish I could bring these over.”*
 
@@ -27,6 +25,10 @@ Bloom lets you compose a small digital moment and send it wherever a link can go
 | 🌷 Choose the flowers | ✍️ Make the note yours | 🌙 Set the atmosphere |
 | :--- | :--- | :--- |
 | Pick from 15 bouquet arrangements, from a single poppy to a burst of sunflowers. | Choose stationery and a border, then write a formatted note of 2–200 words. Stuck? Optional prompts, like *Why I chose these*, help you start. | Pick a backdrop and, if it fits the moment, optional ambient sound. |
+
+<p align="center">
+  <img src="./docs/assets/readme-showcase.webp" width="100%" alt="Three phone screens: the Bloom home page, the bouquet picker in the builder, and a recipient's opened gift with the bouquet and note" />
+</p>
 
 ### One thoughtful flow. Five steps.
 
