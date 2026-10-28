@@ -60,6 +60,10 @@ Share bouquet (native share sheet) and copying from the manual-link box now
 count the bouquet, matching the copy buttons. Each bouquet still counts once
 regardless of which or how many share actions are used. No release is created.
 
+The "Show link to copy manually" button is removed from More ways to share
+(owner request 2026-10-28). The selectable link still appears automatically
+when sharing or copying fails.
+
 ### Unreleased - Catalog, brand, and share polish (PR #9, owner approved 2026-10-28)
 
 [PR #9](https://github.com/D-Kumar19/bloom/pull/9) closes L04-L08: removes

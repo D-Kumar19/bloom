@@ -66,7 +66,6 @@ describe('BouquetShareStep', () => {
     ).toBeInTheDocument()
     expect(screen.queryByTestId('copy-share-button')).not.toBeInTheDocument()
     expect(screen.queryByTestId('copy-link-button')).not.toBeInTheDocument()
-    expect(screen.queryByTestId('manual-link-toggle')).not.toBeInTheDocument()
 
     const toggle = screen.getByTestId('more-share-options-toggle')
     expect(toggle).toHaveAttribute('aria-expanded', 'false')
@@ -74,7 +73,12 @@ describe('BouquetShareStep', () => {
     expect(toggle).toHaveAttribute('aria-expanded', 'true')
     expect(screen.getByTestId('copy-share-button')).toBeInTheDocument()
     expect(screen.getByTestId('copy-link-button')).toBeInTheDocument()
-    expect(screen.getByTestId('manual-link-toggle')).toBeInTheDocument()
+    expect(
+      screen.queryByRole('button', { name: /copy manually/i })
+    ).not.toBeInTheDocument()
+    expect(
+      screen.queryByRole('textbox', { name: 'Full bouquet link' })
+    ).not.toBeInTheDocument()
   })
 
   it('confirms both clipboard actions without waiting on a stalled counter', async () => {
@@ -147,12 +151,20 @@ describe('BouquetShareStep', () => {
     )
   })
 
-  it('counts copying the manual link, but not merely revealing it', async () => {
+  it('counts copying the fallback link, but not merely revealing it', async () => {
     vi.mocked(recordBouquetSentOnce).mockClear()
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: {
+        writeText: vi.fn().mockRejectedValue(new Error('Clipboard blocked')),
+      },
+    })
     render(<BouquetShareStep state={baseState} onCreateAnother={vi.fn()} />)
     fireEvent.click(screen.getByTestId('more-share-options-toggle'))
-    fireEvent.click(screen.getByTestId('manual-link-toggle'))
-    const link = screen.getByRole('textbox', { name: 'Full bouquet link' })
+    fireEvent.click(screen.getByTestId('copy-link-button'))
+    const link = await screen.findByRole('textbox', {
+      name: 'Full bouquet link',
+    })
     fireEvent.focus(link)
     expect(recordBouquetSentOnce).not.toHaveBeenCalled()
     fireEvent.copy(link)

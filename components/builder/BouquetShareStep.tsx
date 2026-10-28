@@ -300,16 +300,6 @@ export function BouquetShareStep({
               >
                 {copiedLink ? 'Copied!' : 'Copy link only'}
               </Button>
-              <Button
-                data-testid="manual-link-toggle"
-                variant="ghost"
-                onClick={() => setShowManualLink((shown) => !shown)}
-                className="w-full"
-                aria-expanded={showManualLink}
-                aria-controls="manual-share-link"
-              >
-                {showManualLink ? 'Hide link' : 'Show link to copy manually'}
-              </Button>
               {showManualLink ? (
                 <div className="space-y-2">
                   <label htmlFor="manual-share-link" className="sr-only">
