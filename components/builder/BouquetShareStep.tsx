@@ -343,6 +343,8 @@ export function BouquetShareStep({
                   >
                     Outlook
                   </a>
+                  . It is sent from your own email, so if it does not show up, ask them to
+                  check Spam.
                 </p>
                 {emailLinks.isLong ? (
                   <p

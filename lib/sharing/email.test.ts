@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { buildEmailShareLinks, buildEmailSubject, buildShareMessage } from '@/lib/sharing'
+import { buildEmailBody, buildEmailShareLinks, buildEmailSubject, buildShareUrl } from '@/lib/sharing'
 import type { BouquetState } from '@/lib/types'
 
 const sampleState: BouquetState = {
@@ -20,7 +20,7 @@ describe('email sharing', () => {
 
   it('builds mailto, Gmail, and Outlook compose links without a recipient', () => {
     const links = buildEmailShareLinks(sampleState)
-    const body = buildShareMessage(sampleState)
+    const body = buildEmailBody(sampleState)
 
     expect(links.mailto.startsWith('mailto:?subject=')).toBe(true)
     expect(new URLSearchParams(links.mailto.slice('mailto:?'.length)).get('body')).toBe(body)
@@ -38,10 +38,20 @@ describe('email sharing', () => {
     expect(outlook.searchParams.get('body')).toBe(body)
   })
 
-  it('keeps the encoded gift link intact inside the body', () => {
+  it('writes a short personal note around the gift link', () => {
+    const body = buildEmailBody(sampleState)
+    expect(body.startsWith('Hi Sam,')).toBe(true)
+    expect(body).toContain(`\n${buildShareUrl(sampleState)}\n`)
+    expect(body.endsWith('With love,\nAlex')).toBe(true)
+
+    const anonymous = buildEmailBody({ ...sampleState, from: '  ' })
+    expect(anonymous.endsWith('With love')).toBe(true)
+  })
+
+  it('keeps the encoded gift link intact inside the compose link', () => {
     const links = buildEmailShareLinks(sampleState)
     expect(links.body).toMatch(/\/bouquet\?b=/)
-    expect(decodeURIComponent(links.mailto)).toContain(links.body.split('\n').at(-1))
+    expect(decodeURIComponent(links.mailto)).toContain(buildShareUrl(sampleState))
   })
 
   it('flags long compose links so the UI can suggest copying instead', () => {
