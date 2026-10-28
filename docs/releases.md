@@ -54,6 +54,23 @@ can be `v0.0.5`; substantial new Templates/discovery/sharing features may justif
 Each included PR still needs relevant tests, preview approval, and passing main
 CI/Docker; check production and existing gift links before publishing.
 
+## v0.0.6 - final features (unreleased)
+
+The last planned features before Bloom is parked: S01, F01, F03 and F09.
+Older gift links keep working; decoding only became more permissive.
+
+### v0.0.6 - Email sharing, optional sender, tell a friend, ready moment
+
+- **Email sharing (S01):** "More ways to share" adds Send by email plus Gmail
+  and Outlook compose links with a prepared subject and message. Counts once
+  per gift like copying; long links get a hint to copy instead.
+- **Optional sender (F01):** leave "From" blank and the gift arrives from
+  "Someone", signed "With love".
+- **Tell a friend (F03):** a quiet homepage link shares Bloom itself; no
+  counter, never on gift pages.
+- **Ready moment (F09):** a gentle rosebud bloom when the share step opens,
+  static for reduced motion.
+
 ## v0.0.5 - published 2026-10-28
 
 [Bloom v0.0.5](https://github.com/D-Kumar19/bloom/releases/tag/v0.0.5) groups

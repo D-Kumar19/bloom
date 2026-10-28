@@ -6,6 +6,8 @@ export function buildShareMessage(state: BouquetState): string {
   return `I made something for you.\nOpen this when you need a smile:\n${url}`
 }
 
+export const SITE_SHARE_TEXT = 'Bloom lets you send someone a digital bouquet with a personal note. No account needed.'
+
 export function buildSiteShareMessage(origin: string): string {
-  return `I found this beautiful thing. You can send someone digital flowers with a personal note. Thought of you.\n${origin}`
+  return `${SITE_SHARE_TEXT}\n${origin}`
 }

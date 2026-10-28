@@ -21,11 +21,11 @@ Updated: 2026-10-28. Original audit baseline: `4d610ab`.
   softness, and smooth interactions. D01-D06 were accepted and merged in PR #6,
   not a wholesale redesign.
 - Keep the current source layout. No framework migration or rewrite is approved.
-- **Next (owner triage, 2026-10-28):** S01 email-ready sharing, F01 optional
-  sender name, F03 share Bloom with a friend, and F09 a gentle completion
-  animation. Accounts/journal (S02), the domain (S03), and photo/voice media
-  (R01/R02) are not planned; F02, F04-F08, and F10 are not
-  prioritized. See the backlog's Next and Deferred sections.
+- **Final features (owner triage, 2026-10-28):** S01 email-ready sharing, F01
+  optional sender name, F03 share Bloom with a friend, and F09 a gentle
+  completion animation are done. Accounts/journal (S02), the domain (S03), and
+  photo/voice media (R01/R02) are not planned; F02, F04-F08, and F10 are not
+  prioritized. See the backlog's Done and Deferred sections.
 - Product discovery now includes editable occasion starters, clearer descriptions,
   gentle facts/humor, personal details, and curated collections. Keep the free
   Vercel address. No uploads, accounts, or paid features are planned.
@@ -52,9 +52,10 @@ Updated: 2026-10-28. Original audit baseline: `4d610ab`.
 
 ## Resume here
 
-**v0.0.5 is published (2026-10-28, target `ae4710a`).** It closes the D/L
-milestone: D01-D06, L01-L10, O01 and DOC02. See [releases](./releases.md).
-Next work starts from main; pick from the open items below with the owner.
+**Bloom is parked (2026-10-28).** v0.0.5 closed the D/L milestone (D01-D06,
+L01-L10, O01, DOC02). The final four features, S01, F01, F03 and F09, ship as
+v0.0.6. There are no open TODOs. If work resumes, start from main and pick from
+the backlog's Deferred sections with the owner. See [releases](./releases.md).
 Earlier deployment-pending notes below are historical.
 
 History of the D/L milestone: owner scoped the next PR to L04-L08: bounded unused-code cleanup, visual-first
@@ -71,8 +72,8 @@ button. O01 is closed: a Vercel Firewall rule limits POST /api/count to 20
 per minute per IP, verified on Preview.
 DOC02 rewrote the public README for the shipped product (PR #15).
 Do not repeat the redesign.
-Open work is S01, F01, F03, and F09 only. Everything else lives under the
-backlog's Deferred sections; leave it out of open-work summaries.
+S01, F01, F03, and F09 shipped in the final-features PR. Everything else lives
+under the backlog's Deferred sections; leave it out of open-work summaries.
 
 ## Keeping this useful
 

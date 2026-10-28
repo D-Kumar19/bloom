@@ -391,8 +391,8 @@ After core fixes, redesign, and polish, implement the owner's deferred roadmap
 additions: email-ready sharing, then optional accounts and a private animated
 bouquet journal, plus an owned production domain as a final brand/launch task.
 Scope and acceptance constraints live in backlog S01-S03.
-**Superseded 2026-10-28:** only S01 remains planned; S02 and S03 are not
-planned (see the backlog's Deferred sections).
+**Superseded 2026-10-28:** only S01 remained planned (now shipped as email
+compose links); S02 and S03 are not planned (see the backlog's Deferred sections).
 They do not block the initial redesign and must preserve the guest gift flow.
 Authentication/storage/provider decisions need a separate specification before
 implementation; this direction does not approve inbox access or automatic email

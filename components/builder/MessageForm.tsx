@@ -64,7 +64,6 @@ export function MessageForm({
   const wordsLeft = maxWords - wordCount
   const messageFilled = hasMessageContent(message)
   const toMissing = !to.trim()
-  const fromMissing = !from.trim()
   const messageTooShort = wordCount < MIN_MESSAGE_WORDS
 
   const previewMessage = messageFilled ? message : ''
@@ -130,21 +129,21 @@ export function MessageForm({
             </div>
             <div>
               <label htmlFor="sender" className="mb-1.5 block text-sm font-medium text-bloom-ink">
-                From
+                From <span className="font-normal text-bloom-ink/60">(optional)</span>
               </label>
               <input
                 id="sender"
                 value={from}
                 onChange={(e) => onFromChange(e.target.value)}
                 placeholder="Your name"
-                aria-invalid={fromMissing}
-                className={`${inputClassName} ${fromMissing ? inputErrorClassName : ''}`}
+                aria-describedby="sender-hint"
+                className={inputClassName}
               />
-              {fromMissing ? (
-                <p className="mt-1 text-xs text-brand-pink">
-                  Add your name so they know who sent this
-                </p>
-              ) : null}
+              <p id="sender-hint" className="mt-1 text-xs text-bloom-ink/65">
+                {from.trim()
+                  ? 'They will see your name on the gift.'
+                  : 'Leave blank to send it from "Someone".'}
+              </p>
             </div>
           </div>
 

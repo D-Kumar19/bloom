@@ -4,6 +4,10 @@ import LandingPage from '@/app/page'
 import { getBouquetCount } from '@/lib/counter'
 import { readBouquetCount } from '@/lib/counter/storage'
 
+vi.mock('@/components/ui/Toast', () => ({
+  useToast: () => ({ showToast: vi.fn() }),
+}))
+
 vi.mock('@/lib/counter/storage', () => ({
   readBouquetCount: vi.fn(),
   recordBouquetShare: vi.fn(),

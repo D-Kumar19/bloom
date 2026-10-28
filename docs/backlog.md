@@ -699,32 +699,39 @@ a commitment to ship everything. Validate usefulness and simplicity first.
   flower descriptions with L05 and the approved redesign; not a blocker for
   the current reliability release.
 
-## Next - Planned features (S01, F01, F03, F09)
+## Done - Final features (S01, F01, F03, F09)
 
-Owner decision, 2026-10-28, after publishing v0.0.5: these four are the only
-open feature TODOs. Implement each as a focused, Preview-reviewed PR that keeps
-Bloom account-free and preserves existing gift links. Resolve the product
-questions noted in each item before coding.
+Owner decision, 2026-10-28, after publishing v0.0.5: these four were the last
+open feature TODOs. They shipped together in one PR and are the final release
+before the project is parked. Bloom stays account-free and existing gift links
+keep working.
 
-- [ ] S01 - Email-ready sharing.
-  Open the default email app or Gmail/Outlook web composer with a prepared subject,
-  short message, and bouquet link; leave the recipient field editable/empty.
-  Include a copy-text fallback and verify desktop/mobile behavior and long links.
-  No Bloom account, inbox permissions, or server-side email sending required.
-  Opening a composer must not be recorded as confirmed delivery.
-- [ ] F01 - Consider an optional sender name.
-  This is a product change, not a confirmed bug: current builder validation and
-  link decoding require a sender. Decide the recipient heading, metadata,
-  "With love" fallback, draft validation, and old-link behavior together before
-  implementation. Do not weaken validation in only one surface.
-- [ ] F03 - Evaluate sharing Bloom itself with a friend.
-  An unmounted sharing component already exists. Reuse it only if it fits the
-  homepage, with explicit clipboard failures and benign share-sheet cancellation.
-  Do not put promotional friction in the recipient's gift.
-- [ ] F09 - Consider a restrained completion animation.
-  No default celebratory confetti on sympathy/support gifts, no blocking delay,
-  and a reduced-motion equivalent. Review with D03 instead of adding a second
-  unrelated motion language. Existing step sparkles are not missing work.
+- [x] S01 - Email-ready sharing.
+  "More ways to share" now has **Send by email** (`mailto:`) plus small Gmail and
+  Outlook web-composer links. Subject: "A bouquet from {name}" or "A bouquet for
+  you"; the body is the usual share message with the gift link; the recipient
+  field is left empty. Copy actions remain as the fallback, and a hint suggests
+  "Copy link only" when the compose link is unusually long (over 1,800
+  characters; typical 200-word gifts are about 1,000). Clicking a compose link
+  counts once per gift like copy or share, as "prepared to share", not as
+  confirmed delivery. No server email or inbox permissions.
+- [x] F01 - Optional sender name.
+  "From" is labelled optional with the hint 'Leave blank to send it from
+  "Someone"'. Builder validation (`canProceedMessageStep`), draft restore and
+  link decoding (`isValidBouquetState`) all allow a blank sender together. The
+  recipient sees "Someone sent you a bouquet", "A bouquet is waiting for you"
+  and "With love". Decoding is only more permissive, so old links are unchanged.
+- [x] F03 - Share Bloom with a friend.
+  The unused `ShareFeelingButton` became a quiet "Tell a friend about Bloom"
+  link under the homepage privacy line. It uses the share sheet (title, short
+  text, site URL), stays silent on cancel, falls back to copying, and shows
+  the address in a warning toast if copying fails. It is never shown on gift
+  pages and never touches the counter.
+- [x] F09 - Restrained completion animation.
+  The share step opens with a one-time rosebud that blooms in with a soft glow
+  and "Your bouquet is ready". It is mood-neutral (no confetti), decorative
+  (`aria-hidden`, no pointer events), non-blocking, and static under reduced
+  motion, reusing the existing brand mark and easing.
 
 ## Deferred - not planned
 

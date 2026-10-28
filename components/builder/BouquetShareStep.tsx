@@ -7,11 +7,13 @@ import { BackdropLayer } from '@/components/backdrop/BackdropLayer'
 import { BouquetHero } from '@/components/bouquet/BouquetHero'
 import { SoundtrackPlayer } from '@/components/bouquet/SoundtrackPlayer'
 import { MessageCard } from '@/components/cards/MessageCard'
-import { Button } from '@/components/ui/Button'
+import { ReadyBloom } from '@/components/builder/ReadyBloom'
+import { Button, buttonClassName } from '@/components/ui/Button'
 import { useToast } from '@/components/ui/Toast'
 import { recordBouquetSentOnce } from '@/lib/counter/recordBouquetSent'
 import { shouldShowNoteCard } from '@/lib/message'
 import {
+  buildEmailShareLinks,
   buildRecipientPreviewPath,
   buildShareMessage,
   buildShareUrl,
@@ -56,6 +58,7 @@ export function BouquetShareStep({
   const shareMessage = buildShareMessage(state)
   const shareMessagePreview = formatShareMessagePreview(shareMessage)
   const shareUrl = buildShareUrl(state)
+  const emailLinks = buildEmailShareLinks(state)
   const previewPath = buildRecipientPreviewPath(state)
   const showNote = shouldShowNoteCard(state.message)
   const onDark = getThemeById(state.theme)?.dark ?? false
@@ -136,12 +139,20 @@ export function BouquetShareStep({
     }
   }
 
+  const handleEmailShare = () => {
+    void recordBouquetSentOnce(state)
+  }
+
+  const emailTextLinkClassName =
+    'rounded-full px-1 font-medium text-bloom-ink underline underline-offset-4 decoration-bloom-rose/50 hover:text-brand-pink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bloom-ink'
+
   return (
     <div
       className="relative mx-auto w-full max-w-3xl"
       data-testid="bouquet-share-step"
     >
       <header className="mb-5 text-center">
+        <ReadyBloom />
         <h2 className="font-display text-3xl text-bloom-ink md:text-4xl">
           Preview and share
         </h2>
@@ -300,6 +311,49 @@ export function BouquetShareStep({
               >
                 {copiedLink ? 'Copied!' : 'Copy link only'}
               </Button>
+              <div data-testid="email-share-options" className="space-y-1.5">
+                <a
+                  href={emailLinks.mailto}
+                  data-testid="email-share-link"
+                  onClick={handleEmailShare}
+                  className={buttonClassName('ghost', 'w-full')}
+                >
+                  Send by email
+                </a>
+                <p className="text-center text-xs text-bloom-ink/70">
+                  Or write it in{' '}
+                  <a
+                    href={emailLinks.gmail}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    data-testid="gmail-share-link"
+                    onClick={handleEmailShare}
+                    className={emailTextLinkClassName}
+                  >
+                    Gmail
+                  </a>{' '}
+                  or{' '}
+                  <a
+                    href={emailLinks.outlook}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    data-testid="outlook-share-link"
+                    onClick={handleEmailShare}
+                    className={emailTextLinkClassName}
+                  >
+                    Outlook
+                  </a>
+                </p>
+                {emailLinks.isLong ? (
+                  <p
+                    data-testid="email-long-link-hint"
+                    className="text-center text-xs text-bloom-ink/65"
+                  >
+                    This is a long link. If it looks cut off in the email, use Copy link
+                    only and paste it in.
+                  </p>
+                ) : null}
+              </div>
               {showManualLink ? (
                 <div className="space-y-2">
                   <label htmlFor="manual-share-link" className="sr-only">

@@ -240,13 +240,15 @@ describe('MessageForm', () => {
     expect(screen.getByTestId('note-border-style-dashed')).toBeInTheDocument()
   })
 
-  it('prompts for required fields when they are empty', () => {
+  it('prompts for required fields when they are empty and marks the sender optional', () => {
     renderMessageForm({ message: '', to: '', from: '' })
 
     expect(screen.getByText('Add who this is for')).toBeInTheDocument()
+    expect(screen.getByText('(optional)')).toBeInTheDocument()
     expect(
-      screen.getByText('Add your name so they know who sent this')
+      screen.getByText('Leave blank to send it from "Someone".')
     ).toBeInTheDocument()
+    expect(screen.getByLabelText(/From/)).not.toHaveAttribute('aria-invalid')
     expect(
       screen.getByText('Write at least 2 words to continue. "Love you" is enough.')
     ).toBeInTheDocument()

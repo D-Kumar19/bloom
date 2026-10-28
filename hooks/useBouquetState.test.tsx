@@ -129,7 +129,8 @@ describe('builder draft recovery', () => {
       from: '',
       message: '<b>Still writing</b><br>this',
     })
-    expect(second.result.current.canProceed).toBe(false)
+    // The sender is optional, so a named recipient and a short note can continue.
+    expect(second.result.current.canProceed).toBe(true)
     const saved = localStorage.getItem(BUILDER_DRAFT_STORAGE_KEY)
     await act(async () => {})
     expect(localStorage.getItem(BUILDER_DRAFT_STORAGE_KEY)).toBe(saved)

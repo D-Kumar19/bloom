@@ -10,12 +10,11 @@ export function shouldShowNoteCard(message: string): boolean {
   return hasMessageContent(message)
 }
 
-/** Message step requires names and a note within the word limits. */
-export function canProceedMessageStep(to: string, from: string, message: string): boolean {
+/** Message step requires a recipient and a note within the word limits; the sender is optional. */
+export function canProceedMessageStep(to: string, message: string): boolean {
   const words = countMessageWords(message)
   return (
     to.trim().length > 0 &&
-    from.trim().length > 0 &&
     words >= MIN_MESSAGE_WORDS &&
     words <= MAX_MESSAGE_WORDS
   )

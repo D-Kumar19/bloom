@@ -91,9 +91,9 @@ export function MessageCard({
         compact={compact}
         onDark={onDark}
       />
-      {from ? (
+      {from.trim() ? (
         <p className={`relative z-[1] mt-4 text-right font-semibold ${headingClass(true, onDark)}`}>
-          With love, {from}
+          With love, {from.trim()}
         </p>
       ) : (
         <p className={`relative z-[1] mt-4 text-right font-semibold ${headingClass(false, onDark)}`}>
