@@ -5,6 +5,57 @@ roadmap, not an approved media architecture, pricing model, or build commitment.
 Implementation status remains in the [backlog](./backlog.md).
 Shared terms live in the [glossary](./CONTEXT.md).
 
+## Catalog and brand review - 2026-10-28
+
+Owner scoped L04-L08 as one focused follow-up to PR #8, with a personal-detail
+prompt in the existing editor and no catalog expansion without a concrete gap.
+Implementation remains subject to Preview approval; see the [backlog](./backlog.md).
+
+- **Cleanup:** route/import reachability, including dynamic PNG-export imports,
+  was checked before removing five obsolete, unmounted components:
+  RevealStageBackdrop, MoodPicker, BouquetsToday, FinalCTA, and MadeByNoOne.
+  Their roles are superseded by BackdropLayer, the current mood tabs, dedicated
+  Templates, and current landing/About content. No source moves or dependency
+  changes. Keep working PNG export code, the development counter seed, and
+  framework/root configuration. Unmounted flower/search, example-gallery, and
+  sharing candidates are not shipped UI; retain for the explicitly open
+  F03/F10 and future entry-point evaluation rather than deleting speculatively.
+- **Descriptions:** all 15 thumbnail/portrait pairs were visually reviewed.
+  Copy describes visible color, form, and wrapping before suggesting an occasion.
+  Remove unsupported exact quantities, materials, botanical trivia, universal
+  symbolism, and promises of emotional relief. The existing `facts` data key now
+  supplies visual highlights, not sourced botanical claims. No new external
+  factual claims or copyrighted artwork are introduced. A shared caveat frames
+  meanings as suggestions shaped by personal taste and culture.
+- **Personal detail:** "Why I chose these" stays inside the opt-in inspiration
+  panel. It inserts an unfinished sentence for the sender to complete and appends
+  to existing rich text rather than replacing it. This is ordinary note content:
+  no new field, encoded schema, required step, higher minimum, or special export
+  layout. Existing 2-200 word validation applies; exceeding the limit keeps every
+  word and blocks Continue. Prototype implementation is not evidence that users
+  find the prompt valuable; owner Preview review is still required.
+- **Curation outcome: no additions in this increment.** Existing choices include
+  15 bouquets across romance, celebration, quiet support, and everyday notes;
+  9 stationery styles; 11 light/dark and still/moving backdrops; 10 editor fonts
+  spanning clean, serif, handwritten, and typewriter styles; and 7 optional sounds
+  plus silence. Visible artwork spans red, pink, purple, yellow/orange, white/green,
+  dried neutrals, meadow mixes, and a single-stem option. This is an inventory,
+  not user-preference research or proof that every taste is served. No observed
+  request or usage evidence identifies a specific missing choice yet. More assets
+  would add selection cost, payload, and provenance/licensing work without a
+  supported benefit. Revisit only with a concrete preference gap; no new music,
+  fonts, or generated flower images are warranted here.
+- **Brand:** the old favicon was the Vercel triangle. The local
+  [rosebud SVG](../app/icon.svg) evolves the existing header bud with the same rose
+  and sage palette on a cream disc. Header/footer logos reference that SVG.
+  [favicon.ico](../app/favicon.ico) contains 16, 32, 48, and 64px PNG frames;
+  [apple-icon.png](../app/apple-icon.png) is 180px, flattened on cream. These are
+  raster derivatives of the SVG, not separate artwork: regenerate all sizes from
+  it when changing the mark. The current assets were rasterized with the Sharp
+  version already supplied by Next; no new dependency or remote asset service.
+  Browser metadata uses Next's icon file conventions. This does not implement
+  L09's separate public metadata/OG review.
+
 ## Purpose
 
 **Help someone turn a specific feeling into a personal digital gift that another

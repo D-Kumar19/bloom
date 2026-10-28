@@ -522,7 +522,9 @@ export function focusMessageEditorEnd(editor: HTMLDivElement | null, html: strin
     return
   }
 
-  editor.innerHTML = html.includes('<') || html.includes('&') ? html : plainTextToMessageHtml(html)
+  const content = html.includes('<') || html.includes('&') ? html : plainTextToMessageHtml(html)
+  // Keep the caret after the separator; browsers collapse trailing ordinary spaces.
+  editor.innerHTML = content.replace(/ +$/, (spaces) => '&nbsp;'.repeat(spaces.length))
   editor.focus()
   const selection = window.getSelection()
   if (!selection) {

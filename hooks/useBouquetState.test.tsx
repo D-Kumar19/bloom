@@ -5,8 +5,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useBouquetState } from '@/hooks/useBouquetState'
 import { BUILDER_DRAFT_STORAGE_KEY, saveBuilderDraft } from '@/lib/builder/draftSession'
 import { GUIDES } from '@/lib/guides'
-import { countMessageWords } from '@/lib/message'
-import { encodeBouquet } from '@/lib/sharing'
+import { countMessageWords, INSPIRATION_PROMPTS } from '@/lib/message'
+import { decodeBouquet, encodeBouquet } from '@/lib/sharing'
 
 describe('builder draft recovery', () => {
   beforeEach(() => {
@@ -18,6 +18,27 @@ describe('builder draft recovery', () => {
     vi.restoreAllMocks()
   })
 
+  it('recovers and shares a personal reason as part of the existing rich note', async () => {
+    const prompt = INSPIRATION_PROMPTS.find((entry) => entry.id === 'why-these')!
+    const message = `<b>Love you.</b><br><br>${prompt.starter}yellow reminds me of our first walk.`
+    const first = renderHook(useBouquetState)
+    await waitFor(() => expect(first.result.current.ready).toBe(true))
+    act(() => {
+      first.result.current.setTo('Sam')
+      first.result.current.setFrom('Alex')
+      first.result.current.setMessage(message)
+      first.result.current.setStep('message')
+    })
+    await waitFor(() => expect(
+      JSON.parse(localStorage.getItem(BUILDER_DRAFT_STORAGE_KEY)!).state.message,
+    ).toBe(message))
+    first.unmount()
+    const restored = renderHook(useBouquetState)
+    await waitFor(() => expect(restored.result.current.ready).toBe(true))
+    expect(restored.result.current.state.message).toBe(message)
+    expect(restored.result.current.canProceed).toBe(true)
+    expect(decodeBouquet(encodeBouquet(restored.result.current.state))?.message).toBe(message)
+  })
   it('blocks a one-letter note, accepts two words, and preserves both as typed', async () => {
     const { result } = renderHook(useBouquetState)
     await waitFor(() => expect(result.current.ready).toBe(true))

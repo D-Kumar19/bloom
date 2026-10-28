@@ -1,8 +1,9 @@
 import { fireEvent, render, screen } from '@testing-library/react'
+import { useState } from 'react'
 import { describe, expect, it, vi } from 'vitest'
 
 import { MessageForm } from '@/components/builder/MessageForm'
-import { DEFAULT_MESSAGE_FORMAT } from '@/lib/message'
+import { DEFAULT_MESSAGE_FORMAT, countMessageWords } from '@/lib/message'
 import { DEFAULT_NOTE_BORDER } from '@/lib/cards'
 
 vi.mock('next/navigation', () => ({
@@ -160,6 +161,61 @@ describe('MessageForm', () => {
     expect(
       screen.queryByTestId('inspiration-thank-you')
     ).not.toBeInTheDocument()
+  })
+
+  it('keeps the personal prompt optional and adds it to existing rich text instead of replacing it', () => {
+    const { props } = renderMessageForm({ message: '<b>Love you</b><br>Always.' })
+    expect(screen.queryByTestId('inspiration-why-these')).not.toBeInTheDocument()
+    fireEvent.click(screen.getByTestId('inspiration-toggle'))
+    expect(screen.getByTestId('inspiration-toggle')).toHaveAttribute('aria-expanded', 'true')
+    fireEvent.click(screen.getByTestId('inspiration-why-these'))
+    expect(props.onMessageChange).toHaveBeenCalledWith(
+      '<b>Love you</b><br>Always.<br><br>I chose these flowers because ',
+    )
+    expect(screen.getByTestId('inspiration-toggle')).toHaveAttribute('aria-expanded', 'false')
+  })
+
+  it('uses the existing editor for the personal prompt on an empty note', () => {
+    const { props } = renderMessageForm()
+    fireEvent.click(screen.getByTestId('inspiration-toggle'))
+    fireEvent.click(screen.getByTestId('inspiration-why-these'))
+    expect(props.onMessageChange).toHaveBeenCalledWith('I chose these flowers because ')
+    expect(screen.getAllByRole('textbox')).toHaveLength(3)
+  })
+
+  it('focuses the committed prompt before typing can race a delayed DOM replacement', () => {
+    const { props, unmount } = renderMessageForm()
+    unmount()
+    function ControlledForm() {
+      const [message, setMessage] = useState('<b>Love you.</b>')
+      return <MessageForm {...props} message={message} onMessageChange={setMessage} />
+    }
+    render(<ControlledForm />)
+    fireEvent.click(screen.getByTestId('inspiration-toggle'))
+    fireEvent.click(screen.getByTestId('inspiration-why-these'))
+    const editor = screen.getByTestId('message-editor')
+    expect(editor).toHaveFocus()
+    expect(editor.innerHTML).toBe('<b>Love you.</b><br><br>I chose these flowers because&nbsp;')
+    const range = window.getSelection()!.getRangeAt(0)
+    range.insertNode(document.createTextNode('they remind me of you.'))
+    fireEvent.input(editor)
+    expect(screen.getByTestId('formatted-message-body')).toHaveTextContent(
+      'I chose these flowers because they remind me of you.',
+    )
+  })
+
+  it('keeps every word when adding the personal prompt takes a note over the maximum', () => {
+    const message = `<b>${Array(200).fill('word').join(' ')}</b>`
+    const onMessageChange = vi.fn<(html: string) => void>()
+    const { props, rerender } = renderMessageForm({ message, onMessageChange })
+    fireEvent.click(screen.getByTestId('inspiration-toggle'))
+    fireEvent.click(screen.getByTestId('inspiration-why-these'))
+    const updated = onMessageChange.mock.calls[0][0]
+    expect(updated).toBe(`${message}<br><br>I chose these flowers because `)
+    expect(countMessageWords(updated)).toBe(205)
+    rerender(<MessageForm {...props} message={updated} />)
+    expect(screen.getByRole('alert')).toHaveTextContent('Remove 5 words to continue')
+    expect(screen.getByTestId('message-editor')).toHaveAttribute('aria-invalid', 'true')
   })
 
   it('shows message editor placeholder when empty', () => {

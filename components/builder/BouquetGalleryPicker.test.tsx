@@ -2,6 +2,7 @@ import { fireEvent, render, screen, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { BouquetGalleryPicker } from '@/components/builder/BouquetGalleryPicker'
+import { BOUQUET_MEANING_NOTE, getBouquetById } from '@/lib/bouquets'
 
 const push = vi.fn()
 
@@ -63,7 +64,7 @@ describe('BouquetGalleryPicker', () => {
 
     expect(screen.getByTestId('bouquet-selected-summary')).toHaveTextContent('Red Rose Classic')
     expect(screen.getByTestId('bouquet-selected-summary')).toHaveTextContent(
-      'Twelve deep red roses',
+      'Deep red roses',
     )
 
     fireEvent.click(screen.getByTestId('bouquet-mood-celebration'))
@@ -100,18 +101,19 @@ describe('BouquetGalleryPicker', () => {
     const dialog = screen.getByRole('dialog')
     expect(dialog).toBeInTheDocument()
     expect(
-      within(dialog).getByText('Twelve deep red roses, wrapped in kraft paper.'),
+      within(dialog).getByText('Deep red roses, green leaves, and a warm paper wrap.'),
     ).toBeInTheDocument()
     expect(
-      within(dialog).getByText(
-        'The bouquet that needs no translation. Love, plainly spoken.',
-      ),
+      within(dialog).getByText(/Steady affection/),
     ).toBeInTheDocument()
-    expect(within(dialog).getByText('Perfect for:')).toBeInTheDocument()
+    expect(within(dialog).getByText('A thought for:')).toBeInTheDocument()
+    expect(within(dialog).getByText(BOUQUET_MEANING_NOTE)).toBeInTheDocument()
     expect(
       within(dialog).getByText('Anniversaries, Valentine\'s Day, and "I still choose you" messages'),
     ).toBeInTheDocument()
-    expect(within(dialog).getByText('12 long-stem red roses')).toBeInTheDocument()
+    for (const detail of getBouquetById('red-rose-classic')!.facts) {
+      expect(within(dialog).getByText(detail)).toBeInTheDocument()
+    }
     expect(within(dialog).getByAltText('Red Rose Classic')).toHaveClass('object-contain')
     expect(within(dialog).getByAltText('Red Rose Classic')).toHaveAttribute('src', '/bouquets/red-rose-classic-hero.png')
   })

@@ -5,7 +5,7 @@ and design decisions; chat history is not required to understand the next step.
 
 ## Current state
 
-Updated: 2026-10-23. Original audit baseline: `4d610ab`.
+Updated: 2026-10-28. Original audit baseline: `4d610ab`.
 
 - The account-free bouquet creation, sharing, and recipient reveal flow exists.
 - The audit identified 13 findings: four high and nine medium.
@@ -17,8 +17,8 @@ Updated: 2026-10-23. Original audit baseline: `4d610ab`.
 - **Current visual direction (owner decision, 2026-10-22):** keep the released
   UI and improve its experience incrementally. The "Color, delivered" experiment
   was rejected; do not merge its replacement UI. Preserve rounded controls,
-  softness, and smooth interactions. D01-D06 have been rephrased and reopened
-  for experience polish, not a wholesale redesign.
+  softness, and smooth interactions. D01-D06 were accepted and merged in PR #6,
+  not a wholesale redesign.
 - Keep the current source layout. No framework migration or rewrite is approved.
 - Email-ready sharing and optional accounts with a private animated bouquet
   journal are approved as final-phase standout features, after core fixes,
@@ -46,9 +46,8 @@ Updated: 2026-10-23. Original audit baseline: `4d610ab`.
   staged rollout, and media/cost boundaries.
 - [Glossary](./CONTEXT.md): gift, occasion starter, keepsake, and journal terminology.
 - Public contact now has an owner-approved address and a real Contact page.
-  Templates are tracked by L01; standalone Wander destinations by L10.
-  Their footer links now lead to matching sections on a shared Explore guide,
-  with builder and contact links rather than unavailable labels.
+  L01 and L10 were accepted and merged in PR #8: Templates and the four Wander
+  destinations have distinct pages. L03 sharing was merged in PR #7.
 
 ## Resume here
 
@@ -56,14 +55,16 @@ v0.0.4 is published. CI01/B01-B10 are closed with recorded local/hosted
 verification and owner production sign-off; O01 tracks remaining operational
 hardening. Earlier deployment-pending notes below are historical.
 
-Current branch: `feat/experience-polish`, based on released main, not the
-rejected replacement UI. A first D01-D06 batch improves contrast, rounded
-selection controls, keyboard mood navigation, full portrait fit, and access to
-sharing. D01-D06 are closed following owner Vercel preview approval on
-2026-10-23. See the [acceptance evidence and coverage limitations](./redesign-plan.md#first-polish-batch---2026-10-23).
-Next: merge PR #6 after checks pass, monitor main CI/production, then prioritize
-O01 operational hardening and L03 sharing fallback before larger additions
-such as L01 editable starters and L10 discovery pages. Do not repeat the redesign.
+Current branch: `feat/catalog-and-brand-polish`, based on main after PR #8.
+Owner scoped the next PR to L04-L08: bounded unused-code cleanup, visual-first
+bouquet descriptions, an optional personal-reason writing prompt, evidence-led
+catalog curation, and the Bloom icon assets. No extra personal field/step and no
+catalog expansion without a concrete gap. See the
+[catalog and brand decisions](./product-direction.md#catalog-and-brand-review---2026-10-28).
+Keep these items open until Preview acceptance. O01, L02, and L09 remain separate.
+The last main CI after PR #8 passed 331 tests and Docker; production deployed.
+No release after v0.0.4 has been published. DOC02 public README cleanup remains
+at the release checkpoint where development pauses. Do not repeat the redesign.
 Only S03 is deferred; F01-F10 and R01-R02 remain open later work.
 
 ## Keeping this useful

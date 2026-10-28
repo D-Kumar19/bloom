@@ -20,18 +20,21 @@ export const BOUQUET_MOODS: { id: BouquetMood; label: string }[] = [
   { id: 'just-because', label: 'Just Because' },
 ]
 
+export const BOUQUET_MEANING_NOTE =
+  'These are suggestions, not universal flower meanings. Personal taste and cultural associations matter more; your note gives the bouquet its meaning.'
+
 export const BOUQUETS: Bouquet[] = [
   {
     id: 'red-rose-classic',
     name: 'Red Rose Classic',
-    tagline: 'Twelve deep red roses, wrapped in kraft paper.',
+    tagline: 'Deep red roses, green leaves, and a warm paper wrap.',
     description:
-      'A dozen roses in deep crimson, wrapped simply. No filler, no apology. The classic gesture, done honestly.',
-    meaning: 'The bouquet that needs no translation. Love, plainly spoken.',
+      'Deep crimson rose heads sit close together above green leaves, framed by warm brown and red paper. A rich, rounded choice for a heartfelt note.',
+    meaning: 'Steady affection: "I still choose you."',
     facts: [
-      '12 long-stem red roses',
-      'Kraft paper wrap with satin ribbon',
-      'Roses symbolize love and devotion',
+      'Closely gathered crimson rose heads',
+      'Green leaves and small pale accents',
+      'Layered brown and red wrapping',
     ],
     perfectFor: 'Anniversaries, Valentine\'s Day, and "I still choose you" messages',
     mood: 'romantic',
@@ -43,12 +46,12 @@ export const BOUQUETS: Bouquet[] = [
     name: 'Blush Peony Cloud',
     tagline: 'Soft pink peonies in a loose, airy dome.',
     description:
-      'Oversized peony heads in the softest pink, loosely gathered so the bouquet feels light in the hand.',
+      'Ruffled pink peonies and smaller pale blooms form a soft, rounded cloud. A blush ribbon and fine greenery keep the picture gentle rather than formal.',
     meaning: 'For the person who makes everything feel lighter.',
     facts: [
       'Blush and pale pink peonies',
       'Loose dome shape with airy greenery',
-      'Peonies bloom briefly, which makes them feel even more special',
+      'Layered petals and a trailing blush ribbon',
     ],
     perfectFor: 'New love, spring birthdays, and making someone\'s day softer',
     mood: 'romantic',
@@ -60,12 +63,12 @@ export const BOUQUETS: Bouquet[] = [
     name: 'Dusty Lavender',
     tagline: 'Lavender stems with muted roses and eucalyptus.',
     description:
-      'Muted lavender stems with dusty roses and eucalyptus. Romantic without being loud.',
+      'Dusty mauve roses sit among lavender-colored stems, ruffled blooms, and rounded green leaves. A muted purple palette for affection without a bright-red declaration.',
     meaning: 'Missing someone is its own kind of love.',
     facts: [
       'Lavender stems with muted roses',
-      'Eucalyptus for texture and calm',
-      'Lavender is tied to devotion and remembrance',
+      'Rounded green leaves around the flowers',
+      'A mix of ruffled petals and fine purple sprigs',
     ],
     perfectFor: 'Long-distance love, missing someone, and quiet "thinking of you" notes',
     mood: 'romantic',
@@ -77,14 +80,14 @@ export const BOUQUETS: Bouquet[] = [
     name: 'Crimson and Cream',
     tagline: 'Deep red blooms with ivory accents and ribbon.',
     description:
-      'Deep red blooms balanced with ivory roses and a satin ribbon. Passionate, but composed.',
+      'Crimson roses and open, pointed red blooms contrast with cream roses and dark greenery. Layered wrapping gives this richly colored arrangement a more formal feel.',
     meaning: 'Passion with grace. Bold, but never loud.',
     facts: [
       'Crimson roses with cream accents',
-      'Contrasting wrap and ribbon detail',
-      'Red for desire, white for sincerity',
+      'Open, pointed red petals among the roses',
+      'Dark foliage and layered paper wrapping',
     ],
-    perfectFor: 'Date nights, apologies done right, and bold declarations',
+    perfectFor: 'Anniversaries, date-night notes, and heartfelt declarations',
     mood: 'romantic',
     thumbnailImage: '/bouquets/crimson-and-cream-thumb.png',
     heroImage: '/bouquets/crimson-and-cream-hero.png',
@@ -94,14 +97,14 @@ export const BOUQUETS: Bouquet[] = [
     name: 'Sunflower Burst',
     tagline: 'Golden sunflowers with wild greenery.',
     description:
-      'Sunflowers turned toward the light, with wild greenery spilling out. Impossible to open without smiling.',
-    meaning: 'Pure joy. The kind that fills a whole room.',
+      'Broad golden sunflower heads share the frame with smaller yellow and orange flowers, pale accents, and green leaves. Bright and full, with no confetti to sweep up.',
+    meaning: '"I am cheering you on."',
     facts: [
       'Golden sunflowers as the focal bloom',
       'Wild greenery and an organic shape',
-      'Sunflowers symbolize loyalty and joy',
+      'Yellow and orange accents with tiny pale flowers',
     ],
-    perfectFor: 'Congratulations, good news, and cheering someone up fast',
+    perfectFor: 'Congratulations, good news, and cheering someone on',
     mood: 'celebration',
     thumbnailImage: '/bouquets/sunflower-burst-thumb.png',
     heroImage: '/bouquets/sunflower-burst-hero.png',
@@ -111,12 +114,12 @@ export const BOUQUETS: Bouquet[] = [
     name: 'Tulip Riot',
     tagline: 'Mixed-color tulips in a bright spring wrap.',
     description:
-      'A joyful mix of tulip colors, wrapped like you grabbed them from the best stall at the market.',
+      'Pink, yellow, orange, purple, and pale tulips gather into a tall, rounded bunch. Green leaves and bright pink wrapping make this the colorful market-stall choice.',
     meaning: 'Celebration does not need a reason. This is the reason.',
     facts: [
       'Mixed-color tulips in a spring wrap',
       'Clean stems with bright overlapping petals',
-      'Tulips mean perfect love and cheerful news',
+      'Bright pink paper inside a brown outer wrap',
     ],
     perfectFor: 'Birthdays, promotions, and celebrating for no reason at all',
     mood: 'celebration',
@@ -128,12 +131,12 @@ export const BOUQUETS: Bouquet[] = [
     name: 'Tropical Bright',
     tagline: 'Bird of paradise, orchids, and bold tropical leaves.',
     description:
-      'Bird of paradise, orchids, and glossy tropical leaves. For moments that deserve something unforgettable.',
+      'Angular orange bird-of-paradise flowers rise above vivid pink orchids, red accents, and broad green leaves. An upright, sculptural option when soft pastels are not their thing.',
     meaning: 'For milestones that deserve something unforgettable.',
     facts: [
       'Bird of paradise and orchid focal blooms',
       'Bold tropical foliage throughout',
-      'Tropical arrangements signal celebration and admiration',
+      'Orange, pink, red, and yellow accents',
     ],
     perfectFor: 'Big milestones, graduations, and "you did something huge" energy',
     mood: 'celebration',
@@ -145,12 +148,12 @@ export const BOUQUETS: Bouquet[] = [
     name: 'Pastel Spring',
     tagline: 'Pale pink, butter yellow, and white in a garden mix.',
     description:
-      'Pale pink, butter yellow, and white in a loose garden mix. Feels like the first warm week of the year.',
+      'Ruffled pink blooms, pale roses, and little white-and-yellow flowers sit in cream wrapping. A full, soft-edged mix with the lightness of a spring palette.',
     meaning: 'New beginnings wrapped in soft color.',
     facts: [
-      'Pastel garden roses and seasonal fillers',
+      'Pale roses and ruffled pink blooms',
       'Soft mixed palette across the bouquet',
-      'Light colors read as hope and new beginnings',
+      'Cream wrapping and a pale ribbon',
     ],
     perfectFor: 'Baby showers, new homes, and fresh starts',
     mood: 'celebration',
@@ -162,12 +165,12 @@ export const BOUQUETS: Bouquet[] = [
     name: 'White Lily Still',
     tagline: 'White lilies and soft greenery on cream paper.',
     description:
-      'White lilies on cream paper with quiet greenery. Dignified, gentle, and unhurried.',
+      'Open white lilies and tall closed buds stand among green leaves and small pale flowers. Cream wrapping keeps the palette quiet, leaving room for a thoughtful note.',
     meaning: 'Quiet strength. A gentle hand when words fall short.',
     facts: [
       'White lilies with soft greenery',
       'Cream wrap for a calm presentation',
-      'Lilies often carry sympathy and restored hope',
+      'Open flowers alongside tall closed buds',
     ],
     perfectFor: 'Condolences, difficult news, and sitting with someone in grief',
     mood: 'sympathy',
@@ -179,14 +182,14 @@ export const BOUQUETS: Bouquet[] = [
     name: 'Eucalyptus and White',
     tagline: 'White roses with silver-dollar eucalyptus.',
     description:
-      'White roses nestled in silver eucalyptus. Peaceful, clean, and steady.',
+      'White rose heads nestle among rounded, silvery-green eucalyptus leaves in a brown paper wrap. A restrained white-and-green choice for a gentle check-in.',
     meaning: 'Peace. That is what you bring, even from far away.',
     facts: [
       'White roses with silver-dollar eucalyptus',
       'Minimal palette with an open composition',
-      'Eucalyptus adds calm and a sense of protection',
+      'Brown paper framing the white-and-green palette',
     ],
-    perfectFor: 'Hospital check-ins, sympathy, and "I\'m here" from far away',
+    perfectFor: 'Gentle check-ins, sympathy, and "I\'m here" from far away',
     mood: 'sympathy',
     thumbnailImage: '/bouquets/eucalyptus-and-white-thumb.png',
     heroImage: '/bouquets/eucalyptus-and-white-hero.png',
@@ -196,14 +199,14 @@ export const BOUQUETS: Bouquet[] = [
     name: 'Dried Herbal',
     tagline: 'Dried lavender, wheat, and muted botanicals.',
     description:
-      'Dried lavender, wheat, and muted botanicals that feel like a deep breath.',
-    meaning: 'Calm that lasts. For someone who needs to breathe.',
+      'Wheat-colored grasses, small pale seed heads, and muted purple sprigs fan out from a brown paper wrap. An earthy, textured alternative to fresh-looking petals.',
+    meaning: 'A quiet gesture of company, without asking someone to feel better.',
     facts: [
-      'Dried lavender and wheat stems',
+      'Wheat-colored stems and muted purple sprigs',
       'Muted herbal tones throughout',
-      'Dried flowers symbolize lasting comfort',
+      'Small pale seed heads and feathery grasses',
     ],
-    perfectFor: 'Burnout recovery, anxiety, and sending calm without fanfare',
+    perfectFor: 'Quiet check-ins, a difficult week, and company without fanfare',
     mood: 'sympathy',
     thumbnailImage: '/bouquets/dried-herbal-thumb.png',
     heroImage: '/bouquets/dried-herbal-hero.png',
@@ -213,12 +216,12 @@ export const BOUQUETS: Bouquet[] = [
     name: 'Wildflower Field',
     tagline: 'Loose meadow blooms tied with twine.',
     description:
-      'Loose meadow stems tied with twine, like you walked through a field and picked what caught your eye.',
+      'Small white daisies, blue-purple blooms, and fine grasses form an open, uneven silhouette. A loose meadow-style bunch for an informal "you crossed my mind."',
     meaning: 'You crossed my mind today. That is all. That is everything.',
     facts: [
-      'Mixed meadow blooms and seasonal color',
+      'White-and-yellow flowers with blue-purple accents',
       'Twine tie for an informal feel',
-      'Wildflowers suggest spontaneity and affection',
+      'Fine grasses and an open, uneven outline',
     ],
     perfectFor: 'Tuesday check-ins, inside jokes, and "saw this and thought of you"',
     mood: 'just-because',
@@ -228,14 +231,14 @@ export const BOUQUETS: Bouquet[] = [
   {
     id: 'single-stem-poppy',
     name: 'Single Stem Poppy',
-    tagline: 'One perfect red poppy in a simple glass wrap.',
+    tagline: 'One red poppy, fine greenery, and a pale paper wrap.',
     description:
-      'One perfect poppy in a simple glass wrap. Small on purpose. The feeling is not small.',
+      'One open red poppy stands above fine green stems and curved buds, framed by pale paper. The simplest flower choice here: small on purpose, not short on thought.',
     meaning: 'Small gesture. Big feeling. Sometimes one is enough.',
     facts: [
       'Single red poppy as the focal bloom',
-      'Minimal glass-style wrap',
-      'One stem can read more intimate than a dozen',
+      'Fine greenery with curved, unopened buds',
+      'Pale paper around a narrow arrangement',
     ],
     perfectFor: 'Crushes, quick hellos, and when less says more',
     mood: 'just-because',
@@ -245,14 +248,14 @@ export const BOUQUETS: Bouquet[] = [
   {
     id: 'garden-herb',
     name: 'Garden Herb',
-    tagline: 'Herbs, daisies, and soft greens from the garden.',
+    tagline: 'Leafy herbs, tiny pale flowers, and a twine tie.',
     description:
-      'Herbs, daisies, and soft greens from the garden. Homemade energy without the mess.',
+      'A leafy green bunch mixes broad leaves, fine upright sprigs, and tiny pale flowers, tied with twine. Garden-gathered character, without needing a garden.',
     meaning: 'Ordinary days made extraordinary. Just because.',
     facts: [
-      'Herbs, daisies, and soft garden greens',
+      'Broad leaves and fine upright green sprigs',
       'Earthy, gathered-from-the-yard feel',
-      'Herbs add warmth and an everyday intimacy',
+      'Tiny pale flowers and a visible twine tie',
     ],
     perfectFor: 'Neighbors, coworkers, and ordinary days you want to honor',
     mood: 'just-because',
@@ -262,14 +265,14 @@ export const BOUQUETS: Bouquet[] = [
   {
     id: 'cheerful-daisy-mix',
     name: 'Cheerful Daisy Mix',
-    tagline: 'White daisies with yellow centers and baby\'s breath.',
+    tagline: 'White-and-yellow daisy shapes in a bright, leafy mix.',
     description:
-      'White daisies with yellow centers and baby\'s breath. Lightness on purpose.',
+      'White petals with yellow centers sit beside all-yellow flowers and small pale accents. Green leaves and brown wrapping give the bright mix an easy, everyday feel.',
     meaning: 'Lightness on purpose. A smile in flower form.',
     facts: [
-      'White daisies with baby\'s breath',
+      'White petals with bright yellow centers',
       'Bright yellow centers and airy filler',
-      'Daisies symbolize innocence and cheerful affection',
+      'All-yellow flowers and a brown paper wrap',
     ],
     perfectFor: 'Pick-me-ups, kid-at-heart friends, and simple joy',
     mood: 'just-because',

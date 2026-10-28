@@ -480,23 +480,52 @@ a commitment to ship everything. Validate usefulness and simplicity first.
   This browser did not expose the native share sheet, so the real-device
   interaction remains unverified.
 - [ ] L04 - Reassess unused code and root cleanup after feature decisions.
+  **Implemented for Preview review, 2026-10-28:** audited route/static/dynamic
+  imports and root files. Removed five obsolete unmounted wrappers/components,
+  retaining PNG export and explicitly open later-feature candidates. No source
+  moves, dependency changes, or speculative asset deletion. See the
+  [catalog review](./product-direction.md#catalog-and-brand-review---2026-10-28).
   Current source layout stays as-is. No source moves are approved.
 - [ ] L05 - Improve bouquet descriptions and optional discovery content.
+  **Implemented for Preview review, 2026-10-28:** visually checked all 15
+  thumbnail/portrait pairs. Updated visual-first descriptions and highlights,
+  removed unsupported quantity/material/symbolism claims and emotional promises.
+  Builder details and optional discovery details share the cultural/personal
+  meaning caveat. No unsourced botanical facts added.
   Clear visual/tone description first, symbolic associations with cultural
   caveats, then optional sourced facts. Gentle browsing humor is welcome;
   sensitive occasions and errors stay respectful. No invented facts.
 - [ ] L06 - Explore an optional "Why I chose these" personal detail.
+  **Implemented for Preview review, owner scope 2026-10-28:** a prompt inside
+  existing opt-in inspiration appends to the note without replacing rich text.
+  No new field/step/schema or increased minimum. Drafts, recipient links, and
+  exports use the same note; the existing 2-200 word range still applies.
   Try a writing prompt before adding a separate field or UI. No extra step.
   Prototype its value before adding a gift field. Specify length, preview/export
   consistency, and backward-compatible encoding. Never require a longer note.
 - [ ] L07 - Curate additions instead of expanding every option list.
+  **Evaluation ready for owner acceptance, 2026-10-28:** catalog inventory
+  found broad existing coverage, but no observed preference evidence supporting
+  a specific addition. Owner explicitly accepted no additions as a valid
+  outcome. Recommend retaining current choices, not adding images/music/fonts
+  speculatively. This is not a user study or a claim that every taste is served;
+  [recorded rationale](./product-direction.md#catalog-and-brand-review---2026-10-28).
   Use observed preference gaps to select flower/color collections, presentation,
   typography, or sound additions. Check asset consistency, accessibility,
   performance, and music rights. No target quota of new fonts/themes/songs.
 - [ ] L08 - Review the favicon and complete the approved brand assets.
-  An icon already exists; whether it is still the Next.js default is unverified.
-  Inspect its actual appearance before replacing it. Verify small-size readability
-  and browser rendering; align any replacement with the approved redesign.
+  **Implemented for Preview review, 2026-10-28:** rendered the old favicon and
+  confirmed it was the Vercel triangle. Replaced it with a rosebud derived from
+  Bloom's existing mark: one SVG used by header/footer, multi-size ICO, and
+  180px touch icon. No external asset or package. Verify small-size readability
+  and browser rendering; keep the existing soft, rounded brand direction.
+  **L04-L08 local verification, 2026-10-28:** 340 tests / 57 files, full lint,
+  type-check/build passed. Production-build Chromium verified desktop/mobile
+  light/dark samples, keyboard disclosure, all icon endpoints and generated
+  icon metadata, personal prompt append/edit/reload, recipient reveal, and an
+  actual PNG download retaining the exact note. Browser testing found and fixed
+  a prompt-spacing/caret race; regression tests cover immediate continuation.
+  Owner Preview approval is still required before closing these five items.
 - [ ] L09 - Review metadata for actual public routes.
   Extend B06/B07 rather than creating indexable recipient gift content by default.
   Verify titles/descriptions and OG previews on shipped pages; evaluate a proper
