@@ -54,7 +54,11 @@ can be `v0.0.5`; substantial new Templates/discovery/sharing features may justif
 Each included PR still needs relevant tests, preview approval, and passing main
 CI/Docker; check production and existing gift links before publishing.
 
-## v0.0.6 - final features (unreleased)
+## v0.0.6 - published 2026-10-28
+
+Published as Latest, targeting `8386bed` (merge of PR #17). Main CI and
+Docker passed for that commit; production was deployed and smoke-checked.
+See the [published release](https://github.com/D-Kumar19/bloom/releases/tag/v0.0.6).
 
 The last planned features before Bloom is parked: S01, F01, F03 and F09.
 Older gift links keep working; decoding only became more permissive.
@@ -154,7 +158,7 @@ tag D alone.
 
 ## Published reliability release
 
-The latest published release is **`v0.0.5`** (above). **`v0.0.4`**, published
+The latest published release is **`v0.0.6`** (above), after **`v0.0.5`**. **`v0.0.4`**, published
 by the owner on 2026-10-22, contains reliability, counter-protection,
 documentation, and CI changes following `v0.0.3`.
 See the [published release](https://github.com/D-Kumar19/bloom/releases/tag/v0.0.4).
