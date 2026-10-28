@@ -1,8 +1,18 @@
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { BouquetSnapshot } from '@/lib/export/BouquetSnapshot'
+import { INSPIRATION_PROMPTS } from '@/lib/message'
 
 describe('saved gift layout', () => {
+  it('exports a personalized reason as ordinary note text, not a separate gift field', () => {
+    const prompt = INSPIRATION_PROMPTS.find((entry) => entry.id === 'why-these')!
+    const message = `<b>Love you.</b><br><br>${prompt.starter}yellow reminds me of our first walk.`
+    render(<BouquetSnapshot bouquet={{
+      bouquetId: 'sunflower-burst', theme: 'warm', cardStyle: 'classic-cream',
+      to: 'Sam', from: 'Alex', message,
+    }} />)
+    expect(screen.getByTestId('formatted-message-body').innerHTML).toBe(message)
+  })
   it('omits the card when there is no note, as the recipient does', () => {
     render(<BouquetSnapshot bouquet={{
       bouquetId: 'red-rose-classic', theme: 'warm', cardStyle: 'classic-cream',

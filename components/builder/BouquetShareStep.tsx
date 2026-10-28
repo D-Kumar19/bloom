@@ -50,6 +50,8 @@ export function BouquetShareStep({
     () => false
   )
   const [showManualLink, setShowManualLink] = useState(false)
+  const [showMoreOptions, setShowMoreOptions] = useState(false)
+  const moreOpen = showMoreOptions || showManualLink
   const manualLinkRef = useRef<HTMLTextAreaElement>(null)
   const shareMessage = buildShareMessage(state)
   const shareMessagePreview = formatShareMessagePreview(shareMessage)
@@ -226,77 +228,121 @@ export function BouquetShareStep({
             {shareMessagePreview}
           </p>
           <p className="mt-2 text-xs text-bloom-ink/75">
-            The full link is copied when you tap the button.
+            The full link is included when you share or copy.
           </p>
         </div>
         <div className="mt-4 space-y-3">
           {canShare ? (
             <Button
               data-testid="native-share-button"
-              variant="secondary"
               onClick={handleNativeShare}
               className="w-full"
             >
               Share bouquet
             </Button>
-          ) : null}
-          <Button
-            data-testid="copy-share-button"
-            onClick={handleCopyMessage}
-            disabled={copyingMessage}
-            className="w-full"
+          ) : (
+            <Button
+              data-testid="copy-share-button"
+              variant={canShare ? 'ghost' : 'primary'}
+              onClick={handleCopyMessage}
+              disabled={copyingMessage}
+              className="w-full"
+            >
+              {copiedMessage ? 'Copied!' : 'Copy message + link'}
+            </Button>
+          )}
+          <button
+            type="button"
+            data-testid="more-share-options-toggle"
+            onClick={() => {
+              if (moreOpen) {
+                setShowMoreOptions(false)
+                setShowManualLink(false)
+              } else {
+                setShowMoreOptions(true)
+              }
+            }}
+            aria-expanded={moreOpen}
+            aria-controls="more-share-options"
+            className="mx-auto flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium text-bloom-ink/75 transition hover:text-brand-pink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bloom-ink"
           >
-            {copiedMessage ? 'Copied!' : 'Copy message + link'}
-          </Button>
-          <Button
-            data-testid="copy-link-button"
-            variant="ghost"
-            onClick={handleCopyLink}
-            disabled={copyingLink}
-            className="w-full"
-          >
-            {copiedLink ? 'Copied!' : 'Copy link only'}
-          </Button>
-          <Button
-            data-testid="manual-link-toggle"
-            variant="ghost"
-            onClick={() => setShowManualLink((shown) => !shown)}
-            className="w-full"
-            aria-expanded={showManualLink}
-            aria-controls="manual-share-link"
-          >
-            {showManualLink ? 'Hide manual link' : 'Show link to copy manually'}
-          </Button>
-          {showManualLink ? (
-            <div className="space-y-2">
-              <label htmlFor="manual-share-link" className="sr-only">
-                Full bouquet link
-              </label>
-              <textarea
-                id="manual-share-link"
-                ref={manualLinkRef}
-                readOnly
-                rows={3}
-                value={shareUrl}
-                onFocus={(event) => event.currentTarget.select()}
-                className="w-full resize-y rounded-xl border border-bloom-rose/20 bg-surface px-3 py-2 text-xs leading-relaxed text-bloom-ink [overflow-wrap:anywhere] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bloom-ink"
-              />
+            More ways to share
+            <span
+              aria-hidden="true"
+              className={`inline-block transition-transform motion-reduce:transition-none ${moreOpen ? 'rotate-180' : ''}`}
+            >
+              ▾
+            </span>
+          </button>
+          {moreOpen ? (
+            <div
+              id="more-share-options"
+              className="space-y-2 rounded-xl border border-bloom-rose/15 bg-bloom-cream/30 p-3"
+            >
+              {canShare ? (
+                <Button
+                  data-testid="copy-share-button"
+                  variant={canShare ? 'ghost' : 'primary'}
+                  onClick={handleCopyMessage}
+                  disabled={copyingMessage}
+                  className="w-full"
+                >
+                  {copiedMessage ? 'Copied!' : 'Copy message + link'}
+                </Button>
+              ) : null}
               <Button
+                data-testid="copy-link-button"
                 variant="ghost"
-                onClick={() => {
-                  manualLinkRef.current?.focus()
-                  manualLinkRef.current?.select()
-                }}
+                onClick={handleCopyLink}
+                disabled={copyingLink}
                 className="w-full"
               >
-                Select link
+                {copiedLink ? 'Copied!' : 'Copy link only'}
               </Button>
+              <Button
+                data-testid="manual-link-toggle"
+                variant="ghost"
+                onClick={() => setShowManualLink((shown) => !shown)}
+                className="w-full"
+                aria-expanded={showManualLink}
+                aria-controls="manual-share-link"
+              >
+                {showManualLink ? 'Hide link' : 'Show link to copy manually'}
+              </Button>
+              {showManualLink ? (
+                <div className="space-y-2">
+                  <label htmlFor="manual-share-link" className="sr-only">
+                    Full bouquet link
+                  </label>
+                  <textarea
+                    id="manual-share-link"
+                    ref={manualLinkRef}
+                    readOnly
+                    rows={3}
+                    value={shareUrl}
+                    onFocus={(event) => event.currentTarget.select()}
+                    className="w-full resize-y rounded-xl border border-bloom-rose/20 bg-surface px-3 py-2 text-xs leading-relaxed text-bloom-ink [overflow-wrap:anywhere] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bloom-ink"
+                  />
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      manualLinkRef.current?.focus()
+                      manualLinkRef.current?.select()
+                    }}
+                    className="w-full"
+                  >
+                    Select link
+                  </Button>
+                </div>
+              ) : null}
             </div>
           ) : null}
+        </div>
+        <div className="mt-4 border-t border-bloom-rose/15 pt-3 text-center">
           <button
             type="button"
             onClick={onCreateAnother}
-            className="w-full py-2 text-sm font-medium text-bloom-ink/65 transition hover:text-brand-pink"
+            className="rounded-full px-3 py-1.5 text-sm font-medium text-bloom-ink/65 transition hover:text-brand-pink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bloom-ink"
           >
             Create another bouquet
           </button>

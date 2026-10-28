@@ -27,6 +27,43 @@ are bundled; other scripts use system fallback fonts. See
 
 ## Changelog
 
+## Release grouping agreed 2026-10-23
+
+1. Verify O01 first. Counter functionality/protection is already implemented;
+   this is operational acceptance, not a second implementation or a claim that
+   every deployed abuse-control check has already passed. Record actual results
+   and make fixes only if needed. Do not stress the shared production database.
+2. Complete the agreed L work in focused, independently reviewed PRs. Include
+   the already-deployed D01-D06 polish and completed L work in one release.
+   A GitHub tag need not be created for D alone. Deployments can precede a tag.
+   Review optional L candidates for usefulness; explicitly record any scope
+   changes rather than silently calling unimplemented candidates complete.
+3. Plan F candidates as a separate later release, subject to their individual
+   product/privacy/cost decisions. A grouping is not approval to implement
+   every candidate or a requirement to ship all ten together.
+4. Keep standalone projects (S01/S02 and R01/R02) out of the D/L milestone.
+   Clarify and scope them individually before implementation. S03 is not
+   planned. This does not move L10's standalone discovery pages out of L.
+5. At whichever release checkpoint the owner pauses development, perform DOC02
+   README cleanup so it describes the shipped product. Do not wait for the
+   whole roadmap or start README work during active feature implementation.
+
+Reassess the version after final scope is known: a small fix/polish increment
+can be `v0.0.5`; substantial new Templates/discovery/sharing features may justify
+`v0.1.0`. Do not promise that additive features cannot regress existing behavior.
+Each included PR still needs relevant tests, preview approval, and passing main
+CI/Docker; check production and existing gift links before publishing.
+
+### Unreleased - Catalog, brand, and share polish (PR #9, owner approved 2026-10-28)
+
+[PR #9](https://github.com/D-Kumar19/bloom/pull/9) closes L04-L08: removes
+verified-unused components, rewrites bouquet descriptions to match the actual
+artwork, adds an optional "Why I chose these" prompt that appends to the note,
+records a no-addition catalog decision, and replaces the default Vercel favicon
+with Bloom rosebud icons. It also simplifies the final share step to one
+primary action with a collapsed "More ways to share", and fixes a test type
+error that failed hosted CI. No release is created by this entry.
+
 ### Unreleased - Experience polish (owner approved 2026-10-23)
 
 [PR #6](https://github.com/D-Kumar19/bloom/pull/6) improves the existing UI,
@@ -46,8 +83,9 @@ and Vercel preview passed; the owner approved the preview and closed D01-D06.
 Exhaustive device/state and manual accessibility coverage is not claimed.
 Main CI/production acceptance is checked after merge.
 
-The next patch tag may be **`v0.0.5`** after successful main CI (including
-Docker). No release is created or published by this changelog entry.
+The owner chose to group this shipped polish with upcoming L work rather than
+tag D alone. Choose the version against the completed scope above.
+No release is created or published by this changelog entry.
 
 ## Published reliability release
 

@@ -5,7 +5,7 @@ import FlowersPage from '@/app/flowers/page'
 import NoteStylesPage from '@/app/note-styles/page'
 import BackdropsPage from '@/app/backdrops/page'
 import AmbientSoundPage from '@/app/ambient-sound/page'
-import { BOUQUETS } from '@/lib/bouquets'
+import { BOUQUETS, BOUQUET_MEANING_NOTE } from '@/lib/bouquets'
 import { CARD_STYLES } from '@/lib/cards'
 import { THEMES } from '@/lib/themes'
 
@@ -20,7 +20,11 @@ describe('distinct discovery destinations', () => {
       expect(screen.getByAltText(bouquet.tagline)).toBeInTheDocument()
       expect(screen.getByText(bouquet.description)).toBeInTheDocument()
     }
-    expect(screen.getByText(/no universal flower rulebook/)).toBeInTheDocument()
+    expect(screen.getByText(BOUQUET_MEANING_NOTE)).toBeInTheDocument()
+    const details = screen.getByText('A little more about Red Rose Classic').closest('details')
+    expect(details).not.toHaveAttribute('open')
+    expect(details).toHaveTextContent(BOUQUETS[0].meaning)
+    for (const detail of BOUQUETS[0].facts) expect(details).toHaveTextContent(detail)
     expect(screen.getByRole('link', { name: 'Explore templates' })).toHaveAttribute('href', '/templates')
     expect(screen.getByRole('link', { name: 'Start a new bouquet' })).toHaveAttribute('href', '/create?new=1')
   })

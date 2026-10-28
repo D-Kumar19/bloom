@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 
 import { CardStyleQuickPicker } from '@/components/builder/CardStyleQuickPicker'
 import { NoteBorderPicker } from '@/components/builder/NoteBorderPicker'
@@ -59,6 +59,7 @@ export function MessageForm({
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [cardPickerOpen, setCardPickerOpen] = useState(false)
   const editorRef = useRef<HTMLDivElement>(null)
+  const pendingEditorFocus = useRef(false)
   const wordCount = countMessageWords(message)
   const wordsLeft = maxWords - wordCount
   const messageFilled = hasMessageContent(message)
@@ -68,13 +69,18 @@ export function MessageForm({
 
   const previewMessage = messageFilled ? message : ''
 
-  const applyInspiration = (starter: string) => {
-    const html = plainTextToMessageHtml(starter)
+  useLayoutEffect(() => {
+    if (!pendingEditorFocus.current) return
+    pendingEditorFocus.current = false
+    focusMessageEditorEnd(editorRef.current, message)
+  })
+
+  const applyInspiration = (starter: string, appendToNote = false) => {
+    const starterHtml = plainTextToMessageHtml(starter)
+    const html = appendToNote && messageFilled ? `${message}<br><br>${starterHtml}` : starterHtml
+    pendingEditorFocus.current = true
     onMessageChange(html)
     setShowInspiration(false)
-    requestAnimationFrame(() => {
-      focusMessageEditorEnd(editorRef.current, html)
-    })
   }
 
   const handleQuickNoteStyle = (styleId: string) => {
@@ -185,12 +191,14 @@ export function MessageForm({
               <div>
                 <p className="text-sm font-semibold text-bloom-ink">Need inspiration?</p>
                 <p className="mt-0.5 text-xs text-bloom-ink/75">
-                  Tap a mood to drop in a starter line, then edit it until it sounds like you.
+                  Try a personal detail or a mood starter, then make it sound like you.
                 </p>
               </div>
               <button
                 type="button"
                 data-testid="inspiration-toggle"
+                aria-expanded={showInspiration}
+                aria-controls="inspiration-prompts"
                 onClick={() => setShowInspiration((value) => !value)}
                 className="rounded-full border border-brand-pink/40 bg-surface-muted px-4 py-1.5 text-xs font-semibold text-brand-pink shadow-sm transition hover:border-brand-pink hover:bg-brand-pink/10"
               >
@@ -199,14 +207,14 @@ export function MessageForm({
             </div>
 
             {showInspiration ? (
-              <div className="mt-4 grid gap-2 sm:grid-cols-2">
+              <div id="inspiration-prompts" className="mt-4 grid gap-2 sm:grid-cols-2">
                 {INSPIRATION_PROMPTS.map((prompt) => (
                   <button
                     key={prompt.id}
                     type="button"
                     data-testid={`inspiration-${prompt.id}`}
-                    aria-label={`${prompt.label}: ${prompt.starter}`}
-                    onClick={() => applyInspiration(prompt.starter)}
+                    aria-label={`${prompt.label}: ${prompt.starter}${prompt.appendToNote ? ' (adds to your note)' : ''}`}
+                    onClick={() => applyInspiration(prompt.starter, prompt.appendToNote)}
                     className="rounded-xl border border-bloom-rose/30 bg-surface-muted p-3 text-left transition hover:border-brand-pink/50 hover:bg-brand-pink/[0.08] hover:shadow-sm"
                   >
                     <span className="text-xs font-semibold uppercase tracking-wide text-brand-pink">
@@ -216,6 +224,11 @@ export function MessageForm({
                     <p className="mt-1.5 text-sm leading-relaxed text-bloom-ink line-clamp-3">
                       {prompt.starter}
                     </p>
+                    {prompt.appendToNote ? (
+                      <p className="mt-2 text-xs leading-relaxed text-bloom-ink/75">
+                        {prompt.preview} Adds to your note, without replacing your words.
+                      </p>
+                    ) : null}
                   </button>
                 ))}
               </div>

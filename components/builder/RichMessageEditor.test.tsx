@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { useState } from 'react'
 import { describe, expect, it, vi } from 'vitest'
 
-import { RichMessageEditor } from '@/components/builder/RichMessageEditor'
+import { RichMessageEditor, focusMessageEditorEnd } from '@/components/builder/RichMessageEditor'
 import { DEFAULT_MESSAGE_FORMAT, countMessageWords } from '@/lib/message'
 
 function Editor() {
@@ -31,6 +31,19 @@ function caretAtEnd(editor: HTMLElement) {
 }
 
 describe('message editor integrity', () => {
+  it('keeps the prompt separator before a continuation typed at the focused caret', () => {
+    render(<Editor />)
+    const editor = screen.getByTestId<HTMLDivElement>('message-editor')
+    focusMessageEditorEnd(editor, '<b>Love you.</b><br><br>I chose these flowers because ')
+    expect(editor.innerHTML).toBe('<b>Love you.</b><br><br>I chose these flowers because&nbsp;')
+    expect(editor).toHaveFocus()
+    const range = window.getSelection()!.getRangeAt(0)
+    range.insertNode(document.createTextNode('they remind me of you.'))
+    fireEvent.input(editor)
+    expect(editor.textContent).toContain('because\u00a0they')
+    expect(screen.getByTestId('stored-html').textContent).toBe(editor.innerHTML)
+    expect(countMessageWords(editor.innerHTML)).toBe(12)
+  })
   it.each([199, 200, 201])(
     'keeps %s typed words identical in DOM and emitted state, including after blur',
     (count) => {

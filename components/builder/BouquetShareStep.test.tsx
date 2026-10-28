@@ -54,6 +54,29 @@ describe('BouquetShareStep', () => {
     )
   })
 
+  it('shows one primary action and tucks the alternatives away', async () => {
+    Object.defineProperty(navigator, 'share', {
+      configurable: true,
+      value: vi.fn(),
+    })
+    render(<BouquetShareStep state={baseState} onCreateAnother={vi.fn()} />)
+
+    expect(
+      await screen.findByRole('button', { name: 'Share bouquet' })
+    ).toBeInTheDocument()
+    expect(screen.queryByTestId('copy-share-button')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('copy-link-button')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('manual-link-toggle')).not.toBeInTheDocument()
+
+    const toggle = screen.getByTestId('more-share-options-toggle')
+    expect(toggle).toHaveAttribute('aria-expanded', 'false')
+    fireEvent.click(toggle)
+    expect(toggle).toHaveAttribute('aria-expanded', 'true')
+    expect(screen.getByTestId('copy-share-button')).toBeInTheDocument()
+    expect(screen.getByTestId('copy-link-button')).toBeInTheDocument()
+    expect(screen.getByTestId('manual-link-toggle')).toBeInTheDocument()
+  })
+
   it('confirms both clipboard actions without waiting on a stalled counter', async () => {
     const writeText = vi.fn().mockResolvedValue(undefined)
     Object.defineProperty(navigator, 'clipboard', {
@@ -68,6 +91,7 @@ describe('BouquetShareStep', () => {
       )
     )
     expect(screen.getByTestId('copy-share-button')).toBeEnabled()
+    fireEvent.click(screen.getByRole('button', { name: /More ways to share/ }))
     fireEvent.click(screen.getByRole('button', { name: 'Copy link only' }))
     await waitFor(() => expect(writeText).toHaveBeenCalledTimes(2))
     expect(recordBouquetSentOnce).toHaveBeenCalledTimes(2)
@@ -83,6 +107,7 @@ describe('BouquetShareStep', () => {
     })
     render(<BouquetShareStep state={baseState} onCreateAnother={vi.fn()} />)
     expect(recordBouquetSentOnce).not.toHaveBeenCalled()
+    fireEvent.click(screen.getByTestId('more-share-options-toggle'))
     fireEvent.click(screen.getByTestId('copy-link-button'))
     await waitFor(() =>
       expect(screen.getByTestId('copy-link-button')).toBeEnabled()

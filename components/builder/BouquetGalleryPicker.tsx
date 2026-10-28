@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
 import {
   BOUQUET_MOODS,
+  BOUQUET_MEANING_NOTE,
   getBouquetById,
   getBouquetsByMood,
   type Bouquet,
@@ -55,9 +56,12 @@ function BouquetDetailModal({
       </div>
       <p className="text-sm font-medium text-bloom-ink/80">{bouquet.tagline}</p>
       <p className="mt-4 text-sm leading-relaxed text-bloom-ink/70">{bouquet.description}</p>
-      <p className="mt-4 text-sm italic leading-relaxed text-bloom-ink/75">{bouquet.meaning}</p>
+      <p className="mt-4 text-sm italic leading-relaxed text-bloom-ink/75">
+        <span className="font-medium not-italic">A possible gesture:</span> {bouquet.meaning}
+      </p>
+      <p className="mt-2 text-xs leading-relaxed text-bloom-ink/70">{BOUQUET_MEANING_NOTE}</p>
       <div className="mt-4 text-sm leading-relaxed text-bloom-ink/70">
-        <p className="font-medium text-bloom-ink">In the bouquet:</p>
+        <p className="font-medium text-bloom-ink">Details to notice:</p>
         <ul className="mt-2 list-disc space-y-1.5 pl-5">
           {bouquet.facts.map((fact) => (
             <li key={fact}>{fact}</li>
@@ -68,7 +72,7 @@ function BouquetDetailModal({
         <span className="font-medium text-bloom-ink">Mood:</span> {moodLabel}
       </p>
       <p className="mt-4 text-sm leading-relaxed text-bloom-ink/70">
-        <span className="font-medium text-bloom-ink">Perfect for:</span> {bouquet.perfectFor}
+        <span className="font-medium text-bloom-ink">A thought for:</span> {bouquet.perfectFor}
       </p>
       {isSelected ? (
         <p className="mt-5 border-t border-bloom-rose/15 pt-4 text-center text-sm text-bloom-ink/70">

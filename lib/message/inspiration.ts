@@ -4,9 +4,18 @@ export type InspirationPrompt = {
   label: string
   preview: string
   starter: string
+  appendToNote?: boolean
 }
 
 export const INSPIRATION_PROMPTS: InspirationPrompt[] = [
+  {
+    id: 'why-these',
+    emoji: '🌷',
+    label: 'Why I chose these',
+    preview: 'A color, a memory, or a detail that made you think of them.',
+    starter: 'I chose these flowers because ',
+    appendToNote: true,
+  },
   {
     id: 'love',
     emoji: '💕',
