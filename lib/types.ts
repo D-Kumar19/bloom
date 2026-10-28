@@ -100,4 +100,5 @@ export type BuilderStep =
   | 'theme'
   | 'share'
 
+export const MIN_MESSAGE_WORDS = 2
 export const MAX_MESSAGE_WORDS = 200

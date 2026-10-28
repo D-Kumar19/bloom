@@ -405,9 +405,57 @@ another redesign batch.
 Content, starters, personal details, and catalog additions are candidates, not
 a commitment to ship everything. Validate usefulness and simplicity first.
 
-- [ ] L01 - Ship editable occasion starters, not fixed recipient preferences.
-  **Includes the currently unavailable footer Templates destination.**
-  The footer currently links to an honest introductory Templates section on
+- [x] L01 - Ship editable occasion starters, not fixed recipient preferences.
+  **Closed by owner Preview approval, 2026-10-28, PR #8.** Six editable
+  starters have a dedicated Templates page and enter at Message with blank
+  personal fields. Existing drafts require confirmation before replacement;
+  failed writes preserve the old draft, current step, and pending entry.
+  New bouquet starts at flowers after confirmation. Change bouquet appears
+  only for template/preset/mood starts, with context retained across reload.
+  Notes require 2-200 words without discarding incomplete drafts or breaking
+  existing recipient links. Owner verified these follow-ups and approved merge.
+  Latest application commit: `44a7832`; hosted PR verification and Vercel passed.
+  Local full suite passed 330 tests / 56 files before the help-content update;
+  the latter passed its five targeted tests, lint, type-check/build, and sampled
+  mobile/desktop browser review. Owner approval is acceptance, not exhaustive
+  real-device or accessibility certification.
+  **Implementation history and original acceptance scope follow.**
+  **Preview feedback and scope correction, 2026-10-28:** owner rejected the
+  shared Explore destination as adequate discovery navigation and approved
+  expanding PR #8 with L10. Templates now has its own page, linked from Create;
+  occasion starters still enter at Message. Footer New bouquet explicitly
+  asks before replacing a draft, then begins at flower selection. Replacement
+  retains the save-before-switch protection. Template/discovery actions add
+  decorative hover, focus, and press sparkles, static under reduced motion.
+  The earlier Explore-only notes below describe the first, unapproved iteration.
+  **Message-step follow-up, 2026-10-28:** owner chose to show Change bouquet
+  only for template/preset starts (including mood starters), not scratch starts.
+  Entry context is stored with the local draft, outside shared gift data, so
+  reload/preview return retains the shortcut. Older drafts without the marker
+  use the scratch behavior. Back and step navigation remain available to all.
+  The owner also chose a 2-word minimum note: Message now explains the
+  2-200 word range, blocks Continue below it, and retains short draft text.
+  Restored Backdrop/Share drafts with short notes return to Message.
+  Existing recipient gift links remain readable regardless of note length.
+  Local follow-up verification passed 330 tests / 56 files, targeted lint,
+  type-check, and production build. Production-build Chromium confirmed a
+  one-letter note blocks Continue, exact "Love you" enables it, scratch
+  starts omit the shortcut, and template reload retains it and the note.
+  These follow-ups were pushed and accepted in Preview.
+  **Initial implementation, PR #8 (2026-10-28):** Explore/Templates offered existing
+  guide starters at the editable Message step, with blank personal fields and
+  a direct bouquet-change action. Saved drafts require explicit replacement
+  confirmation, including existing encoded-preset and mood entry links.
+  Replacement now writes the new draft without deleting the old envelope
+  first. If writing fails, the current draft, step, and entry URL stay intact;
+  an alert inside the confirmation dialog offers retry or keeping the draft.
+  Regression tests cover quota/security errors, occasion/mood/encoded entries,
+  retry persistence, keep-draft recovery, and accessible error placement.
+  A local production-build Chromium check confirmed quota-failure preservation,
+  successful retry, URL preservation, and reload recovery at 390px.
+  Owner subsequently approved the revised Preview and merge on 2026-10-28.
+  **Original scope included the unavailable footer Templates destination.**
+  The footer previously linked to an introductory Templates section on
   the shared Explore page, not a selectable gallery. Replace it with the
   usable templates/starter entry point and verify selecting a starter enters an editable builder
   without silently overwriting an existing draft.
@@ -421,7 +469,16 @@ a commitment to ship everything. Validate usefulness and simplicity first.
   Current preset decoding expects an encoded gift, not a plain guide slug.
 - [ ] L02 - Profile image/audio/font costs; optimize against measured budgets
   agreed in the design specification.
-- [ ] L03 - Native mobile sharing and a selectable manual-link fallback.
+- [x] L03 - Native mobile sharing and a selectable manual-link fallback.
+  **Implemented in PR #7 (merged 2026-10-23):** uses the native share sheet
+  where supported and reveals a selectable full link when sharing or clipboard
+  fails. Native share-sheet completion is not counted as a successful copy.
+  Eleven focused tests, type-check, targeted lint, production build, hosted PR
+  verification, and Vercel Preview deployment passed. The desktop preview keeps
+  the existing rounded style; at a 390px viewport, the manual-link fallback
+  appeared and its Select link action selected the full 442-character URL.
+  This browser did not expose the native share sheet, so the real-device
+  interaction remains unverified.
 - [ ] L04 - Reassess unused code and root cleanup after feature decisions.
   Current source layout stays as-is. No source moves are approved.
 - [ ] L05 - Improve bouquet descriptions and optional discovery content.
@@ -446,10 +503,36 @@ a commitment to ship everything. Validate usefulness and simplicity first.
   1200 x 630 branded image. New guide/about pages need metadata if implemented.
   Recipient privacy/indexing decisions take precedence over SEO.
 
-- [ ] L10 - Complete standalone Wander discovery pages.
+- [x] L10 - Complete standalone Wander discovery pages.
+  **Closed by owner Preview approval, 2026-10-28, PR #8.** Owner accepted the
+  distinct discovery pages, dedicated Templates destination, subtle action
+  feedback, draft-safe fresh entry, and the final About/Privacy/Contact content.
+  Hosted PR verification and Vercel passed at `44a7832`; merge authorized.
+  **Implemented in expanded PR #8, owner decision 2026-10-28:** separate
+  `/flowers`, `/note-styles`, `/backdrops`, and `/ambient-sound` routes now
+  show the actual bouquet catalog, stationery previews, backdrop previews,
+  and opt-in sound listening respectively. Each ends with a Templates
+  invitation; `/templates` is the distinct Create destination. Existing
+  `/explore#...` anchors remain a compatibility hub with onward links.
+  Local production-browser checks cover all five distinct pages at desktop
+  and 390px, actual sound play/stop and a blocked-audio error, template
+  Message entry, and repeated New bouquet cancel/confirm navigation.
+  Owner approved the revised Vercel Preview on 2026-10-28.
+  **Footer wording follow-up, 2026-10-28:** replaced the vague Small print
+  heading with About & help. Links now explain their destinations: About
+  Bloom, Privacy & gift links, and Contact & feedback. Desktop and mobile
+  retain the same destinations and footer layout.
+  **Content correction, 2026-10-28:** owner clarified that the help pages,
+  not just their labels, needed attention. About now explains the gifting
+  journey and digital-only delivery; Privacy leads with a plain-language
+  summary while retaining the storage, hosting, quota, and link-access
+  details; Contact provides actionable bug-report guidance and privacy-safe
+  screenshot advice. Rounded sections and decorative emoji aid scanning.
+  Owner reported the conditional bouquet shortcut and note-length fix working
+  in Preview, then accepted the help-content update and authorized merge.
   Explicitly covers footer Flowers, Note styles, Backdrops, and Ambient sound.
-  The corresponding builder choices already work; what is missing is their
-  standalone discovery/guide destinations. Reuse the actual catalogs and
+  **Original acceptance scope:** deliver standalone discovery/guide destinations
+  for existing builder choices. Reuse the actual catalogs and
   previews, provide a clear path into the builder, and avoid duplicate
   selection stages. Describe sound as optional and respect playback rules.
   Verify content accuracy, desktop/mobile and keyboard access, metadata, and

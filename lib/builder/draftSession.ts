@@ -15,6 +15,7 @@ type StoredDraft = {
   savedAt: number
   state: BouquetState
   step: BuilderStep
+  startedFromPreset?: boolean
 }
 
 function isBuilderStep(value: unknown): value is BuilderStep {
@@ -44,6 +45,7 @@ function readEnvelope(raw: string | null): StoredDraft | null {
         savedAt: parsed.savedAt,
         state: parsed.state,
         step: parsed.step,
+        startedFromPreset: 'startedFromPreset' in parsed && parsed.startedFromPreset === true,
       }
     }
   } catch {
@@ -102,9 +104,10 @@ function readSessionValue(key: string): string | null {
 // Storage access errors intentionally reach the builder's visible recovery warning.
 export function saveBuilderDraft(
   state: BouquetState,
-  step: BuilderStep = 'share'
+  step: BuilderStep = 'share',
+  startedFromPreset = false,
 ): void {
-  const envelope: StoredDraft = { v: 1, savedAt: Date.now(), state, step }
+  const envelope: StoredDraft = { v: 1, savedAt: Date.now(), state, step, startedFromPreset }
   localStorage.setItem(BUILDER_DRAFT_STORAGE_KEY, JSON.stringify(envelope))
   clearLegacySessionDraft()
 }
@@ -128,7 +131,8 @@ export function restoreBuilderDraft(
   setState: (
     value: BouquetState | ((current: BouquetState) => BouquetState)
   ) => void,
-  setStep: (step: BuilderStep) => void
+  setStep: (step: BuilderStep) => void,
+  setStartedFromPreset?: (value: boolean) => void,
 ): boolean {
   const raw = localStorage.getItem(BUILDER_DRAFT_STORAGE_KEY)
   const stored = readEnvelope(raw)
@@ -158,6 +162,7 @@ export function restoreBuilderDraft(
   }
   setState((current) => ({ ...current, ...draft.state }))
   setStep(step)
+  setStartedFromPreset?.(draft.startedFromPreset === true)
   return true
 }
 

@@ -15,6 +15,7 @@ import { DEFAULT_NOTE_BORDER } from '@/lib/cards'
 import { DEFAULT_MESSAGE_FORMAT, sanitizeMessageHtml } from '@/lib/message'
 import { canProceedMessageStep } from '@/lib/message'
 import { applyMoodPreset, isMoodId } from '@/lib/moods'
+import { GUIDE_MAP } from '@/lib/guides'
 import {
   MAX_MESSAGE_WORDS,
   type BouquetState,
@@ -35,10 +36,19 @@ const DEFAULT_STATE: BouquetState = {
   soundtrack: 'none',
 }
 
+type PendingStarter = {
+  title: string
+  state: Partial<BouquetState>
+  step: BuilderStep
+  fresh?: boolean
+}
+
 export function useBouquetState() {
   const [state, setState] = useState<BouquetState>(DEFAULT_STATE)
   const [step, setStep] = useState<BuilderStep>('bouquet')
   const [ready, setReady] = useState(false)
+  const [startedFromPreset, setStartedFromPreset] = useState(false)
+  const [pendingStarter, setPendingStarter] = useState<PendingStarter | null>(null)
   const [storageError, setStorageError] = useState<string | null>(null)
   const lastSaved = useRef(JSON.stringify({ state: DEFAULT_STATE, step: 'bouquet' }))
   const storageErrorReported = useRef(false)
@@ -60,26 +70,71 @@ export function useBouquetState() {
       const params = new URLSearchParams(window.location.search)
       const preset = params.get('preset')
       const moodParam = params.get('mood')
+      const starter = GUIDE_MAP.get(params.get('starter') ?? '')
+      const startFresh = params.get('new') === '1'
 
       let initialState = DEFAULT_STATE
       let initialStep: BuilderStep = 'bouquet'
+      let initialStartedFromPreset = false
       let initializedFromLink = false
+      let restoredDraft = false
       try {
         const decoded = preset ? decodeBouquet(preset) : null
-        if (decoded) {
-          initialState = { ...DEFAULT_STATE, ...decoded }
-          initializedFromLink = true
+        let linkedStarter: PendingStarter | null = null
+        if (startFresh) {
+          linkedStarter = {
+            title: 'a new bouquet',
+            state: DEFAULT_STATE,
+            step: 'bouquet',
+            fresh: true,
+          }
+        } else if (decoded) {
+          linkedStarter = {
+            title: 'the bouquet in this link',
+            state: decoded,
+            step: 'bouquet',
+          }
         } else if (moodParam && isMoodId(moodParam)) {
-          initialState = applyMoodPreset(DEFAULT_STATE, moodParam)
-          initializedFromLink = true
-        } else {
-          restoreBuilderDraft(
+          linkedStarter = {
+            title: 'this mood starter',
+            state: applyMoodPreset(DEFAULT_STATE, moodParam),
+            step: 'bouquet',
+          }
+        } else if (starter) {
+          linkedStarter = {
+            title: starter.subtitle,
+            state: starter.state,
+            step: 'message',
+          }
+        }
+
+        if (linkedStarter) {
+          restoredDraft = restoreBuilderDraft(
             (value) => {
               initialState = typeof value === 'function' ? value(DEFAULT_STATE) : value
             },
             (value) => {
               initialStep = value
             },
+            (value) => { initialStartedFromPreset = value },
+          )
+          if (restoredDraft) {
+            setPendingStarter(linkedStarter)
+          } else {
+            initialState = { ...DEFAULT_STATE, ...linkedStarter.state }
+            initialStep = linkedStarter.step
+            initialStartedFromPreset = !linkedStarter.fresh
+            initializedFromLink = true
+          }
+        } else {
+          restoredDraft = restoreBuilderDraft(
+            (value) => {
+              initialState = typeof value === 'function' ? value(DEFAULT_STATE) : value
+            },
+            (value) => {
+              initialStep = value
+            },
+            (value) => { initialStartedFromPreset = value },
           )
         }
       } catch {
@@ -94,20 +149,24 @@ export function useBouquetState() {
         // Presets initialize once; reloads must recover the user's subsequent edits.
         params.delete('preset')
         params.delete('mood')
+        params.delete('starter')
+        params.delete('new')
         const search = params.size ? `?${params.toString()}` : ''
         window.history.replaceState(
           window.history.state,
           '',
           `${window.location.pathname}${search}${window.location.hash}`,
         )
-      } else if (restoredId) {
+      } else if (restoredDraft) {
         lastSaved.current = JSON.stringify({
           state: initialState,
           step: initialStep,
+          startedFromPreset: initialStartedFromPreset,
         })
       }
       setState(initialState)
       setStep(initialStep)
+      setStartedFromPreset(initialStartedFromPreset)
       setReady(true)
     })
     return () => {
@@ -120,10 +179,10 @@ export function useBouquetState() {
     let active = true
     queueMicrotask(() => {
       if (!active) return
-      const snapshot = JSON.stringify({ state, step })
+      const snapshot = JSON.stringify({ state, step, startedFromPreset })
       if (snapshot === lastSaved.current) return
       try {
-        saveBuilderDraft(state, step)
+        saveBuilderDraft(state, step, startedFromPreset)
         lastSaved.current = snapshot
         setStorageError(null)
       } catch {
@@ -133,7 +192,7 @@ export function useBouquetState() {
     return () => {
       active = false
     }
-  }, [state, step, ready, reportStorageError])
+  }, [state, step, startedFromPreset, ready, reportStorageError])
 
   const setBouquet = useCallback((bouquetId: string) => {
     setState((current) => ({ ...current, bouquetId }))
@@ -216,16 +275,72 @@ export function useBouquetState() {
     lastSaved.current = JSON.stringify({
       state: newState,
       step: 'bouquet',
+      startedFromPreset: false,
     })
     setState(newState)
     setStep('bouquet')
+    setStartedFromPreset(false)
   }, [reportStorageError])
+
+  const consumeStarterParams = useCallback(() => {
+    const params = new URLSearchParams(window.location.search)
+    params.delete('starter')
+    params.delete('preset')
+    params.delete('mood')
+    params.delete('new')
+    const search = params.size ? `?${params.toString()}` : ''
+    window.history.replaceState(
+      window.history.state,
+      '',
+      `${window.location.pathname}${search}${window.location.hash}`,
+    )
+  }, [])
+
+  const keepDraft = useCallback(() => {
+    consumeStarterParams()
+    setPendingStarter(null)
+  }, [consumeStarterParams])
+
+  const startWithStarter = useCallback(() => {
+    if (!pendingStarter) return
+    const newState = {
+      ...DEFAULT_STATE,
+      ...pendingStarter.state,
+      giftId: crypto.randomUUID(),
+    }
+    const newStartedFromPreset = !pendingStarter.fresh
+    const snapshot = JSON.stringify({
+      state: newState, step: pendingStarter.step, startedFromPreset: newStartedFromPreset,
+    })
+    try {
+      saveBuilderDraft(newState, pendingStarter.step, newStartedFromPreset)
+      lastSaved.current = snapshot
+    } catch {
+      reportStorageError()
+      setStorageError(
+        pendingStarter.fresh
+          ? 'Could not save the new bouquet. Your saved bouquet is unchanged. Try again or keep your draft.'
+          : 'Could not save this starter. Your saved bouquet is unchanged. Try again or keep your draft.',
+      )
+      return
+    }
+    setStorageError(null)
+    setState(newState)
+    setStep(pendingStarter.step)
+    setStartedFromPreset(newStartedFromPreset)
+    setPendingStarter(null)
+    consumeStarterParams()
+  }, [consumeStarterParams, pendingStarter, reportStorageError])
 
   return {
     state,
     step,
     ready,
+    startedFromPreset,
     storageError,
+    pendingStarter,
+    keepDraft,
+    startWithStarter,
     setStep,
     setBouquet,
     setCardStyle,

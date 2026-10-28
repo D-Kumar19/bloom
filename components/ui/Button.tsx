@@ -7,6 +7,7 @@ type ButtonBaseProps = {
   variant?: ButtonVariant
   className?: string
   children?: ReactNode
+  magical?: boolean
 }
 
 type ButtonAsButton = ButtonBaseProps &
@@ -40,9 +41,10 @@ export function Button({
   variant = 'primary',
   className = '',
   children,
+  magical = false,
   ...props
 }: ButtonProps) {
-  const classes = buttonClassName(variant, className)
+  const classes = buttonClassName(variant, `${magical ? 'bloom-magic-action' : ''} ${className}`)
 
   if ('href' in props && props.href) {
     const { href, onClick } = props

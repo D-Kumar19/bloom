@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import CreatePage from '@/app/create/page'
@@ -39,6 +39,7 @@ function buildState(step: 'bouquet' | 'card' | 'message' | 'theme') {
     },
     step,
     ready: true,
+    startedFromPreset: false,
     setBouquet: vi.fn(),
     setCardStyle: vi.fn(),
     setMessageFormat: vi.fn(),
@@ -54,6 +55,9 @@ function buildState(step: 'bouquet' | 'card' | 'message' | 'theme') {
     goToStep: vi.fn(),
     startNewBouquet: vi.fn(),
     maxMessageWords: 200,
+    pendingStarter: null,
+    keepDraft: vi.fn(),
+    startWithStarter: vi.fn(),
   }
 }
 
@@ -76,6 +80,22 @@ describe('CreatePage transitions', () => {
     push.mockReset()
     mockUseBouquetState.mockReset()
     motion.reduced = false
+  })
+
+  it.each([false, true])('shows the bouquet shortcut only for preset starts (%s)', (startedFromPreset) => {
+    const state = { ...buildState('message'), startedFromPreset }
+    mockUseBouquetState.mockReturnValue(state)
+    renderCreatePage()
+    const shortcut = screen.queryByRole('button', { name: 'Change bouquet' })
+    if (startedFromPreset) {
+      expect(shortcut).toBeInTheDocument()
+      fireEvent.click(screen.getByRole('button', { name: 'Change bouquet' }))
+      expect(state.goToStep).toHaveBeenCalledWith('bouquet')
+    } else {
+      expect(shortcut).not.toBeInTheDocument()
+    }
+    fireEvent.click(screen.getByRole('button', { name: 'Back' }))
+    expect(state.goBack).toHaveBeenCalledOnce()
   })
 
   it('attaches the progress bar to the site header', () => {
@@ -102,12 +122,63 @@ describe('CreatePage transitions', () => {
     expect(screen.getByTestId('next-button')).toBeEnabled()
   })
 
+  it('asks before replacing a saved draft with an occasion starter', () => {
+    const state = {
+      ...buildState('card'),
+      pendingStarter: {
+        title: 'Celebrate the day they arrived',
+      },
+    }
+    mockUseBouquetState.mockReturnValue(state)
+
+    renderCreatePage()
+
+    expect(screen.getByRole('dialog', { name: 'Keep your saved bouquet?' })).toHaveTextContent(
+      'Your saved bouquet will only be replaced if you choose to start with this idea.'
+    )
+    fireEvent.click(screen.getByRole('button', { name: 'Keep my draft' }))
+    expect(state.keepDraft).toHaveBeenCalled()
+    fireEvent.click(screen.getByRole('button', { name: 'Start with this idea' }))
+    expect(state.startWithStarter).toHaveBeenCalled()
+  })
+
   it('falls back to a sticky progress shell without site chrome', () => {
     mockUseBouquetState.mockReturnValue(buildState('bouquet'))
 
     renderCreatePage(false)
 
     expect(screen.getByTestId('progress-shell-fallback')).toHaveClass('sticky')
+  })
+
+  it('explains that New bouquet starts at flowers only after explicit confirmation', () => {
+    const state = {
+      ...buildState('message'),
+      pendingStarter: { fresh: true, title: 'a new bouquet' },
+    }
+    mockUseBouquetState.mockReturnValue(state)
+    renderCreatePage()
+    const dialog = screen.getByRole('dialog', { name: 'Start a new bouquet?' })
+    expect(dialog).toHaveTextContent('starting at flower selection')
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Start new bouquet' }))
+    expect(state.startWithStarter).toHaveBeenCalledOnce()
+  })
+
+  it('shows a failed replacement warning inside the dialog with retry and keep actions', () => {
+    const state = {
+      ...buildState('card'),
+      pendingStarter: { title: 'Celebrate the day they arrived' },
+      storageError: 'Could not save this starter. Your saved bouquet is unchanged. Try again or keep your draft.',
+    }
+    mockUseBouquetState.mockReturnValue(state)
+    renderCreatePage()
+
+    const dialog = screen.getByRole('dialog', { name: 'Keep your saved bouquet?' })
+    expect(within(dialog).getByRole('alert')).toHaveTextContent(state.storageError)
+    expect(screen.getAllByRole('alert')).toHaveLength(1)
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Start with this idea' }))
+    expect(state.startWithStarter).toHaveBeenCalledOnce()
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Keep my draft' }))
+    expect(state.keepDraft).toHaveBeenCalledOnce()
   })
 
   it('smooth-scrolls to the top when the step changes', () => {

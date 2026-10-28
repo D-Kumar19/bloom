@@ -17,4 +17,11 @@ describe('polished button consistency', () => {
     expect(screen.getByRole('link', { name: 'Create your bouquet' })).toHaveAttribute('href', '/create')
     expect(screen.getByRole('link', { name: 'Create your bouquet' })).toHaveClass('rounded-full')
   })
+
+  it('adds decorative magic without changing the accessible name or leaking DOM props', () => {
+    render(<Button magical href="/templates">Explore templates</Button>)
+    const link = screen.getByRole('link', { name: 'Explore templates' })
+    expect(link).toHaveClass('bloom-magic-action')
+    expect(link).not.toHaveAttribute('magical')
+  })
 })

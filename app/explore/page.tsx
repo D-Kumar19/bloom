@@ -31,7 +31,7 @@ const sections = [
   {
     id: 'templates',
     title: 'Templates',
-    description: 'Looking for a starting point? Think of a birthday, a thank-you, or an ordinary Tuesday that could use some flowers. Start with the builder and make it yours. A dedicated template collection is still growing; for now, these are ideas, not selectable presets.',
+    description: 'Choose a gentle starting point, then make every detail your own. The note is yours to write, and you can change the flowers or style at any time.',
   },
 ]
 
@@ -49,10 +49,13 @@ export default function ExplorePage() {
         <section key={id} id={id} className="scroll-mt-8 space-y-3">
           <h2 className="font-display text-2xl">{title}</h2>
           <p className="leading-relaxed">{description}</p>
+          <Button magical href={`/${id}`} variant="ghost" className="rounded-full">
+            Explore {title.toLowerCase()}
+          </Button>
         </section>
       ))}
       <div className="space-y-4 border-t border-bloom-rose/20 pt-6">
-        <Button href="/create">Create your bouquet</Button>
+        <Button magical href="/create?new=1">Create your bouquet</Button>
         <p>
           Something you would love to see here?{' '}
           <Link href="/contact" className="underline">Tell Dheeraj</Link>.

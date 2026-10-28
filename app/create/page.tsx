@@ -9,6 +9,7 @@ import { MessageForm } from '@/components/builder/MessageForm'
 import { StepIndicator } from '@/components/builder/StepIndicator'
 import { ThemePicker } from '@/components/builder/ThemePicker'
 import { Button } from '@/components/ui/Button'
+import { Modal } from '@/components/ui/Modal'
 import { useBouquetState } from '@/hooks/useBouquetState'
 import { useHeaderSlot } from '@/hooks/useHeaderSlot'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
@@ -37,6 +38,10 @@ export default function CreatePage() {
     maxMessageWords,
     storageError,
     ready,
+    startedFromPreset,
+    pendingStarter,
+    keepDraft,
+    startWithStarter,
   } = useBouquetState()
   const previousStepRef = useRef(step)
   const reducedMotion = usePrefersReducedMotion()
@@ -74,7 +79,7 @@ export default function CreatePage() {
 
   return (
     <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-6 md:px-6 md:py-8">
-      {storageError ? (
+      {storageError && !pendingStarter ? (
         <p
           role="alert"
           className="rounded-2xl border border-brand-pink/30 bg-surface p-4 text-sm text-bloom-ink"
@@ -82,6 +87,35 @@ export default function CreatePage() {
           {storageError}
         </p>
       ) : null}
+      <Modal
+        open={Boolean(pendingStarter)}
+        onClose={keepDraft}
+        title={pendingStarter?.fresh ? 'Start a new bouquet?' : 'Keep your saved bouquet?'}
+      >
+        <p className="text-sm leading-relaxed text-bloom-ink/75">
+          {pendingStarter?.fresh
+            ? 'You already have a bouquet in progress. Keep your draft, or replace it with a fresh bouquet starting at flower selection. Nothing will be replaced until you choose Start new bouquet.'
+            : <>You already have a bouquet in progress. Keep working on it, or replace it
+              with “{pendingStarter?.title}”? Your saved bouquet will only be replaced
+              if you choose to start with this idea.</>}
+        </p>
+        {storageError ? (
+          <p
+            role="alert"
+            className="mt-4 rounded-2xl border border-brand-pink/30 bg-surface p-4 text-sm text-bloom-ink"
+          >
+            {storageError}
+          </p>
+        ) : null}
+        <div className="mt-6 flex flex-col-reverse justify-end gap-3 sm:flex-row">
+          <Button variant="ghost" onClick={keepDraft}>
+            Keep my draft
+          </Button>
+          <Button onClick={startWithStarter}>
+            {pendingStarter?.fresh ? 'Start new bouquet' : 'Start with this idea'}
+          </Button>
+        </div>
+      </Modal>
       {!isShareStep ? (
         <div className="text-center">
           <h1 className="font-display text-3xl text-bloom-ink md:text-4xl">Create your bouquet</h1>
@@ -123,6 +157,7 @@ export default function CreatePage() {
               onMessageFormatChange={setMessageFormat}
               onNoteBorderChange={setNoteBorder}
               onCardStyleChange={setCardStyle}
+              onChangeBouquet={startedFromPreset ? () => goToStep('bouquet') : undefined}
             />
           ) : null}
           {step === 'theme' ? (

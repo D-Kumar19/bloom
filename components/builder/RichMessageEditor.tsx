@@ -23,6 +23,7 @@ type RichMessageEditorProps = {
   maxWords: number
   placeholder?: string
   invalid?: boolean
+  describedBy?: string
   onMessageChange: (html: string) => void
   onMessageFormatChange: (format: MessageFormat) => void
 }
@@ -143,6 +144,7 @@ export const RichMessageEditor = forwardRef<HTMLDivElement, RichMessageEditorPro
       maxWords,
       placeholder = 'Write your message here. Say what you mean.',
       invalid = false,
+      describedBy,
       onMessageChange,
       onMessageFormatChange,
     },
@@ -480,6 +482,7 @@ export const RichMessageEditor = forwardRef<HTMLDivElement, RichMessageEditorPro
             aria-multiline="true"
             aria-placeholder={placeholder}
             aria-invalid={invalid}
+            aria-describedby={describedBy}
             contentEditable
             suppressContentEditableWarning
             data-testid="message-editor"

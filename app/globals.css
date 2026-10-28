@@ -72,6 +72,50 @@ body {
   font-family: var(--font-playfair), Georgia, serif;
 }
 
+.bloom-magic-action {
+  position: relative;
+  isolation: isolate;
+  transition: background-color 180ms ease, box-shadow 180ms ease;
+}
+
+.bloom-magic-action::before,
+.bloom-magic-action::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  width: 10px;
+  height: 10px;
+  background: currentColor;
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+  opacity: 0;
+}
+
+.bloom-magic-action::before { left: 9px; top: 8px; }
+.bloom-magic-action::after { right: 9px; bottom: 8px; }
+
+.bloom-magic-action:is(:hover, :focus-visible, :active) {
+  box-shadow: 0 0 18px rgb(201 166 107 / 0.24);
+}
+
+.bloom-magic-action:is(:hover, :focus-visible, :active)::before,
+.bloom-magic-action:is(:hover, :focus-visible, :active)::after {
+  opacity: 0.8;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .bloom-magic-action:is(:hover, :focus-visible, :active)::before,
+  .bloom-magic-action:is(:hover, :focus-visible, :active)::after {
+    animation: action-sparkle 650ms ease-out both;
+  }
+  .bloom-magic-action::after { animation-delay: 80ms; }
+}
+
+@keyframes action-sparkle {
+  from { opacity: 0; transform: scale(0.3) rotate(-35deg); }
+  55% { opacity: 0.95; transform: scale(1.25) rotate(15deg); }
+  to { opacity: 0.8; transform: scale(1) rotate(0); }
+}
+
 @keyframes bloom-in {
   from {
     opacity: 0;

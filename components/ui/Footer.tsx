@@ -7,16 +7,18 @@ import { COPYRIGHT_LINE } from '@/lib/site'
 
 const sections = [
   { title: 'Wander', items: [
-    { label: 'Flowers', href: '/explore#flowers' },
-    { label: 'Note styles', href: '/explore#note-styles' },
-    { label: 'Backdrops', href: '/explore#backdrops' },
-    { label: 'Ambient sound', href: '/explore#ambient-sound' },
+    { label: 'Flowers', href: '/flowers' },
+    { label: 'Note styles', href: '/note-styles' },
+    { label: 'Backdrops', href: '/backdrops' },
+    { label: 'Ambient sound', href: '/ambient-sound' },
   ] },
   { title: 'Create', items: [
-    { label: 'New bouquet', href: '/create' }, { label: 'Templates', href: '/explore#templates' },
+    { label: 'New bouquet', href: '/create?new=1' }, { label: 'Templates', href: '/templates' },
   ] },
-  { title: 'Small print', items: [
-    { label: 'About', href: '/about' }, { label: 'Privacy', href: '/privacy' }, { label: 'Contact', href: '/contact' },
+  { title: 'About & help', items: [
+    { label: 'About Bloom', href: '/about' },
+    { label: 'Privacy & gift links', href: '/privacy' },
+    { label: 'Contact & feedback', href: '/contact' },
   ] },
 ] satisfies { title: string; items: { label: string; href: string }[] }[]
 
@@ -27,7 +29,12 @@ function FooterLinks() {
       <ul className="mt-3 space-y-2 text-sm">
         {section.items.map(item => (
           <li key={item.label}>
-            <Link href={item.href} className="text-bloom-ink/80 hover:underline">{item.label}</Link>
+            {item.label === 'New bouquet' ? (
+              // Reinitialize even when starting over from the current builder route.
+              <a href={item.href} className="text-bloom-ink/80 hover:underline">{item.label}</a>
+            ) : (
+              <Link href={item.href} className="text-bloom-ink/80 hover:underline">{item.label}</Link>
+            )}
           </li>
         ))}
       </ul>

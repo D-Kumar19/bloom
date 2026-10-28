@@ -6,6 +6,7 @@ import { CardStyleQuickPicker } from '@/components/builder/CardStyleQuickPicker'
 import { NoteBorderPicker } from '@/components/builder/NoteBorderPicker'
 import { RichMessageEditor, focusMessageEditorEnd } from '@/components/builder/RichMessageEditor'
 import { MessageCard } from '@/components/cards/MessageCard'
+import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
 import {
   INSPIRATION_PROMPTS,
@@ -14,7 +15,7 @@ import {
   hasMessageContent,
   plainTextToMessageHtml,
 } from '@/lib/message'
-import type { MessageFormat, NoteBorder } from '@/lib/types'
+import { MIN_MESSAGE_WORDS, type MessageFormat, type NoteBorder } from '@/lib/types'
 
 type MessageFormProps = {
   to: string
@@ -30,6 +31,7 @@ type MessageFormProps = {
   onMessageFormatChange: (format: MessageFormat) => void
   onNoteBorderChange: (border: NoteBorder) => void
   onCardStyleChange: (styleId: string) => void
+  onChangeBouquet?: () => void
 }
 
 const inputClassName =
@@ -51,16 +53,18 @@ export function MessageForm({
   onMessageFormatChange,
   onNoteBorderChange,
   onCardStyleChange,
+  onChangeBouquet,
 }: MessageFormProps) {
   const [showInspiration, setShowInspiration] = useState(false)
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [cardPickerOpen, setCardPickerOpen] = useState(false)
   const editorRef = useRef<HTMLDivElement>(null)
-  const wordsLeft = maxWords - countMessageWords(message)
+  const wordCount = countMessageWords(message)
+  const wordsLeft = maxWords - wordCount
   const messageFilled = hasMessageContent(message)
   const toMissing = !to.trim()
   const fromMissing = !from.trim()
-  const messageMissing = !messageFilled
+  const messageTooShort = wordCount < MIN_MESSAGE_WORDS
 
   const previewMessage = messageFilled ? message : ''
 
@@ -85,6 +89,15 @@ export function MessageForm({
         <p className="mt-2 text-sm leading-relaxed text-bloom-ink/60">
           Watch them land on the card you chose. That is the satisfying part.
         </p>
+        {onChangeBouquet ? (
+          <Button
+            variant="ghost"
+            className="mt-4 rounded-full"
+            onClick={onChangeBouquet}
+          >
+            Change bouquet
+          </Button>
+        ) : null}
       </div>
 
       <div className="grid items-start gap-8 lg:grid-cols-2 lg:gap-10">
@@ -148,16 +161,22 @@ export function MessageForm({
               maxWords={maxWords}
               onMessageChange={onMessageChange}
               onMessageFormatChange={onMessageFormatChange}
-              invalid={messageMissing || wordsLeft < 0}
+              invalid={messageTooShort || wordsLeft < 0}
+              describedBy="message-length-guidance"
             />
+            <p
+              id="message-length-guidance"
+              className={`mt-1 text-xs ${messageTooShort ? 'text-brand-pink' : 'text-bloom-ink/70'}`}
+            >
+              {messageTooShort
+                ? `Write at least ${MIN_MESSAGE_WORDS} words to continue. "Love you" is enough.`
+                : `${MIN_MESSAGE_WORDS}-${maxWords} words. A little can mean a lot.`}
+            </p>
             {wordsLeft < 0 ? (
               <p role="alert" className="mt-1 text-xs text-brand-pink">
                 Your full message is kept. Remove {-wordsLeft} {wordsLeft === -1 ? 'word' : 'words'}{' '}
                 to continue.
               </p>
-            ) : null}
-            {messageMissing ? (
-              <p className="mt-1 text-xs text-brand-pink">Write your message before continuing</p>
             ) : null}
           </div>
 
