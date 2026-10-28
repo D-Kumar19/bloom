@@ -293,7 +293,7 @@ and opt-in audio must not compete with a step's primary task.
 
 ## Operational follow-up
 
-- [ ] O01 - Verify deployed counter abuse protection beyond the happy path.
+- [x] O01 - Verify deployed counter abuse protection beyond the happy path.
   **Owner clarification, 2026-10-23:** the underlying functionality is already
   shipped. Perform this verification before the upcoming L work; do not treat
   it as a new counter feature. Closure records the actual operational evidence.
@@ -348,6 +348,19 @@ and opt-in audio must not compete with a step's primary task.
   No test confirmed routing across distinct Vercel function instances. The
   focused local suite covers Redis auth/network/timeout failures and 503
   responses, but no live Preview outage was simulated. Keep O01 open.
+  **Firewall rule and closure, 2026-10-28 (owner approved, 20/min):** added
+  and published one Vercel Firewall custom rule, "Counter POST rate limit":
+  Request Path equals `/api/count` AND Method equals POST, fixed window of 20
+  requests per 60 seconds keyed by IP, responding 429. Hobby allows three
+  rate-limit rules; this is the only custom rule. Bounded Preview probe at
+  15:59 UTC (deployment `bloom-65g6rv7rb`, Preview-only Redis): 25 sequential
+  POSTs with one new gift ID returned 200 for 1-10 (one counted, nine
+  duplicates; count 10 to 11), app 429s with `Retry-After` for 11-20, and
+  Firewall 429s (`x-vercel-mitigated: deny`, no function call) for 21-25. A
+  following GET still returned 11, so reads are unaffected. Production
+  received only one read-only GET (HTTP 200). Closed with the evidence above;
+  multi-instance routing and a live Redis outage remain covered by local
+  tests only.
 
 ## Experience polish - Improve the existing Bloom, not a replacement
 

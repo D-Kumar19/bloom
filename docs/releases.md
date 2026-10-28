@@ -54,6 +54,12 @@ can be `v0.0.5`; substantial new Templates/discovery/sharing features may justif
 Each included PR still needs relevant tests, preview approval, and passing main
 CI/Docker; check production and existing gift links before publishing.
 
+### Unreleased - Counter Firewall rule (O01, 2026-10-28)
+
+A Vercel Firewall rule now limits POST `/api/count` to 20 requests per minute
+per IP before requests reach the function or Redis, on top of the app's own
+10/minute and 50/hour limits. Verified on Preview; no code change.
+
 ### Unreleased - Lighter pages (PR #12, L02)
 
 Bouquet images in the builder and gift page now use Next image optimization,
