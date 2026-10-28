@@ -10,7 +10,9 @@ describe('BouquetHero', () => {
     expect(screen.getByTestId('hanging-bouquet-scene')).toBeInTheDocument()
     expect(screen.getByTestId('bouquet-hero')).toHaveClass('w-full', 'max-w-[16.75rem]')
     expect(screen.getByAltText(bouquet.name)).toHaveClass('object-contain')
-    expect(screen.getByAltText(bouquet.name)).toHaveAttribute('src', bouquet.heroImage)
+    expect(screen.getByAltText(bouquet.name).getAttribute('src')).toContain(
+      `url=${encodeURIComponent(bouquet.heroImage)}`,
+    )
   })
 
   it('preserves the original portrait dimensions in the flat detail/export view', () => {

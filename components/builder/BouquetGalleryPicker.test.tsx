@@ -115,7 +115,9 @@ describe('BouquetGalleryPicker', () => {
       expect(within(dialog).getByText(detail)).toBeInTheDocument()
     }
     expect(within(dialog).getByAltText('Red Rose Classic')).toHaveClass('object-contain')
-    expect(within(dialog).getByAltText('Red Rose Classic')).toHaveAttribute('src', '/bouquets/red-rose-classic-hero.png')
+    expect(within(dialog).getByAltText('Red Rose Classic').getAttribute('src')).toContain(
+      `url=${encodeURIComponent('/bouquets/red-rose-classic-hero.png')}`,
+    )
   })
 
   it('closes the detail modal when the backdrop is clicked', () => {

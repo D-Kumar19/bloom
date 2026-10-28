@@ -54,6 +54,14 @@ can be `v0.0.5`; substantial new Templates/discovery/sharing features may justif
 Each included PR still needs relevant tests, preview approval, and passing main
 CI/Docker; check production and existing gift links before publishing.
 
+### Unreleased - Lighter pages (PR #12, L02)
+
+Bouquet images in the builder and gift page now use Next image optimization,
+and note-only fonts load on demand. Measured at 390px on a production build:
+the create page drops from about 6.5 MB to 450 KB, and home and gift links
+from about 610 KB to 310 KB. Exported images are unchanged. See
+[L02](./backlog.md). No release is created by this entry.
+
 ### Unreleased - Catalog, brand, and share polish (PR #9, owner approved 2026-10-28)
 
 [PR #9](https://github.com/D-Kumar19/bloom/pull/9) closes L04-L08: removes

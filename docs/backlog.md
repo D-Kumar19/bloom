@@ -515,6 +515,27 @@ a commitment to ship everything. Validate usefulness and simplicity first.
   Current preset decoding expects an encoded gift, not a plain guide slug.
 - [ ] L02 - Profile image/audio/font costs; optimize against measured budgets
   agreed in the design specification.
+  **Measured 2026-10-28 (PR #12):** no budgets had been agreed, so this
+  records a profile and fixes only what it showed. Profile: local production
+  build, 390x844 viewport, cold cache, transferred bytes from the Resource
+  Timing API after scrolling to the bottom.
+
+  | Page | Before | After |
+  | --- | --- | --- |
+  | Home | 606 KB | 305 KB |
+  | Create (bouquet step) | 6,466 KB | 447 KB |
+  | Gift link (before reveal) | 622 KB | 321 KB |
+  | Templates | 783 KB | 482 KB |
+  | Flowers (all 15 thumbnails) | ~690 KB | 690 KB |
+
+  Fixes: the builder gallery and bouquet heroes no longer bypass Next image
+  optimization (`unoptimized`), so phones get resized WebP instead of the 1.6-2
+  MB source PNGs; seven note-only fonts are no longer preloaded on every page
+  (fonts 423 KB to 121 KB) and still load when a note uses them or the font
+  picker previews them. Ambient audio already downloads only after play, so it
+  was unchanged. Save as Image still exports the full bouquet and note.
+  Proposed budgets for owner approval: under 500 KB for home, create, and an
+  unopened gift; under 1 MB for discovery pages.
 - [x] L03 - Native mobile sharing and a selectable manual-link fallback.
   **Implemented in PR #7 (merged 2026-10-23):** uses the native share sheet
   where supported and reveals a selectable full link when sharing or clipboard

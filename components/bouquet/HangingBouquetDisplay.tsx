@@ -41,7 +41,6 @@ export function HangingBouquetDisplay({
               src={bouquet.heroImage}
               alt={bouquet.name}
               fill
-              unoptimized
               priority
               sizes="(max-width: 768px) 70vw, 272px"
               className="object-contain"
