@@ -24,8 +24,8 @@ Updated: 2026-10-28. Original audit baseline: `4d610ab`.
   journal are approved as final-phase standout features, after core fixes,
   experience polish. See the backlog; neither is being implemented now.
 - Product discovery now includes editable occasion starters, clearer descriptions,
-  gentle facts/humor, personal details, curated collections, and a final-phase
-  owned domain (S03 deferred on 2026-10-22; keep the free Vercel address).
+  gentle facts/humor, personal details, and curated collections. Keep the free
+  Vercel address; domain ownership (S03) is not planned.
   Photo/voice uploads and pricing remain conditional research,
   not approved infrastructure or paid-feature commitments.
 - Simplicity means a clear pipeline, not a three-screen target: five steps are
@@ -61,11 +61,12 @@ bouquet descriptions, an optional personal-reason writing prompt, evidence-led
 catalog curation, and the Bloom icon assets. No extra personal field/step and no
 catalog expansion without a concrete gap. See the
 [catalog and brand decisions](./product-direction.md#catalog-and-brand-review---2026-10-28).
-Keep these items open until Preview acceptance. O01, L02, and L09 remain separate.
+Owner marked L04-L08 done on 2026-10-28 (PR #9). O01, L02, and L09 remain open.
 The last main CI after PR #8 passed 331 tests and Docker; production deployed.
 No release after v0.0.4 has been published. DOC02 public README cleanup remains
 at the release checkpoint where development pauses. Do not repeat the redesign.
-Only S03 is deferred; F01-F10 and R01-R02 remain open later work.
+F01-F10, S01-S02, and R01-R02 remain open later work. S03 is not planned and
+lives under the backlog's Deferred section; leave it out of open-work summaries.
 
 ## Keeping this useful
 

@@ -1,6 +1,6 @@
 # Open work
 
-Updated: 2026-10-22. CI01 and B01-B10 are closed. Reliability changes are
+Updated: 2026-10-23. CI01 and B01-B10 are closed. Reliability changes are
 merged and deployed to production; the owner accepted the release checks.
 Closure combines recorded local/hosted evidence with owner production sign-off,
 not a claim that every device or operational scenario was independently tested.
@@ -294,6 +294,9 @@ and opt-in audio must not compete with a step's primary task.
 ## Operational follow-up
 
 - [ ] O01 - Verify deployed counter abuse protection beyond the happy path.
+  **Owner clarification, 2026-10-23:** the underlying functionality is already
+  shipped. Perform this verification before the upcoming L work; do not treat
+  it as a new counter feature. Closure records the actual operational evidence.
   Follow-up to the owner-accepted B01/B05 release work, not a reopened release
   gate. Confirm Vercel edge-rule availability/configuration and exercise
   distinct API requests across instances: same gift ID counts once, unique
@@ -302,6 +305,49 @@ and opt-in audio must not compete with a step's primary task.
   behavior. Local fixture coverage exists; owner repeated-copy checks do not
   independently establish these operational results. Do not stress the shared
   production database without an agreed bounded test plan.
+  **Read-only investigation, 2026-10-23:** one production `GET /api/count`
+  returned HTTP 200 with `Cache-Control: no-store`. Focused local API and
+  storage tests passed (38 tests). No production or Preview POSTs were sent.
+  In the authenticated Vercel dashboard, the project is on Hobby; Firewall
+  and system mitigations are active, Bot Protection is inactive, and there
+  are 0 custom rules. The rule editor offers a Rate Limit action, but no
+  project rule currently protects `POST /api/count`. The Upstash URL/token
+  and counter secret are each scoped to **All Environments**, so Preview
+  shares the configured Redis credentials with Production; this conflicts
+  with the earlier owner statement that Preview Redis is separate. Do not
+  write-test Preview until separate Preview-scoped Redis credentials are
+  visible. The Storage UI offers Upstash for Redis, but installation requires
+  accepting terms that say Vercel may share the account's Vercel ID, email,
+  and usage data with Upstash. At that stage, stopped before accepting,
+  provisioning, or changing settings. `vercel.json` contains build
+  configuration only.
+  **Preview setup and bounded verification, 2026-10-23:** after explicit owner
+  consent to the Upstash disclosure, a free Redis database was created and
+  connected to Preview only. The unsupported custom prefix was cleared so the
+  integration exposes `KV_REST_API_URL` and `KV_REST_API_TOKEN`, which the app
+  supports. The existing Preview deployment for commit `707894c` was redeployed
+  and became Ready; an authenticated read-only GET returned HTTP 200, count 0,
+  and `Cache-Control: no-store`. Production remained on its existing Redis
+  credentials and received no POSTs.
+  A same-ID concurrent Preview probe returned ten HTTP 200s (one counted, nine
+  duplicates), but the following distinct request was also counted rather than
+  limited. A later browser network suspension obscured a POST response; the
+  subsequent GET showed the count had advanced from 2 to 3. In a fresh minute,
+  sequential same-ID requests returned ten HTTP 200s (one counted, nine
+  duplicates), then HTTP 429 with `Retry-After: 19`. Three later fresh-minute
+  batches each returned ten HTTP 200s. A consolidated probe then returned seven
+  HTTP 200s (one counted, six duplicates) followed by HTTP 429 with
+  `Retry-After: 867`, confirming an hourly limit for that client key. The
+  Preview count ended at 8. The first concurrent-probe discrepancy remains
+  unexplained; prior requests may have crossed a quota boundary or used a
+  different client identity, so the exact request that reached 50 is unknown.
+  A later Preview-only redeploy of the same commit became Ready in 54 seconds;
+  a read-only GET to the new deployment still returned count 8, confirming
+  Redis data persisted across that redeploy. The owner chose to keep Firewall
+  inspect-only, so no rule was changed; the dashboard still has 0 custom rules.
+  No test confirmed routing across distinct Vercel function instances. The
+  focused local suite covers Redis auth/network/timeout failures and 503
+  responses, but no live Preview outage was simulated. Keep O01 open.
 
 ## Experience polish - Improve the existing Bloom, not a replacement
 
@@ -479,14 +525,14 @@ a commitment to ship everything. Validate usefulness and simplicity first.
   appeared and its Select link action selected the full 442-character URL.
   This browser did not expose the native share sheet, so the real-device
   interaction remains unverified.
-- [ ] L04 - Reassess unused code and root cleanup after feature decisions.
+- [x] L04 - Reassess unused code and root cleanup after feature decisions.
   **Implemented for Preview review, 2026-10-28:** audited route/static/dynamic
   imports and root files. Removed five obsolete unmounted wrappers/components,
   retaining PNG export and explicitly open later-feature candidates. No source
   moves, dependency changes, or speculative asset deletion. See the
   [catalog review](./product-direction.md#catalog-and-brand-review---2026-10-28).
   Current source layout stays as-is. No source moves are approved.
-- [ ] L05 - Improve bouquet descriptions and optional discovery content.
+- [x] L05 - Improve bouquet descriptions and optional discovery content.
   **Implemented for Preview review, 2026-10-28:** visually checked all 15
   thumbnail/portrait pairs. Updated visual-first descriptions and highlights,
   removed unsupported quantity/material/symbolism claims and emotional promises.
@@ -495,7 +541,7 @@ a commitment to ship everything. Validate usefulness and simplicity first.
   Clear visual/tone description first, symbolic associations with cultural
   caveats, then optional sourced facts. Gentle browsing humor is welcome;
   sensitive occasions and errors stay respectful. No invented facts.
-- [ ] L06 - Explore an optional "Why I chose these" personal detail.
+- [x] L06 - Explore an optional "Why I chose these" personal detail.
   **Implemented for Preview review, owner scope 2026-10-28:** a prompt inside
   existing opt-in inspiration appends to the note without replacing rich text.
   No new field/step/schema or increased minimum. Drafts, recipient links, and
@@ -503,7 +549,7 @@ a commitment to ship everything. Validate usefulness and simplicity first.
   Try a writing prompt before adding a separate field or UI. No extra step.
   Prototype its value before adding a gift field. Specify length, preview/export
   consistency, and backward-compatible encoding. Never require a longer note.
-- [ ] L07 - Curate additions instead of expanding every option list.
+- [x] L07 - Curate additions instead of expanding every option list.
   **Evaluation ready for owner acceptance, 2026-10-28:** catalog inventory
   found broad existing coverage, but no observed preference evidence supporting
   a specific addition. Owner explicitly accepted no additions as a valid
@@ -513,7 +559,7 @@ a commitment to ship everything. Validate usefulness and simplicity first.
   Use observed preference gaps to select flower/color collections, presentation,
   typography, or sound additions. Check asset consistency, accessibility,
   performance, and music rights. No target quota of new fonts/themes/songs.
-- [ ] L08 - Review the favicon and complete the approved brand assets.
+- [x] L08 - Review the favicon and complete the approved brand assets.
   **Implemented for Preview review, 2026-10-28:** rendered the old favicon and
   confirmed it was the Vercel triangle. Replaced it with a rosebud derived from
   Bloom's existing mark: one SVG used by header/footer, multi-size ICO, and
@@ -525,7 +571,8 @@ a commitment to ship everything. Validate usefulness and simplicity first.
   icon metadata, personal prompt append/edit/reload, recipient reveal, and an
   actual PNG download retaining the exact note. Browser testing found and fixed
   a prompt-spacing/caret race; regression tests cover immediate continuation.
-  Owner Preview approval is still required before closing these five items.
+  **Closed by owner, 2026-10-28, PR #9:** owner marked L04-L08 done for
+  final Preview review on the PR branch; merge follows that review.
 - [ ] L09 - Review metadata for actual public routes.
   Extend B06/B07 rather than creating indexable recipient gift content by default.
   Verify titles/descriptions and OG previews on shipped pages; evaluate a proper
@@ -594,24 +641,12 @@ These are not prerequisites for the initial redesigned release.
   labels: creation/copying is not proof of sending, delivery, or opening.
   Deleting a journal entry must not imply revoking an existing encoded link.
 
-### Deferred - Optional domain ownership
-
-- [ ] S03 - Select and connect an owned production domain.
-  **Deferred by owner, 2026-10-22:** annual registration/renewal costs are not
-  justified for this personal project. Keep the free Vercel address and the
-  Bloom name. This is not a publishing, redesign, or release prerequisite;
-  revisit only if the owner wants to pay for domain ownership later.
-  If resumed: shortlist names and renewal costs, get purchase approval,
-  configure DNS/TLS and canonical/share/OG origins, assess redirects and
-  sign-in callbacks, and verify old gift links where their host remains
-  controlled. Do not assume ownership of bloom.app.
-
 ### Later features - F01-F10 (open)
 
 Owner confirmed on 2026-10-22 that F01-F10 remain open later-feature TODOs,
 not deferred items. Schedule after the redesign and core UX work; resolve each
-item's product/privacy/cost decisions before implementation. Only S03 is
-explicitly deferred. No effort estimates from the external checklist have
+item's product/privacy/cost decisions before implementation. S03 is not
+planned; see [Deferred - not planned](#deferred---not-planned). No effort estimates from the external checklist have
 been adopted.
 
 - [ ] F01 - Consider an optional sender name.
@@ -681,3 +716,28 @@ Follow the [media discovery constraints](./product-direction.md).
 Checkout, scheduling, verified delivery receipts, 3D scenes, revocable link
 storage, and expiry remain outside approved scope. The parking lot records
 later work, not prerequisites for the reliability release.
+
+## Documentation cleanup - At the release checkpoint where we pause
+
+- [ ] DOC02 - Reformat and improve the public README.
+  **Owner request, 2026-10-23:** the current README's presentation is not
+  satisfactory. **Updated 2026-10-23:** revisit [README.md](../README.md)
+  whenever the owner pauses at a release checkpoint, whether after the D/L
+  milestone or a later release, rather than waiting for the entire roadmap.
+  Improve formatting, structure, readability, and visual consistency to reflect
+  what actually shipped. Do not start now or block ongoing feature PRs.
+
+## Deferred - not planned
+
+Not open TODOs. Owner decided not to pursue these; omit them from open-work
+summaries unless the owner explicitly revives one.
+
+- S03 - Select and connect an owned production domain.
+  **Deferred by owner, 2026-10-22:** annual registration/renewal costs are not
+  justified for this personal project. Keep the free Vercel address and the
+  Bloom name. This is not a publishing, redesign, or release prerequisite;
+  revisit only if the owner wants to pay for domain ownership later.
+  If resumed: shortlist names and renewal costs, get purchase approval,
+  configure DNS/TLS and canonical/share/OG origins, assess redirects and
+  sign-in callbacks, and verify old gift links where their host remains
+  controlled. Do not assume ownership of bloom.app.
