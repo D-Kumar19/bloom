@@ -133,6 +133,19 @@ describe('CreatePage transitions', () => {
     expect(screen.getByTestId('progress-shell-fallback')).toHaveClass('sticky')
   })
 
+  it('explains that New bouquet starts at flowers only after explicit confirmation', () => {
+    const state = {
+      ...buildState('message'),
+      pendingStarter: { fresh: true, title: 'a new bouquet' },
+    }
+    mockUseBouquetState.mockReturnValue(state)
+    renderCreatePage()
+    const dialog = screen.getByRole('dialog', { name: 'Start a new bouquet?' })
+    expect(dialog).toHaveTextContent('starting at flower selection')
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Start new bouquet' }))
+    expect(state.startWithStarter).toHaveBeenCalledOnce()
+  })
+
   it('shows a failed replacement warning inside the dialog with retry and keep actions', () => {
     const state = {
       ...buildState('card'),

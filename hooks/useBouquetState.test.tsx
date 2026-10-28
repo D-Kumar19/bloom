@@ -186,9 +186,50 @@ describe('builder draft recovery', () => {
       from: '',
       message: '',
     })
+
     expect(window.location.search).toBe('?campaign=test')
     expect(window.location.hash).toBe('#builder')
     expect(window.history.state).toEqual({ preserved: true })
+  })
+
+  it('starts a fresh new bouquet at flowers without applying a template', async () => {
+    window.history.replaceState({}, '', '/create?new=1&starter=birthday&campaign=test#builder')
+    const { result } = renderHook(useBouquetState)
+    await waitFor(() => expect(result.current.ready).toBe(true))
+    expect(result.current.step).toBe('bouquet')
+    expect(result.current.state.bouquetId).toBe('red-rose-classic')
+    expect(result.current.state.to).toBe('')
+    expect(result.current.pendingStarter).toBeNull()
+    expect(window.location.search).toBe('?campaign=test')
+    expect(window.location.hash).toBe('#builder')
+  })
+
+  it('preserves the draft when returning through the explicit New bouquet entry', async () => {
+    saveBuilderDraft({ ...GUIDES[0].state, to: 'Existing recipient' }, 'message')
+    const first = renderHook(useBouquetState)
+    await waitFor(() => expect(first.result.current.ready).toBe(true))
+    const saved = localStorage.getItem(BUILDER_DRAFT_STORAGE_KEY)
+    first.unmount()
+    window.history.replaceState({}, '', '/create?new=1')
+    const { result, unmount } = renderHook(useBouquetState)
+    await waitFor(() => expect(result.current.pendingStarter?.fresh).toBe(true))
+    expect(result.current.state.to).toBe('Existing recipient')
+    expect(localStorage.getItem(BUILDER_DRAFT_STORAGE_KEY)).toBe(saved)
+    act(() => result.current.keepDraft())
+    await act(async () => {})
+    expect(result.current.pendingStarter).toBeNull()
+    expect(result.current.step).toBe('message')
+    expect(localStorage.getItem(BUILDER_DRAFT_STORAGE_KEY)).toBe(saved)
+    unmount()
+    window.history.replaceState({}, '', '/create?new=1')
+    const next = renderHook(useBouquetState)
+    await waitFor(() => expect(next.result.current.pendingStarter?.fresh).toBe(true))
+    act(() => next.result.current.startWithStarter())
+    await act(async () => {})
+    expect(next.result.current.step).toBe('bouquet')
+    expect(next.result.current.state.to).toBe('')
+    expect(next.result.current.pendingStarter).toBeNull()
+    expect(window.location.search).toBe('')
   })
 
   it('asks before replacing a saved draft and can keep it without changing its data', async () => {
@@ -286,6 +327,7 @@ describe('builder draft recovery', () => {
   })
 
   it.each([
+    ['new bouquet', 'new=1', 'bouquet'],
     ['occasion', 'starter=birthday', 'message'],
     ['mood', 'mood=grateful', 'bouquet'],
     ['encoded preset', `preset=${encodeBouquet({ ...GUIDES[1].state, from: 'Alex' })}`, 'bouquet'],

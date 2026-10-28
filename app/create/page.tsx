@@ -89,12 +89,14 @@ export default function CreatePage() {
       <Modal
         open={Boolean(pendingStarter)}
         onClose={keepDraft}
-        title="Keep your saved bouquet?"
+        title={pendingStarter?.fresh ? 'Start a new bouquet?' : 'Keep your saved bouquet?'}
       >
         <p className="text-sm leading-relaxed text-bloom-ink/75">
-          You already have a bouquet in progress. Keep working on it, or replace it
-          with “{pendingStarter?.title}”? Your saved bouquet will only be replaced
-          if you choose to start with this idea.
+          {pendingStarter?.fresh
+            ? 'You already have a bouquet in progress. Keep your draft, or replace it with a fresh bouquet starting at flower selection. Nothing will be replaced until you choose Start new bouquet.'
+            : <>You already have a bouquet in progress. Keep working on it, or replace it
+              with “{pendingStarter?.title}”? Your saved bouquet will only be replaced
+              if you choose to start with this idea.</>}
         </p>
         {storageError ? (
           <p
@@ -108,7 +110,9 @@ export default function CreatePage() {
           <Button variant="ghost" onClick={keepDraft}>
             Keep my draft
           </Button>
-          <Button onClick={startWithStarter}>Start with this idea</Button>
+          <Button onClick={startWithStarter}>
+            {pendingStarter?.fresh ? 'Start new bouquet' : 'Start with this idea'}
+          </Button>
         </div>
       </Modal>
       {!isShareStep ? (

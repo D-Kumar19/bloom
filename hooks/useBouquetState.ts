@@ -40,6 +40,7 @@ type PendingStarter = {
   title: string
   state: Partial<BouquetState>
   step: BuilderStep
+  fresh?: boolean
 }
 
 export function useBouquetState() {
@@ -69,6 +70,7 @@ export function useBouquetState() {
       const preset = params.get('preset')
       const moodParam = params.get('mood')
       const starter = GUIDE_MAP.get(params.get('starter') ?? '')
+      const startFresh = params.get('new') === '1'
 
       let initialState = DEFAULT_STATE
       let initialStep: BuilderStep = 'bouquet'
@@ -77,7 +79,14 @@ export function useBouquetState() {
       try {
         const decoded = preset ? decodeBouquet(preset) : null
         let linkedStarter: PendingStarter | null = null
-        if (decoded) {
+        if (startFresh) {
+          linkedStarter = {
+            title: 'a new bouquet',
+            state: DEFAULT_STATE,
+            step: 'bouquet',
+            fresh: true,
+          }
+        } else if (decoded) {
           linkedStarter = {
             title: 'the bouquet in this link',
             state: decoded,
@@ -136,6 +145,7 @@ export function useBouquetState() {
         params.delete('preset')
         params.delete('mood')
         params.delete('starter')
+        params.delete('new')
         const search = params.size ? `?${params.toString()}` : ''
         window.history.replaceState(
           window.history.state,
@@ -268,6 +278,7 @@ export function useBouquetState() {
     params.delete('starter')
     params.delete('preset')
     params.delete('mood')
+    params.delete('new')
     const search = params.size ? `?${params.toString()}` : ''
     window.history.replaceState(
       window.history.state,
@@ -295,7 +306,9 @@ export function useBouquetState() {
     } catch {
       reportStorageError()
       setStorageError(
-        'Could not save this starter. Your saved bouquet is unchanged. Try again or keep your draft.',
+        pendingStarter.fresh
+          ? 'Could not save the new bouquet. Your saved bouquet is unchanged. Try again or keep your draft.'
+          : 'Could not save this starter. Your saved bouquet is unchanged. Try again or keep your draft.',
       )
       return
     }

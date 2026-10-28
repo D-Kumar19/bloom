@@ -1,7 +1,6 @@
 import Link from 'next/link'
 
 import { Button } from '@/components/ui/Button'
-import { GUIDES } from '@/lib/guides'
 
 export const metadata = {
   title: 'Explore',
@@ -50,32 +49,13 @@ export default function ExplorePage() {
         <section key={id} id={id} className="scroll-mt-8 space-y-3">
           <h2 className="font-display text-2xl">{title}</h2>
           <p className="leading-relaxed">{description}</p>
-          {id === 'templates' ? (
-            <div className="grid gap-4 pt-2 sm:grid-cols-2">
-              {GUIDES.map((guide) => (
-                <article
-                  key={guide.slug}
-                  className="flex flex-col rounded-3xl border border-bloom-rose/15 bg-surface p-5 shadow-sm"
-                >
-                  <h3 className="font-display text-xl">{guide.subtitle}</h3>
-                  <p className="mt-2 flex-1 text-sm leading-relaxed text-bloom-ink/75">
-                    {guide.paragraph}
-                  </p>
-                  <Button
-                    href={`/create?starter=${encodeURIComponent(guide.slug)}`}
-                    variant="ghost"
-                    className="mt-4 w-full rounded-full border-brand-pink/30 text-brand-pink"
-                  >
-                    Start with this idea
-                  </Button>
-                </article>
-              ))}
-            </div>
-          ) : null}
+          <Button magical href={`/${id}`} variant="ghost" className="rounded-full">
+            Explore {title.toLowerCase()}
+          </Button>
         </section>
       ))}
       <div className="space-y-4 border-t border-bloom-rose/20 pt-6">
-        <Button href="/create">Create your bouquet</Button>
+        <Button magical href="/create?new=1">Create your bouquet</Button>
         <p>
           Something you would love to see here?{' '}
           <Link href="/contact" className="underline">Tell Dheeraj</Link>.

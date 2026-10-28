@@ -8,7 +8,7 @@ import ExplorePage from '@/app/explore/page'
 vi.mock('@/lib/counter', () => ({ getBouquetCount: vi.fn().mockResolvedValue(null) }))
 vi.mock('next/server', () => ({ connection: vi.fn().mockResolvedValue(undefined) }))
 describe('honest navigation and privacy', () => {
-  it('links to real pages and matching discovery sections without unavailable labels', async () => {
+  it('links each discovery destination to its own page and starts new bouquets explicitly', async () => {
     render(await Footer())
     expect(screen.getAllByRole('link', { name: 'Privacy' })[0]).toHaveAttribute('href', '/privacy')
     expect(screen.getAllByRole('link', { name: 'About' })[0]).toHaveAttribute('href', '/about')
@@ -20,18 +20,21 @@ describe('honest navigation and privacy', () => {
       ['Templates', 'templates'],
     ]) {
       for (const link of screen.getAllByRole('link', { name: label })) {
-        expect(link).toHaveAttribute('href', `/explore#${id}`)
+        expect(link).toHaveAttribute('href', `/${id}`)
       }
       expect(document.getElementById(id)).toContainElement(screen.getByRole('heading', { name: label }))
     }
     expect(screen.queryByText(/not available yet/)).not.toBeInTheDocument()
     expect(document.querySelector('a[href="/pre-release"]')).toBeNull()
+    for (const link of screen.getAllByRole('link', { name: 'New bouquet' })) {
+      expect(link).toHaveAttribute('href', '/create?new=1')
+    }
   })
   it('offers editable occasion starters, the builder, and contact destinations', () => {
     render(<ExplorePage />)
     expect(screen.getByText(/The note is yours to write/)).toBeInTheDocument()
-    expect(screen.getAllByRole('link', { name: 'Start with this idea' })).toHaveLength(6)
-    expect(screen.getByRole('link', { name: 'Create your bouquet' })).toHaveAttribute('href', '/create')
+    expect(screen.getByRole('link', { name: 'Explore templates' })).toHaveAttribute('href', '/templates')
+    expect(screen.getByRole('link', { name: 'Create your bouquet' })).toHaveAttribute('href', '/create?new=1')
     expect(screen.getByRole('link', { name: 'Tell Dheeraj' })).toHaveAttribute('href', '/contact')
   })
   it('explains URL access, server processing, local drafts, and counter limitations', () => {
