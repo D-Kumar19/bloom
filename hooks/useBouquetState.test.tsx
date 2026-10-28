@@ -18,6 +18,52 @@ describe('builder draft recovery', () => {
     vi.restoreAllMocks()
   })
 
+  it('blocks a one-letter note, accepts two words, and preserves both as typed', async () => {
+    const { result } = renderHook(useBouquetState)
+    await waitFor(() => expect(result.current.ready).toBe(true))
+    act(() => {
+      result.current.setTo('Sam')
+      result.current.setFrom('Alex')
+      result.current.setStep('message')
+      result.current.setMessage('<b>x</b>')
+    })
+    expect(result.current.canProceed).toBe(false)
+    act(() => result.current.goNext())
+    expect(result.current.step).toBe('message')
+    expect(result.current.state.message).toBe('<b>x</b>')
+    act(() => result.current.setMessage('<b>Love</b> you'))
+    expect(result.current.canProceed).toBe(true)
+    act(() => result.current.goNext())
+    expect(result.current.step).toBe('theme')
+    expect(result.current.state.message).toBe('<b>Love</b> you')
+  })
+  it.each([
+    ['', false],
+    ['new=1', false],
+    ['starter=birthday', true],
+    ['mood=grateful', true],
+    [`preset=${encodeBouquet({ ...GUIDES[0].state, from: 'Alex' })}`, true],
+  ])('retains the entry context through edits and reload for %s', async (query, expected) => {
+    window.history.replaceState({}, '', `/create${query ? `?${query}` : ''}`)
+    const first = renderHook(useBouquetState)
+    await waitFor(() => expect(first.result.current.ready).toBe(true))
+    expect(first.result.current.startedFromPreset).toBe(expected)
+    act(() => {
+      first.result.current.setTo('My recipient')
+      first.result.current.setStep('message')
+    })
+    await waitFor(() => expect(
+      JSON.parse(localStorage.getItem(BUILDER_DRAFT_STORAGE_KEY)!),
+    ).toMatchObject({ startedFromPreset: expected, step: 'message' }))
+    first.unmount()
+    const restored = renderHook(useBouquetState)
+    await waitFor(() => expect(restored.result.current.ready).toBe(true))
+    expect(restored.result.current.startedFromPreset).toBe(expected)
+    expect(restored.result.current.state.to).toBe('My recipient')
+    act(() => restored.result.current.startNewBouquet())
+    expect(restored.result.current.startedFromPreset).toBe(false)
+  })
+
   it('keeps a gift ID across edits/reloads, but replaces it for a new bouquet or preset', async () => {
     const first = renderHook(useBouquetState)
     await waitFor(() => expect(first.result.current.ready).toBe(true))
@@ -205,7 +251,7 @@ describe('builder draft recovery', () => {
   })
 
   it('preserves the draft when returning through the explicit New bouquet entry', async () => {
-    saveBuilderDraft({ ...GUIDES[0].state, to: 'Existing recipient' }, 'message')
+    saveBuilderDraft({ ...GUIDES[0].state, to: 'Existing recipient' }, 'message', true)
     const first = renderHook(useBouquetState)
     await waitFor(() => expect(first.result.current.ready).toBe(true))
     const saved = localStorage.getItem(BUILDER_DRAFT_STORAGE_KEY)
@@ -214,11 +260,13 @@ describe('builder draft recovery', () => {
     const { result, unmount } = renderHook(useBouquetState)
     await waitFor(() => expect(result.current.pendingStarter?.fresh).toBe(true))
     expect(result.current.state.to).toBe('Existing recipient')
+    expect(result.current.startedFromPreset).toBe(true)
     expect(localStorage.getItem(BUILDER_DRAFT_STORAGE_KEY)).toBe(saved)
     act(() => result.current.keepDraft())
     await act(async () => {})
     expect(result.current.pendingStarter).toBeNull()
     expect(result.current.step).toBe('message')
+    expect(result.current.startedFromPreset).toBe(true)
     expect(localStorage.getItem(BUILDER_DRAFT_STORAGE_KEY)).toBe(saved)
     unmount()
     window.history.replaceState({}, '', '/create?new=1')
@@ -227,6 +275,7 @@ describe('builder draft recovery', () => {
     act(() => next.result.current.startWithStarter())
     await act(async () => {})
     expect(next.result.current.step).toBe('bouquet')
+    expect(next.result.current.startedFromPreset).toBe(false)
     expect(next.result.current.state.to).toBe('')
     expect(next.result.current.pendingStarter).toBeNull()
     expect(window.location.search).toBe('')
@@ -251,11 +300,13 @@ describe('builder draft recovery', () => {
 
     expect(resumed.result.current.pendingStarter?.title).toBe('Celebrate the day they arrived')
     expect(resumed.result.current.step).toBe('card')
+    expect(resumed.result.current.startedFromPreset).toBe(false)
     expect(resumed.result.current.state.to).toBe('Keep this recipient')
     expect(localStorage.getItem(BUILDER_DRAFT_STORAGE_KEY)).toBe(savedDraft)
 
     act(() => resumed.result.current.keepDraft())
     expect(resumed.result.current.pendingStarter).toBeNull()
+    expect(resumed.result.current.startedFromPreset).toBe(false)
     expect(window.location.search).toBe('?campaign=test')
     expect(window.location.hash).toBe('#builder')
     expect(localStorage.getItem(BUILDER_DRAFT_STORAGE_KEY)).toBe(savedDraft)
@@ -283,6 +334,7 @@ describe('builder draft recovery', () => {
     act(() => resumed.result.current.startWithStarter())
     expect(resumed.result.current.pendingStarter).toBeNull()
     expect(resumed.result.current.step).toBe('message')
+    expect(resumed.result.current.startedFromPreset).toBe(true)
     expect(resumed.result.current.state).toMatchObject({
       bouquetId: 'sunflower-burst',
       to: '',
@@ -357,10 +409,12 @@ describe('builder draft recovery', () => {
 
       expect(localStorage.getItem(BUILDER_DRAFT_STORAGE_KEY)).toBe(saved)
       expect(result.current.state).toEqual(originalState)
+      expect(result.current.startedFromPreset).toBe(false)
       expect(result.current.step).toBe('card')
       expect(result.current.pendingStarter).toBe(pending)
       expect(result.current.storageError).toContain('Your saved bouquet is unchanged')
       expect(window.location.search).toContain(query)
+      expect(result.current.startedFromPreset).toBe(false)
       expect(window.location.hash).toBe('#builder')
       expect(logger).toHaveBeenCalledOnce()
 

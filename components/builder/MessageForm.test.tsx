@@ -36,6 +36,20 @@ function renderMessageForm(
 }
 
 describe('MessageForm', () => {
+  it.each(['', 'x', '<b>Love</b>'])('explains why a short note cannot continue (%s)', (message) => {
+    renderMessageForm({ message })
+    expect(screen.getByTestId('message-editor')).toHaveAttribute('aria-invalid', 'true')
+    expect(screen.getByTestId('message-editor')).toHaveAccessibleDescription(
+      'Write at least 2 words to continue. "Love you" is enough.',
+    )
+  })
+
+  it('accepts a two-word note without removing its formatting', () => {
+    renderMessageForm({ message: '<b>Love</b> you' })
+    expect(screen.getByTestId('message-editor')).toHaveAttribute('aria-invalid', 'false')
+    expect(screen.getByTestId('message-editor').querySelector('b')).toHaveTextContent('Love')
+    expect(screen.getByText('2-200 words. A little can mean a lot.')).toBeInTheDocument()
+  })
   it('renders live preview with change card style link', () => {
     renderMessageForm({
       cardStyle: 'midnight',
@@ -178,7 +192,7 @@ describe('MessageForm', () => {
       screen.getByText('Add your name so they know who sent this')
     ).toBeInTheDocument()
     expect(
-      screen.getByText('Write your message before continuing')
+      screen.getByText('Write at least 2 words to continue. "Love you" is enough.')
     ).toBeInTheDocument()
   })
 

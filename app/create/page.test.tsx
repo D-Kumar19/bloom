@@ -39,6 +39,7 @@ function buildState(step: 'bouquet' | 'card' | 'message' | 'theme') {
     },
     step,
     ready: true,
+    startedFromPreset: false,
     setBouquet: vi.fn(),
     setCardStyle: vi.fn(),
     setMessageFormat: vi.fn(),
@@ -79,6 +80,22 @@ describe('CreatePage transitions', () => {
     push.mockReset()
     mockUseBouquetState.mockReset()
     motion.reduced = false
+  })
+
+  it.each([false, true])('shows the bouquet shortcut only for preset starts (%s)', (startedFromPreset) => {
+    const state = { ...buildState('message'), startedFromPreset }
+    mockUseBouquetState.mockReturnValue(state)
+    renderCreatePage()
+    const shortcut = screen.queryByRole('button', { name: 'Change bouquet' })
+    if (startedFromPreset) {
+      expect(shortcut).toBeInTheDocument()
+      fireEvent.click(screen.getByRole('button', { name: 'Change bouquet' }))
+      expect(state.goToStep).toHaveBeenCalledWith('bouquet')
+    } else {
+      expect(shortcut).not.toBeInTheDocument()
+    }
+    fireEvent.click(screen.getByRole('button', { name: 'Back' }))
+    expect(state.goBack).toHaveBeenCalledOnce()
   })
 
   it('attaches the progress bar to the site header', () => {

@@ -44,6 +44,16 @@ describe('draftSession', () => {
     expect(setState).toHaveBeenCalled()
   })
 
+  it.each([undefined, true, false, 'true'])('restores preset context only for a true marker (%s)', (marker) => {
+    localStorage.setItem(BUILDER_DRAFT_STORAGE_KEY, JSON.stringify({
+      v: 1, savedAt: Date.now(), state: sampleState, step: 'message',
+      startedFromPreset: marker,
+    }))
+    const setStartedFromPreset = vi.fn()
+    expect(restoreShareDraftIfPresent(vi.fn(), vi.fn(), setStartedFromPreset)).toBe(true)
+    expect(setStartedFromPreset).toHaveBeenCalledWith(marker === true)
+  })
+
   it('clears and ignores drafts older than 24 hours', () => {
     saveBuilderDraft(sampleState, 'share')
     vi.setSystemTime(new Date('2026-07-17T11:00:01Z'))
@@ -124,6 +134,19 @@ describe('draftSession', () => {
     const setStep = vi.fn()
     restoreShareDraftIfPresent(vi.fn(), setStep)
     expect(setStep).toHaveBeenCalledWith('message')
+  })
+
+  it.each(['theme', 'share'] as const)('returns a one-letter %s draft to Message without losing it', (step) => {
+    saveBuilderDraft({ ...sampleState, message: '<b>x</b>' }, step, true)
+    const saved = localStorage.getItem(BUILDER_DRAFT_STORAGE_KEY)
+    const setState = vi.fn()
+    const setStep = vi.fn()
+    const setStartedFromPreset = vi.fn()
+    expect(restoreShareDraftIfPresent(setState, setStep, setStartedFromPreset)).toBe(true)
+    expect(setStep).toHaveBeenCalledWith('message')
+    expect(setState.mock.calls[0][0](sampleState).message).toBe('<b>x</b>')
+    expect(setStartedFromPreset).toHaveBeenCalledWith(true)
+    expect(localStorage.getItem(BUILDER_DRAFT_STORAGE_KEY)).toBe(saved)
   })
 
   it('discards an unknown step rather than restoring it', () => {

@@ -38,6 +38,7 @@ export default function CreatePage() {
     maxMessageWords,
     storageError,
     ready,
+    startedFromPreset,
     pendingStarter,
     keepDraft,
     startWithStarter,
@@ -156,7 +157,7 @@ export default function CreatePage() {
               onMessageFormatChange={setMessageFormat}
               onNoteBorderChange={setNoteBorder}
               onCardStyleChange={setCardStyle}
-              onChangeBouquet={() => goToStep('bouquet')}
+              onChangeBouquet={startedFromPreset ? () => goToStep('bouquet') : undefined}
             />
           ) : null}
           {step === 'theme' ? (

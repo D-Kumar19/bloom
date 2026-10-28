@@ -15,8 +15,10 @@ const sections = [
   { title: 'Create', items: [
     { label: 'New bouquet', href: '/create?new=1' }, { label: 'Templates', href: '/templates' },
   ] },
-  { title: 'Small print', items: [
-    { label: 'About', href: '/about' }, { label: 'Privacy', href: '/privacy' }, { label: 'Contact', href: '/contact' },
+  { title: 'About & help', items: [
+    { label: 'About Bloom', href: '/about' },
+    { label: 'Privacy & gift links', href: '/privacy' },
+    { label: 'Contact & feedback', href: '/contact' },
   ] },
 ] satisfies { title: string; items: { label: string; href: string }[] }[]
 

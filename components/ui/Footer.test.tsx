@@ -10,9 +10,17 @@ vi.mock('next/server', () => ({ connection: vi.fn().mockResolvedValue(undefined)
 describe('honest navigation and privacy', () => {
   it('links each discovery destination to its own page and starts new bouquets explicitly', async () => {
     render(await Footer())
-    expect(screen.getAllByRole('link', { name: 'Privacy' })[0]).toHaveAttribute('href', '/privacy')
-    expect(screen.getAllByRole('link', { name: 'About' })[0]).toHaveAttribute('href', '/about')
-    expect(screen.getAllByRole('link', { name: 'Contact' })[0]).toHaveAttribute('href', '/contact')
+    expect(screen.getAllByRole('heading', { name: 'About & help' })).toHaveLength(2)
+    expect(screen.queryByText('Small print')).not.toBeInTheDocument()
+    for (const [label, href] of [
+      ['About Bloom', '/about'],
+      ['Privacy & gift links', '/privacy'],
+      ['Contact & feedback', '/contact'],
+    ]) {
+      const links = screen.getAllByRole('link', { name: label })
+      expect(links).toHaveLength(2)
+      for (const link of links) expect(link).toHaveAttribute('href', href)
+    }
     render(<ExplorePage />)
     for (const [label, id] of [
       ['Flowers', 'flowers'], ['Note styles', 'note-styles'],

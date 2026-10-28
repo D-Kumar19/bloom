@@ -27,7 +27,7 @@ export default function NoteStylesPage() {
         <p className="text-sm leading-relaxed text-bloom-ink/80">
           In the builder, change the type, size, and color, add emphasis or line breaks,
           and try an optional border. The live preview shows your actual note.
-          Keep it short or use up to 200 words; sincerity does not need to fill the page.
+          Start with just 2 words or use up to 200 words; sincerity does not need to fill the page.
         </p>
       </section>
     </DiscoveryPage>

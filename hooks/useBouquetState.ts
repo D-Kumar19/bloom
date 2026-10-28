@@ -47,6 +47,7 @@ export function useBouquetState() {
   const [state, setState] = useState<BouquetState>(DEFAULT_STATE)
   const [step, setStep] = useState<BuilderStep>('bouquet')
   const [ready, setReady] = useState(false)
+  const [startedFromPreset, setStartedFromPreset] = useState(false)
   const [pendingStarter, setPendingStarter] = useState<PendingStarter | null>(null)
   const [storageError, setStorageError] = useState<string | null>(null)
   const lastSaved = useRef(JSON.stringify({ state: DEFAULT_STATE, step: 'bouquet' }))
@@ -74,6 +75,7 @@ export function useBouquetState() {
 
       let initialState = DEFAULT_STATE
       let initialStep: BuilderStep = 'bouquet'
+      let initialStartedFromPreset = false
       let initializedFromLink = false
       let restoredDraft = false
       try {
@@ -114,12 +116,14 @@ export function useBouquetState() {
             (value) => {
               initialStep = value
             },
+            (value) => { initialStartedFromPreset = value },
           )
           if (restoredDraft) {
             setPendingStarter(linkedStarter)
           } else {
             initialState = { ...DEFAULT_STATE, ...linkedStarter.state }
             initialStep = linkedStarter.step
+            initialStartedFromPreset = !linkedStarter.fresh
             initializedFromLink = true
           }
         } else {
@@ -130,6 +134,7 @@ export function useBouquetState() {
             (value) => {
               initialStep = value
             },
+            (value) => { initialStartedFromPreset = value },
           )
         }
       } catch {
@@ -156,10 +161,12 @@ export function useBouquetState() {
         lastSaved.current = JSON.stringify({
           state: initialState,
           step: initialStep,
+          startedFromPreset: initialStartedFromPreset,
         })
       }
       setState(initialState)
       setStep(initialStep)
+      setStartedFromPreset(initialStartedFromPreset)
       setReady(true)
     })
     return () => {
@@ -172,10 +179,10 @@ export function useBouquetState() {
     let active = true
     queueMicrotask(() => {
       if (!active) return
-      const snapshot = JSON.stringify({ state, step })
+      const snapshot = JSON.stringify({ state, step, startedFromPreset })
       if (snapshot === lastSaved.current) return
       try {
-        saveBuilderDraft(state, step)
+        saveBuilderDraft(state, step, startedFromPreset)
         lastSaved.current = snapshot
         setStorageError(null)
       } catch {
@@ -185,7 +192,7 @@ export function useBouquetState() {
     return () => {
       active = false
     }
-  }, [state, step, ready, reportStorageError])
+  }, [state, step, startedFromPreset, ready, reportStorageError])
 
   const setBouquet = useCallback((bouquetId: string) => {
     setState((current) => ({ ...current, bouquetId }))
@@ -268,9 +275,11 @@ export function useBouquetState() {
     lastSaved.current = JSON.stringify({
       state: newState,
       step: 'bouquet',
+      startedFromPreset: false,
     })
     setState(newState)
     setStep('bouquet')
+    setStartedFromPreset(false)
   }, [reportStorageError])
 
   const consumeStarterParams = useCallback(() => {
@@ -299,9 +308,12 @@ export function useBouquetState() {
       ...pendingStarter.state,
       giftId: crypto.randomUUID(),
     }
-    const snapshot = JSON.stringify({ state: newState, step: pendingStarter.step })
+    const newStartedFromPreset = !pendingStarter.fresh
+    const snapshot = JSON.stringify({
+      state: newState, step: pendingStarter.step, startedFromPreset: newStartedFromPreset,
+    })
     try {
-      saveBuilderDraft(newState, pendingStarter.step)
+      saveBuilderDraft(newState, pendingStarter.step, newStartedFromPreset)
       lastSaved.current = snapshot
     } catch {
       reportStorageError()
@@ -315,6 +327,7 @@ export function useBouquetState() {
     setStorageError(null)
     setState(newState)
     setStep(pendingStarter.step)
+    setStartedFromPreset(newStartedFromPreset)
     setPendingStarter(null)
     consumeStarterParams()
   }, [consumeStarterParams, pendingStarter, reportStorageError])
@@ -323,6 +336,7 @@ export function useBouquetState() {
     state,
     step,
     ready,
+    startedFromPreset,
     storageError,
     pendingStarter,
     keepDraft,
