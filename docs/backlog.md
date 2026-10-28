@@ -792,7 +792,13 @@ later work, not prerequisites for the reliability release.
 
 ## Documentation cleanup - At the release checkpoint where we pause
 
-- [ ] DOC02 - Reformat and improve the public README.
+- [x] DOC02 - Reformat and improve the public README.
+  **Done 2026-10-28 at the D/L release checkpoint (PR #15).** Removed the
+  stale pre-release/redesign banner and unverified-counter claims; added
+  Templates, the Wander discovery pages, the one-button share step, link
+  previews, lighter pages, and the counter Firewall rule; replaced the roadmap
+  with shipped vs. considered work (S01/S02, R, F). Links checked against
+  production. Revisit at a later release checkpoint if the product changes.
   **Owner request, 2026-10-23:** the current README's presentation is not
   satisfactory. **Updated 2026-10-23:** revisit [README.md](../README.md)
   whenever the owner pauses at a release checkpoint, whether after the D/L

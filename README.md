@@ -19,11 +19,6 @@ No account. No app to install. Just a small way to show up.
 
 ---
 
-> 🚧 **Pre-release, with a reliability-first release in progress.**
-> This README describes the current branch, not a promise that every fix is live.
-> The production counter still needs Redis configuration and deployed verification.
-> A separate visual redesign is work in progress—not the experience shown here.
-
 ## ✨ A little gesture, made by you
 
 Not a checkout for physical flowers. Not a greeting-card attachment.
@@ -31,14 +26,26 @@ Bloom lets you compose a small digital moment and send it wherever a link can go
 
 | 🌷 Choose the flowers | ✍️ Make the note yours | 🌙 Set the atmosphere |
 | :--- | :--- | :--- |
-| Pick from 15 bouquet arrangements, from a single poppy to a burst of sunflowers. | Choose stationery and a border, then add names and a formatted note of up to 200 words. | Pick a backdrop and, if it fits the moment, optional ambient sound. |
+| Pick from 15 bouquet arrangements, from a single poppy to a burst of sunflowers. | Choose stationery and a border, then write a formatted note of 2–200 words. Stuck? Optional prompts, like *Why I chose these*, help you start. | Pick a backdrop and, if it fits the moment, optional ambient sound. |
 
 ### One thoughtful flow. Five steps.
 
 **💐 Bouquet → 💌 Card → ✍️ Message → 🌅 Atmosphere → 🔗 Share**
 
-Send the link in a text, a chat, or an email. Bloom creates the gift link;
-it doesn't send an email or confirm that someone received it.
+Not sure where to begin? 📜 **[Templates](https://bloom-delta-nine.vercel.app/templates)**
+offer six occasion starters, from a birthday to "just because", that open
+straight at the note with flowers and style already picked. Every detail stays
+yours to change.
+
+### 🔗 Sending it
+
+One main button does the work: **Share bouquet** opens your phone's share sheet,
+or **Copy message + link** where a share sheet isn't available. **More ways to share**
+tucks away the other copy options. If sharing or copying fails, a selectable link
+appears so you are never stuck.
+
+Bloom creates the gift link; it doesn't send an email or confirm that someone
+received it. Shared links show a proper preview card in chat apps. 🖼️
 
 ### On the other side of the link…
 
@@ -48,18 +55,31 @@ it doesn't send an email or confirm that someone received it.
 
 No registration gate between the recipient and the gift. 🙌
 
+## 🌿 Wander before you write
+
+Browse without starting a bouquet. Each page ends with an invitation to Templates.
+
+| Page | What you'll find |
+| :--- | :--- |
+| 💐 [Flowers](https://bloom-delta-nine.vercel.app/flowers) | Every bouquet, what it says, and when it fits |
+| 💌 [Note styles](https://bloom-delta-nine.vercel.app/note-styles) | Stationery and border previews |
+| 🌅 [Backdrops](https://bloom-delta-nine.vercel.app/backdrops) | The scenes your gift can open in |
+| 🎵 [Ambient sound](https://bloom-delta-nine.vercel.app/ambient-sound) | Tracks you can listen to before choosing (only on tap) |
+| 📜 [Templates](https://bloom-delta-nine.vercel.app/templates) | Editable occasion starters |
+
 ## 🧵 The details behind the gesture
 
 The small things are part of the product, not just the decoration.
 
 | Detail | What Bloom does |
 | :--- | :--- |
-| 📝 **An unfinished note is still your note** | Saves the draft and current builder step in this browser for 24 hours after the last edit. Starting a new bouquet clears it. |
-| ✂️ **A limit without the scissors** | Keeps over-limit text intact, shows how many words to remove, and blocks Continue above 200 words. No silent trimming. |
+| 📝 **An unfinished note is still your note** | Saves the draft and current builder step in this browser for 24 hours after the last edit. Starting a new bouquet asks before replacing it. |
+| ✂️ **A limit without the scissors** | Keeps over-limit text intact, shows how many words to remove, and blocks Continue outside 2–200 words. No silent trimming. |
 | 🎨 **Formatting that travels** | Preserves supported rich text and line breaks in the shared gift and PNG. |
 | 🖼️ **A keepsake, not a recording** | Exports the bouquet, stationery, border, note, and backdrop as a still image. Motion is frozen; audio and the watercolor blur overlay are omitted. |
-| 🔈 **Sound is optional** | Includes rain, piano, instrumental, and other ambient tracks, with a visible retry when playback fails. Browser playback rules still apply. |
-| ♿ **More than mouse clicks** | Includes keyboard controls, focus indicators, reduced-motion support, and accessibility fixes. Full real-device release checks remain open. |
+| 🔈 **Sound is optional** | Rain, piano, instrumental, and other ambient tracks load only when played, with a visible retry if playback fails. |
+| 🪶 **Light on mobile data** | Optimized bouquet images and on-demand note fonts keep home, create, and an unopened gift under 500 KB on a phone. |
+| ♿ **More than mouse clicks** | Rounded, touch-sized controls with keyboard support, visible focus, and reduced-motion support. Not certified on every device or assistive technology. |
 
 ## 🔍 A link is not a locked envelope
 
@@ -70,7 +90,7 @@ Bloom is account-free, but that does **not** make a gift private or encrypted.
 - Current gift URLs use a query parameter, so hosting services and link-preview tools may receive the contents. Browser history and messaging apps may retain the link.
 - Drafts stay in local browser storage. If storage is blocked, the builder warns you to keep the page open until you copy the link.
 
-**Avoid sensitive information in a bouquet.** The in-app [privacy page](./app/privacy/page.tsx) explains the boundaries in more detail.
+**Avoid sensitive information in a bouquet.** The in-app [privacy page](https://bloom-delta-nine.vercel.app/privacy) explains the boundaries in more detail.
 
 <a id="grow-it-locally"></a>
 
@@ -100,16 +120,12 @@ pnpm build
 ```
 
 `pnpm test` starts Vitest in watch mode; `pnpm test:run` runs it once.
-GitHub CI runs these checks and builds the Docker image on `main`. Actions
-are SHA-pinned; the [draft release workflow](./docs/releases.md) requires
-passing CI for the exact commit and never publishes or deploys automatically.
+GitHub CI runs these checks on every pull request and also builds the Docker
+image on `main`. Actions are SHA-pinned; the [draft release workflow](./docs/releases.md)
+requires passing CI for the exact commit and never publishes or deploys automatically.
 
-On the current branch's validation machine (Node 26), tests were run with
-`NODE_OPTIONS=--no-experimental-webstorage npm run test:run`.
-
-Local experience-polish baseline: **54 test files / 277 tests passing**, plus
-type-check, lint, and production build. These are automated checks, not
-certification of every mobile browser or the deployed site.
+These are automated checks, not certification of every mobile browser or the
+deployed site.
 
 </details>
 
@@ -128,8 +144,8 @@ Share action → counter API → Redis in production
 
 - **Gift transport:** `lz-string` compresses the gift into a shareable URL. The recipient reconstructs it without an account lookup.
 - **Image export:** `html2canvas` captures a static composition using the bouquet, note, and backdrop components.
-- **Counter:** the first successful copy records a bouquet prepared to share. A stable random gift ID survives edits/reloads; Redis atomically deduplicates it and enforces 10 requests per fixed minute and 50 per fixed hour per hashed client IP. Retries cannot increment the same gift again.
-- **Counter caveat:** this is not proof of delivery or unique recipients. The historical total is retained under its earlier rules. Sharing never waits for counting; Redis failure shows an unavailable statistic, not a made-up zero. [Deployment and edge protection](./docs/counter.md) still need live verification.
+- **Counter:** the first successful share or copy records a bouquet prepared to share, whichever button is used. A stable random gift ID survives edits/reloads; Redis atomically deduplicates it and enforces 10 requests per fixed minute and 50 per fixed hour per hashed client IP. Retries cannot increment the same gift again.
+- **Counter caveat:** this is not proof of delivery or unique recipients. The historical total is retained under its earlier rules. Sharing never waits for counting; Redis failure shows an unavailable statistic, not a made-up zero. A Vercel Firewall rule also caps `POST /api/count` at 20 per minute per IP; see [counter policy](./docs/counter.md).
 
 | Location | Responsibility |
 | :--- | :--- |
@@ -138,7 +154,7 @@ Share action → counter API → Redis in production
 | [`hooks/`](./hooks/) | Builder state and browser-side behavior |
 | [`lib/`](./lib/) | Gift encoding, message handling, storage, audio, and export |
 | [`public/`](./public/) | Bouquet artwork, flowers, and ambient tracks |
-| [`docs/`](./docs/) | Findings, acceptance criteria, product decisions, and redesign studies |
+| [`docs/`](./docs/) | Backlog, release notes, counter operations, and product decisions |
 
 </details>
 
@@ -154,35 +170,34 @@ See [`.env.example`](./.env.example). Never expose these tokens through a
 `NEXT_PUBLIC_` variable or commit them.
 
 Also configure `COUNTER_RATE_LIMIT_SECRET` (at least 32 random characters)
-and Vercel edge protection for `POST /api/count`; see the
+and a Vercel Firewall rate-limit rule for `POST /api/count`; see the
 [counter checklist](./docs/counter.md). Application limits protect increments,
 but each valid request still reaches Redis unless the edge blocks it first.
 
-Keep the same Redis store and `bouquet:count` key across releases. Production
-does not fall back to a temporary file when Redis is missing or unavailable.
-Before calling the issue fixed, record the live total, deploy, confirm that
-the total survives, and verify the next share increments it.
-
-The [production checklist](./docs/README.md#completing-b01-in-production)
-tracks the remaining acceptance checks.
+Keep the same Redis store and `bouquet:count` key across releases so the total
+survives. Production does not fall back to a temporary file when Redis is
+missing or unavailable. Use a separate Redis store for Preview deployments.
 
 </details>
 
 ## 🧭 Where Bloom goes next
 
-**Make the core reliable → verify it in production → redesign → consider more features.**
+The core experience is shipped and verified in production. What comes next is
+deliberately small and optional. More choices are not automatically a better gift.
 
-| Now | Later—not shipped |
+| ✅ Shipped | 🌱 Being considered, not built |
 | :--- | :--- |
-| Draft recovery, faithful notes and PNGs, truthful pages, accessibility and audio fixes | The “Color, delivered” visual redesign |
-| Production counter setup and real-device release checks | Email-compose shortcuts and optional accounts with a bouquet journey |
+| Draft recovery, faithful notes and PNGs, accessible soft UI | 📧 Email-ready sharing (compose links, no server email) |
+| Templates and the Wander discovery pages | 👤 Optional accounts and a private bouquet journey |
+| One-tap sharing, link previews, lighter pages | 🎙️ Photo or voice notes, only after a privacy and cost review |
+| A persistent, abuse-limited share counter | 💡 Smaller ideas like QR codes or a sender name |
 
 There are no accounts, automatic email delivery, or journey timelines today.
-More choices are not automatically a better gift.
+See [releases](./docs/releases.md) for what changed in each version.
 
 **[📋 All TODOs and acceptance criteria](./docs/backlog.md)** ·
 **[🔎 Audit findings](./docs/audit.md)** ·
-**[🎨 Experience polish](./docs/redesign-plan.md)** ·
+**[📦 Releases](./docs/releases.md)** ·
 **[🌱 Product principles](./docs/product-direction.md)**
 
 ---

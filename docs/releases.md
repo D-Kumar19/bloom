@@ -54,6 +54,12 @@ can be `v0.0.5`; substantial new Templates/discovery/sharing features may justif
 Each included PR still needs relevant tests, preview approval, and passing main
 CI/Docker; check production and existing gift links before publishing.
 
+### Unreleased - Public README rewrite (DOC02, 2026-10-28)
+
+The public README now describes what shipped: Templates, the discovery pages,
+one-button sharing, link previews, lighter pages, and the protected counter.
+The outdated pre-release banner and roadmap are replaced. Docs only.
+
 ### Unreleased - Counter Firewall rule (O01, 2026-10-28)
 
 A Vercel Firewall rule now limits POST `/api/count` to 20 requests per minute
