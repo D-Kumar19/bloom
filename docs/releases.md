@@ -62,6 +62,14 @@ the create page drops from about 6.5 MB to 450 KB, and home and gift links
 from about 610 KB to 310 KB. Exported images are unchanged. See
 [L02](./backlog.md). No release is created by this entry.
 
+### Unreleased - Link previews and page metadata (PR #11, L09)
+
+Shared links now show a preview image: production previously pointed
+`og:image` at a login-protected deployment URL. Each public page has its own
+title, description, and canonical URL, `/create` has metadata, the result page
+and gift links stay noindex, and robots.txt and a sitemap are served. Owner
+approved 2026-10-28. No release is created by this entry.
+
 ### Unreleased - Count every share path (owner report 2026-10-28)
 
 Share bouquet (native share sheet) and copying from the manual-link box now
