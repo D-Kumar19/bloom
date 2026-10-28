@@ -9,7 +9,8 @@ Updated: 2026-10-28. Original audit baseline: `4d610ab`.
 
 - The account-free bouquet creation, sharing, and recipient reveal flow exists.
 - The audit identified 13 findings: four high and nine medium.
-- v0.0.5 is published (2026-10-28) with D01-D06, L01-L10, O01 and DOC02.
+- v0.0.6 is published (2026-10-28) with S01, F01, F03 and F09, after v0.0.5
+  (D01-D06, L01-L10, O01 and DOC02). Bloom is parked.
 - Reliability work is merged and deployed in v0.0.4. CI01/B01-B10
   are closed with recorded local/hosted evidence and owner production sign-off.
   Redis counting and once-only copying are working. O01 retains the separate
@@ -53,8 +54,8 @@ Updated: 2026-10-28. Original audit baseline: `4d610ab`.
 ## Resume here
 
 **Bloom is parked (2026-10-28).** v0.0.5 closed the D/L milestone (D01-D06,
-L01-L10, O01, DOC02). The final four features, S01, F01, F03 and F09, ship as
-v0.0.6. There are no open TODOs. If work resumes, start from main and pick from
+L01-L10, O01, DOC02). The final four features, S01, F01, F03 and F09, shipped
+in v0.0.6 (published 2026-10-28, tag at `8386bed`). There are no open TODOs. If work resumes, start from main and pick from
 the backlog's Deferred sections with the owner. See [releases](./releases.md).
 Earlier deployment-pending notes below are historical.
 
