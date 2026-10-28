@@ -69,8 +69,9 @@ image), PR #12 closes L02 (lighter pages), and PR #13 removes the manual-link
 button. O01 is closed: a Vercel Firewall rule limits POST /api/count to 20
 per minute per IP, verified on Preview.
 The last main CI after PR #8 passed 331 tests and Docker; production deployed.
-No release after v0.0.4 has been published. DOC02 public README cleanup remains
-at the release checkpoint where development pauses. Do not repeat the redesign.
+No release after v0.0.4 has been published. DOC02 rewrites the public README
+for the shipped product (PR #15); after it merges, the next step is the v0.1.0
+release with owner approval. Do not repeat the redesign.
 F01-F10, S01-S02, and R01-R02 remain open later work. S03 is not planned and
 lives under the backlog's Deferred section; leave it out of open-work summaries.
 
