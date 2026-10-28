@@ -3,9 +3,14 @@
 ## What the number means
 
 The displayed metric is **bouquets prepared to share**, not sent, delivered,
-or opened gifts. A successful clipboard copy (message + link or link only)
-attempts to count the current draft once. Previewing and failed clipboard
-writes do not count. Manual copying outside those buttons cannot be observed.
+or opened gifts. Every share path counts the current draft at most once, all
+sharing the same gift ID: a successful clipboard copy (message + link or link
+only), a completed native share sheet (whatever target the sender picks,
+including its Copy option), or a copy event from the manual-link box.
+Previewing, revealing the manual link, cancelled or failed share sheets, and
+failed clipboard writes do not count. A completed share sheet confirms only
+that a target was chosen, not delivery. Copying the address bar or text
+outside Bloom's share controls cannot be observed.
 
 Each draft has a random UUID v4, persisted with the browser draft. Edits,
 reloads, previews, and retries keep it. Starting another bouquet or applying
@@ -81,7 +86,8 @@ reclassified under this policy.
    traffic. Watch request volume, Redis command/storage usage, and 429/503
    rates; rate limiting is not a guarantee against unexpected bills.
 5. Record the live total, deploy, and confirm it survives. Copy a new gift,
-   repeat both copy buttons, edit/reload it, and try from another browser:
+   repeat every share path (Share, both copy buttons, manual-link copy),
+   edit/reload it, and try from another browser:
    the same ID must add at most one. Start a new gift: one more is allowed.
 6. In a controlled preview environment, issue 11 valid requests from one IP
    within one fixed minute: at most 10 are admitted and the next gets 429.
