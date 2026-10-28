@@ -1,11 +1,14 @@
 import Link from 'next/link'
 
 import { Button } from '@/components/ui/Button'
+import { publicPageMetadata } from '@/lib/pageMetadata'
 
-export const metadata = {
+export const metadata = publicPageMetadata({
   title: 'Explore',
-  description: 'A little guide to choosing flowers, stationery, backdrops, and optional sound for your Bloom bouquet.',
-}
+  description:
+    'A little guide to choosing flowers, stationery, backdrops, and optional sound for your Bloom bouquet.',
+  path: '/explore',
+})
 
 const sections = [
   {

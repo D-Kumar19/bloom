@@ -1,10 +1,13 @@
 import { DiscoveryPage } from '@/components/discovery/DiscoveryPage'
 import { SoundPreviews } from '@/components/discovery/SoundPreviews'
+import { publicPageMetadata } from '@/lib/pageMetadata'
 
-export const metadata = {
+export const metadata = publicPageMetadata({
   title: 'Ambient sound',
-  description: 'Listen to optional Bloom soundtracks, from gentle rain to piano. Silence is always a choice.',
-}
+  description:
+    'Listen to optional Bloom soundtracks, from gentle rain to piano. Silence is always a choice.',
+  path: '/ambient-sound',
+})
 
 export default function AmbientSoundPage() {
   return (

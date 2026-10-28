@@ -7,7 +7,8 @@ import { FooterGate } from '@/components/layout/FooterGate'
 import { SiteChrome } from '@/components/layout/SiteChrome'
 import { ToastProvider } from '@/components/ui/Toast'
 import { APPEARANCE_STORAGE_KEY, DEFAULT_APPEARANCE } from '@/lib/appearance'
-import { SITE_TITLE } from '@/lib/site'
+import { SITE_DESCRIPTION, SITE_NAME, SITE_TITLE } from '@/lib/site'
+import { SITE_OG_IMAGE } from '@/lib/pageMetadata'
 import { getSiteMetadataBase } from '@/lib/siteUrl'
 
 import './globals.css'
@@ -103,14 +104,19 @@ export const metadata: Metadata = {
     default: SITE_TITLE,
     template: '%s | Bloom',
   },
-  description:
-    'Bloom turns a feeling into a link. Pick a bouquet, write a note, share a private link.',
+  description: SITE_DESCRIPTION,
   openGraph: {
     title: SITE_TITLE,
-    description:
-      'Bloom turns a feeling into a link. Pick a bouquet, write a note, share a private link.',
-    images: [{ url: '/bouquet/og', width: 1200, height: 630 }],
+    description: SITE_DESCRIPTION,
+    siteName: SITE_NAME,
+    images: [SITE_OG_IMAGE],
     type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    images: [SITE_OG_IMAGE.url],
   },
 }
 

@@ -1,7 +1,20 @@
 import { BouquetCounter } from '@/components/landing/BouquetCounter'
 import { Button } from '@/components/ui/Button'
 import { getBouquetCount } from '@/lib/counter'
-import { HOME_PRIVACY_LINE } from '@/lib/site'
+import { HOME_PRIVACY_LINE, SITE_DESCRIPTION, SITE_NAME, SITE_TITLE } from '@/lib/site'
+import { SITE_OG_IMAGE } from '@/lib/pageMetadata'
+
+export const metadata = {
+  alternates: { canonical: '/' },
+  openGraph: {
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    url: '/',
+    siteName: SITE_NAME,
+    type: 'website',
+    images: [SITE_OG_IMAGE],
+  },
+}
 
 export const dynamic = 'force-dynamic'
 

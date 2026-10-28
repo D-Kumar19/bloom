@@ -1,11 +1,14 @@
 import Link from 'next/link'
 
 import { CONTACT_EMAIL, CONTACT_MAILTO, CONTACT_NAME } from '@/lib/site'
+import { publicPageMetadata } from '@/lib/pageMetadata'
 
-export const metadata = {
+export const metadata = publicPageMetadata({
   title: 'Contact',
-  description: 'Contact Dheeraj Kumar about Bloom: bugs, ideas, or a little hello.',
-}
+  description:
+    'Contact Dheeraj Kumar about Bloom: bugs, ideas, or a little hello.',
+  path: '/contact',
+})
 
 export default function ContactPage() {
   return (

@@ -1,10 +1,13 @@
 import Link from 'next/link'
 import { CONTACT_MAILTO, CONTACT_NAME } from '@/lib/site'
+import { publicPageMetadata } from '@/lib/pageMetadata'
 
-export const metadata = {
+export const metadata = publicPageMetadata({
   title: 'Privacy',
-  description: 'What Bloom gift links contain, who can open them, and how local drafts and the shared counter work.',
-}
+  description:
+    'What Bloom gift links contain, who can open them, and how local drafts and the shared counter work.',
+  path: '/privacy',
+})
 
 export default function PrivacyPage() {
   return (

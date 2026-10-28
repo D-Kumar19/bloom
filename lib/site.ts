@@ -2,6 +2,9 @@ export const SITE_NAME = 'Bloom'
 
 export const SITE_TITLE = 'Bloom | Send a Digital Bouquet'
 
+export const SITE_DESCRIPTION =
+  'Bloom turns a feeling into a link. Pick a bouquet, write a note, share a private link.'
+
 export const DEFAULT_SITE_URL = 'https://bloom-delta-nine.vercel.app'
 
 export const PRE_RELEASE_PATH = '/pre-release'
