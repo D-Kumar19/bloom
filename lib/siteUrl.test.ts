@@ -50,6 +50,24 @@ describe('getSiteOrigin', () => {
     windowSpy.mockRestore()
   })
 
+  it('uses the stable production host in production, not the protected deployment URL', () => {
+    vi.stubGlobal('window', undefined)
+    vi.stubEnv('NEXT_PUBLIC_SITE_URL', '')
+    vi.stubEnv('VERCEL_ENV', 'production')
+    vi.stubEnv('VERCEL_URL', 'bloom-r763cr5q2-dk-kumar20.vercel.app')
+    vi.stubEnv('VERCEL_PROJECT_PRODUCTION_URL', 'bloom-delta-nine.vercel.app')
+    expect(getSiteOrigin()).toBe('https://bloom-delta-nine.vercel.app')
+  })
+
+  it('keeps preview metadata on the preview deployment', () => {
+    vi.stubGlobal('window', undefined)
+    vi.stubEnv('NEXT_PUBLIC_SITE_URL', '')
+    vi.stubEnv('VERCEL_ENV', 'preview')
+    vi.stubEnv('VERCEL_URL', 'bloom-preview.vercel.app')
+    vi.stubEnv('VERCEL_PROJECT_PRODUCTION_URL', 'bloom-delta-nine.vercel.app')
+    expect(getSiteOrigin()).toBe('https://bloom-preview.vercel.app')
+  })
+
   it('uses Vercel deployment origin for server metadata if no canonical is set', () => {
     vi.stubGlobal('window', undefined)
     vi.stubEnv('NEXT_PUBLIC_SITE_URL', '')
