@@ -3,7 +3,8 @@ import { StrictMode } from 'react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { useBouquetState } from '@/hooks/useBouquetState'
-import { BUILDER_DRAFT_STORAGE_KEY } from '@/lib/builder/draftSession'
+import { BUILDER_DRAFT_STORAGE_KEY, saveBuilderDraft } from '@/lib/builder/draftSession'
+import { GUIDES } from '@/lib/guides'
 import { countMessageWords } from '@/lib/message'
 import { encodeBouquet } from '@/lib/sharing'
 
@@ -282,6 +283,100 @@ describe('builder draft recovery', () => {
     expect(resumed.result.current.state.to).toBe('Saved recipient')
     expect(resumed.result.current.step).toBe('card')
     expect(localStorage.getItem(BUILDER_DRAFT_STORAGE_KEY)).toBe(savedDraft)
+  })
+
+  it.each([
+    ['occasion', 'starter=birthday', 'message'],
+    ['mood', 'mood=grateful', 'bouquet'],
+    ['encoded preset', `preset=${encodeBouquet({ ...GUIDES[1].state, from: 'Alex' })}`, 'bouquet'],
+  ] as const)(
+    'preserves the saved draft after a failed %s replacement and supports retry',
+    async (_, query, expectedStep) => {
+      saveBuilderDraft({
+        ...GUIDES[0].state,
+        giftId: crypto.randomUUID(),
+        to: 'Keep my recipient',
+        message: '<b>Keep my words</b>',
+      }, 'card')
+      const saved = localStorage.getItem(BUILDER_DRAFT_STORAGE_KEY)
+      window.history.replaceState({ preserved: true }, '', `/create?${query}&campaign=test#builder`)
+      const { result, unmount } = renderHook(useBouquetState)
+      await waitFor(() => expect(result.current.ready).toBe(true))
+      const originalState = result.current.state
+      const pending = result.current.pendingStarter
+      expect(pending).not.toBeNull()
+      const logger = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const write = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+        throw new DOMException('Storage full', 'QuotaExceededError')
+      })
+
+      act(() => result.current.startWithStarter())
+      await act(async () => {})
+
+      expect(localStorage.getItem(BUILDER_DRAFT_STORAGE_KEY)).toBe(saved)
+      expect(result.current.state).toEqual(originalState)
+      expect(result.current.step).toBe('card')
+      expect(result.current.pendingStarter).toBe(pending)
+      expect(result.current.storageError).toContain('Your saved bouquet is unchanged')
+      expect(window.location.search).toContain(query)
+      expect(window.location.hash).toBe('#builder')
+      expect(logger).toHaveBeenCalledOnce()
+
+      write.mockRestore()
+      act(() => result.current.startWithStarter())
+      await act(async () => {})
+
+      expect(result.current.pendingStarter).toBeNull()
+      expect(result.current.storageError).toBeNull()
+      expect(result.current.step).toBe(expectedStep)
+      expect(result.current.state.giftId).not.toBe(originalState.giftId)
+      expect(result.current.state.to).toBe('')
+      expect(result.current.state.message).toBe('')
+      expect(window.location.search).toBe('?campaign=test')
+      expect(window.location.hash).toBe('#builder')
+      expect(window.history.state).toEqual({ preserved: true })
+      const replacement = result.current.state
+      expect(JSON.parse(localStorage.getItem(BUILDER_DRAFT_STORAGE_KEY)!)).toMatchObject({
+        state: replacement,
+        step: expectedStep,
+      })
+      unmount()
+      const restored = renderHook(useBouquetState)
+      await waitFor(() => expect(restored.result.current.ready).toBe(true))
+      expect(restored.result.current.state).toEqual(replacement)
+      expect(restored.result.current.step).toBe(expectedStep)
+      expect(restored.result.current.pendingStarter).toBeNull()
+    },
+  )
+
+  it('can keep and recover the original draft after a failed replacement', async () => {
+    saveBuilderDraft({ ...GUIDES[0].state, to: 'Keep this draft' }, 'card')
+    const saved = localStorage.getItem(BUILDER_DRAFT_STORAGE_KEY)
+    window.history.replaceState({}, '', '/create?starter=birthday')
+    const { result, unmount } = renderHook(useBouquetState)
+    await waitFor(() => expect(result.current.ready).toBe(true))
+    vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const write = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new DOMException('Storage blocked', 'SecurityError')
+    })
+
+    act(() => result.current.startWithStarter())
+    act(() => result.current.keepDraft())
+    await act(async () => {})
+
+    expect(result.current.pendingStarter).toBeNull()
+    expect(result.current.state.to).toBe('Keep this draft')
+    expect(result.current.step).toBe('card')
+    expect(localStorage.getItem(BUILDER_DRAFT_STORAGE_KEY)).toBe(saved)
+    expect(window.location.search).toBe('')
+    write.mockRestore()
+    unmount()
+    const restored = renderHook(useBouquetState)
+    await waitFor(() => expect(restored.result.current.ready).toBe(true))
+    expect(restored.result.current.state.to).toBe('Keep this draft')
+    expect(restored.result.current.step).toBe('card')
+    expect(restored.result.current.pendingStarter).toBeNull()
+    expect(localStorage.getItem(BUILDER_DRAFT_STORAGE_KEY)).toBe(saved)
   })
 
   it('consumes mood initialization so reload preserves edits and start-new stays new', async () => {

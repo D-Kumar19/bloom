@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import CreatePage from '@/app/create/page'
@@ -131,6 +131,24 @@ describe('CreatePage transitions', () => {
     renderCreatePage(false)
 
     expect(screen.getByTestId('progress-shell-fallback')).toHaveClass('sticky')
+  })
+
+  it('shows a failed replacement warning inside the dialog with retry and keep actions', () => {
+    const state = {
+      ...buildState('card'),
+      pendingStarter: { title: 'Celebrate the day they arrived' },
+      storageError: 'Could not save this starter. Your saved bouquet is unchanged. Try again or keep your draft.',
+    }
+    mockUseBouquetState.mockReturnValue(state)
+    renderCreatePage()
+
+    const dialog = screen.getByRole('dialog', { name: 'Keep your saved bouquet?' })
+    expect(within(dialog).getByRole('alert')).toHaveTextContent(state.storageError)
+    expect(screen.getAllByRole('alert')).toHaveLength(1)
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Start with this idea' }))
+    expect(state.startWithStarter).toHaveBeenCalledOnce()
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Keep my draft' }))
+    expect(state.keepDraft).toHaveBeenCalledOnce()
   })
 
   it('smooth-scrolls to the top when the step changes', () => {

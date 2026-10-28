@@ -283,13 +283,6 @@ export function useBouquetState() {
 
   const startWithStarter = useCallback(() => {
     if (!pendingStarter) return
-    try {
-      clearBuilderDraft()
-    } catch {
-      reportStorageError()
-      return
-    }
-
     const newState = {
       ...DEFAULT_STATE,
       ...pendingStarter.state,
@@ -301,7 +294,12 @@ export function useBouquetState() {
       lastSaved.current = snapshot
     } catch {
       reportStorageError()
+      setStorageError(
+        'Could not save this starter. Your saved bouquet is unchanged. Try again or keep your draft.',
+      )
+      return
     }
+    setStorageError(null)
     setState(newState)
     setStep(pendingStarter.step)
     setPendingStarter(null)
