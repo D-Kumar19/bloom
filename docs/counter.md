@@ -6,8 +6,8 @@ The displayed metric is **bouquets prepared to share**, not sent, delivered,
 or opened gifts. Every share path counts the current draft at most once, all
 sharing the same gift ID: a successful clipboard copy (message + link or link
 only), a completed native share sheet (whatever target the sender picks,
-including its Copy option), or a copy event from the manual-link box.
-Previewing, revealing the manual link, cancelled or failed share sheets, and
+including its Copy option), or a copy event from the link box that opens when sharing or copying fails.
+Previewing, the link box appearing, cancelled or failed share sheets, and
 failed clipboard writes do not count. A completed share sheet confirms only
 that a target was chosen, not delivery. Copying the address bar or text
 outside Bloom's share controls cannot be observed.
@@ -86,7 +86,7 @@ reclassified under this policy.
    traffic. Watch request volume, Redis command/storage usage, and 429/503
    rates; rate limiting is not a guarantee against unexpected bills.
 5. Record the live total, deploy, and confirm it survives. Copy a new gift,
-   repeat every share path (Share, both copy buttons, manual-link copy),
+   repeat every share path (Share and both copy buttons),
    edit/reload it, and try from another browser:
    the same ID must add at most one. Start a new gift: one more is allowed.
 6. In a controlled preview environment, issue 11 valid requests from one IP

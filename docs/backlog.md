@@ -559,6 +559,10 @@ a commitment to ship everything. Validate usefulness and simplicity first.
   clipboard failures still open the selectable link automatically. A focused
   test covers the collapsed default and disclosure; 390px dark-mode browser
   check confirmed both states. Behavior and counting rules are unchanged.
+  **Manual-link button removed, 2026-10-28 (owner request):** More ways to
+  share now holds only the copy actions. The selectable link remains as an
+  automatic fallback when sharing or clipboard fails, and copying from it
+  still counts once.
 - [x] L04 - Reassess unused code and root cleanup after feature decisions.
   **Implemented for Preview review, 2026-10-28:** audited route/static/dynamic
   imports and root files. Removed five obsolete unmounted wrappers/components,
