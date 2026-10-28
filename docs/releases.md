@@ -62,6 +62,12 @@ the create page drops from about 6.5 MB to 450 KB, and home and gift links
 from about 610 KB to 310 KB. Exported images are unchanged. See
 [L02](./backlog.md). No release is created by this entry.
 
+### Unreleased - Count every share path (owner report 2026-10-28)
+
+Share bouquet (native share sheet) and copying from the manual-link box now
+count the bouquet, matching the copy buttons. Each bouquet still counts once
+regardless of which or how many share actions are used. No release is created.
+
 ### Unreleased - Catalog, brand, and share polish (PR #9, owner approved 2026-10-28)
 
 [PR #9](https://github.com/D-Kumar19/bloom/pull/9) closes L04-L08: removes

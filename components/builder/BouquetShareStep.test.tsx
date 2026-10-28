@@ -120,7 +120,7 @@ describe('BouquetShareStep', () => {
     ).toContain('/bouquet?b=')
   })
 
-  it('uses native sharing when available without counting a share-sheet launch', async () => {
+  it('counts a completed native share once, like a copy', async () => {
     const share = vi.fn().mockResolvedValue(undefined)
     Object.defineProperty(navigator, 'share', {
       configurable: true,
@@ -142,10 +142,25 @@ describe('BouquetShareStep', () => {
         })
       )
     )
+    await waitFor(() =>
+      expect(recordBouquetSentOnce).toHaveBeenCalledTimes(1)
+    )
+  })
+
+  it('counts copying the manual link, but not merely revealing it', async () => {
+    vi.mocked(recordBouquetSentOnce).mockClear()
+    render(<BouquetShareStep state={baseState} onCreateAnother={vi.fn()} />)
+    fireEvent.click(screen.getByTestId('more-share-options-toggle'))
+    fireEvent.click(screen.getByTestId('manual-link-toggle'))
+    const link = screen.getByRole('textbox', { name: 'Full bouquet link' })
+    fireEvent.focus(link)
     expect(recordBouquetSentOnce).not.toHaveBeenCalled()
+    fireEvent.copy(link)
+    expect(recordBouquetSentOnce).toHaveBeenCalledTimes(1)
   })
 
   it('opens the selectable link fallback when native sharing fails', async () => {
+    vi.mocked(recordBouquetSentOnce).mockClear()
     Object.defineProperty(navigator, 'share', {
       configurable: true,
       value: vi.fn().mockRejectedValue(new Error('Share unavailable')),
@@ -160,6 +175,7 @@ describe('BouquetShareStep', () => {
     })
     expect(link.value).toContain('/bouquet?b=')
     expect(link).toHaveAttribute('readonly')
+    expect(recordBouquetSentOnce).not.toHaveBeenCalled()
     fireEvent.focus(link)
     fireEvent.click(screen.getByRole('button', { name: 'Select link' }))
     expect(link).toHaveFocus()
@@ -168,6 +184,7 @@ describe('BouquetShareStep', () => {
   })
 
   it('does not treat a cancelled share sheet as an error', async () => {
+    vi.mocked(recordBouquetSentOnce).mockClear()
     Object.defineProperty(navigator, 'share', {
       configurable: true,
       value: vi
@@ -185,5 +202,6 @@ describe('BouquetShareStep', () => {
     expect(
       screen.queryByRole('textbox', { name: 'Full bouquet link' })
     ).not.toBeInTheDocument()
+    expect(recordBouquetSentOnce).not.toHaveBeenCalled()
   })
 })

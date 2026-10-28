@@ -1,11 +1,14 @@
 import { MessageCard } from '@/components/cards/MessageCard'
 import { DiscoveryPage } from '@/components/discovery/DiscoveryPage'
 import { CARD_STYLES } from '@/lib/cards'
+import { publicPageMetadata } from '@/lib/pageMetadata'
 
-export const metadata = {
+export const metadata = publicPageMetadata({
   title: 'Note styles',
-  description: 'Preview Bloom stationery, from classic cream to watercolor, and find a home for your own words.',
-}
+  description:
+    'Preview Bloom stationery, from classic cream to watercolor, and find a home for your own words.',
+  path: '/note-styles',
+})
 
 export default function NoteStylesPage() {
   return (

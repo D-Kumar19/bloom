@@ -1,11 +1,14 @@
 import { BackdropPreview } from '@/components/backdrop/BackdropPreview'
 import { DiscoveryPage } from '@/components/discovery/DiscoveryPage'
 import { THEMES, getThemeMotionDescription, isThemeAnimated } from '@/lib/themes'
+import { publicPageMetadata } from '@/lib/pageMetadata'
 
-export const metadata = {
+export const metadata = publicPageMetadata({
   title: 'Backdrops',
-  description: 'Explore the light, color, and gentle motion behind a Bloom bouquet.',
-}
+  description:
+    'Explore the light, color, and gentle motion behind a Bloom bouquet.',
+  path: '/backdrops',
+})
 
 export default function BackdropsPage() {
   return (

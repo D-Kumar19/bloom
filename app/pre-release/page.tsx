@@ -3,8 +3,9 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
 
 export const metadata = {
-  title: 'Pre-release | Bloom',
+  title: 'Pre-release',
   description: 'Bloom is in pre-release. The core flow works; the rest is still growing.',
+  robots: { index: false, follow: true },
 }
 
 export default function PreReleasePage() {

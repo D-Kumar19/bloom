@@ -539,7 +539,12 @@ a commitment to ship everything. Validate usefulness and simplicity first.
 - [x] L03 - Native mobile sharing and a selectable manual-link fallback.
   **Implemented in PR #7 (merged 2026-10-23):** uses the native share sheet
   where supported and reveals a selectable full link when sharing or clipboard
-  fails. Native share-sheet completion is not counted as a successful copy.
+  fails. Native share-sheet completion was originally not counted.
+  **Superseded 2026-10-28 by owner report:** a Share-sheet Copy left the
+  counter at 8, so completed native shares and manual-link copy events now
+  call the same once-per-gift-ID counter as the copy buttons. Cancelled or
+  failed shares and merely revealing the link still do not count. See
+  [counter policy](./counter.md).
   Eleven focused tests, type-check, targeted lint, production build, hosted PR
   verification, and Vercel Preview deployment passed. The desktop preview keeps
   the existing rounded style; at a 390px viewport, the manual-link fallback
@@ -611,6 +616,24 @@ a commitment to ship everything. Validate usefulness and simplicity first.
   Verify titles/descriptions and OG previews on shipped pages; evaluate a proper
   1200 x 630 branded image. New guide/about pages need metadata if implemented.
   Recipient privacy/indexing decisions take precedence over SEO.
+  **Implemented for Preview review, 2026-10-28 (PR #11):** a production audit
+  found every page's link preview reused the home title, and production
+  `og:image` pointed at the per-deployment `VERCEL_URL` host, which redirects
+  to Vercel login (HTTP 302), so crawlers got no preview image on any link,
+  gift links included. Server metadata now uses `VERCEL_PROJECT_PRODUCTION_URL`
+  in production (explicit `NEXT_PUBLIC_SITE_URL` still wins; previews keep
+  their own host). Each indexed public page has its own title, description,
+  canonical URL, Open Graph and Twitter card via `lib/pageMetadata.ts`.
+  New `/og` site image (1200 x 630, same card style as the gift image)
+  replaces the gift image on non-gift pages; the unused placeholder
+  `public/og-image.png` and dead bouquet-layout metadata were removed.
+  Added `/create` metadata, `robots.txt` (blocks `/api/`, `/create/result`;
+  gift pages stay crawlable so their noindex is read), and `sitemap.xml` for
+  the 11 indexed pages. `/pre-release` title no longer repeats "Bloom" and is
+  noindex. Gift metadata is unchanged: generic, noindex, no-referrer.
+  Verified with a production build under simulated Vercel production env:
+  rendered tags for all 14 routes, robots, sitemap, and both images.
+  Remaining: confirm on the deployed site that a shared link shows its image.
 
 - [x] L10 - Complete standalone Wander discovery pages.
   **Closed by owner Preview approval, 2026-10-28, PR #8.** Owner accepted the
