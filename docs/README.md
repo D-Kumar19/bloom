@@ -9,7 +9,8 @@ Updated: 2026-10-28. Original audit baseline: `4d610ab`.
 
 - The account-free bouquet creation, sharing, and recipient reveal flow exists.
 - The audit identified 13 findings: four high and nine medium.
-- Reliability work is merged and deployed; v0.0.4 is published. CI01/B01-B10
+- v0.0.5 is published (2026-10-28) with D01-D06, L01-L10, O01 and DOC02.
+- Reliability work is merged and deployed in v0.0.4. CI01/B01-B10
   are closed with recorded local/hosted evidence and owner production sign-off.
   Redis counting and once-only copying are working. O01 retains the separate
   operational abuse-protection checks. See [counter policy](./counter.md)
@@ -20,14 +21,14 @@ Updated: 2026-10-28. Original audit baseline: `4d610ab`.
   softness, and smooth interactions. D01-D06 were accepted and merged in PR #6,
   not a wholesale redesign.
 - Keep the current source layout. No framework migration or rewrite is approved.
-- Email-ready sharing and optional accounts with a private animated bouquet
-  journal are approved as final-phase standout features, after core fixes,
-  experience polish. See the backlog; neither is being implemented now.
+- **Next (owner triage, 2026-10-28):** S01 email-ready sharing, F01 optional
+  sender name, F03 share Bloom with a friend, and F09 a gentle completion
+  animation. Accounts/journal (S02), the domain (S03), and photo/voice media
+  (R01/R02) are not planned; F02, F04-F08, and F10 are not
+  prioritized. See the backlog's Next and Deferred sections.
 - Product discovery now includes editable occasion starters, clearer descriptions,
   gentle facts/humor, personal details, and curated collections. Keep the free
-  Vercel address; domain ownership (S03) is not planned.
-  Photo/voice uploads and pricing remain conditional research,
-  not approved infrastructure or paid-feature commitments.
+  Vercel address. No uploads, accounts, or paid features are planned.
 - Simplicity means a clear pipeline, not a three-screen target: five steps are
   welcome with one primary purpose each. Avoid multiple equal selection tasks
   disguised as one step. Advanced controls and future media must not burden the
@@ -51,12 +52,12 @@ Updated: 2026-10-28. Original audit baseline: `4d610ab`.
 
 ## Resume here
 
-v0.0.4 is published. CI01/B01-B10 are closed with recorded local/hosted
-verification and owner production sign-off; O01 tracks remaining operational
-hardening. Earlier deployment-pending notes below are historical.
+**v0.0.5 is published (2026-10-28, target `ae4710a`).** It closes the D/L
+milestone: D01-D06, L01-L10, O01 and DOC02. See [releases](./releases.md).
+Next work starts from main; pick from the open items below with the owner.
+Earlier deployment-pending notes below are historical.
 
-Current branch: `feat/catalog-and-brand-polish`, based on main after PR #8.
-Owner scoped the next PR to L04-L08: bounded unused-code cleanup, visual-first
+History of the D/L milestone: owner scoped the next PR to L04-L08: bounded unused-code cleanup, visual-first
 bouquet descriptions, an optional personal-reason writing prompt, evidence-led
 catalog curation, and the Bloom icon assets. No extra personal field/step and no
 catalog expansion without a concrete gap. See the
@@ -68,12 +69,10 @@ bouquet. PR #11 closes L09 (page metadata and the broken production preview
 image), PR #12 closes L02 (lighter pages), and PR #13 removes the manual-link
 button. O01 is closed: a Vercel Firewall rule limits POST /api/count to 20
 per minute per IP, verified on Preview.
-The last main CI after PR #8 passed 331 tests and Docker; production deployed.
-No release after v0.0.4 has been published. DOC02 rewrites the public README
-for the shipped product (PR #15); after it merges, the next step is the v0.1.0
-release with owner approval. Do not repeat the redesign.
-F01-F10, S01-S02, and R01-R02 remain open later work. S03 is not planned and
-lives under the backlog's Deferred section; leave it out of open-work summaries.
+DOC02 rewrote the public README for the shipped product (PR #15).
+Do not repeat the redesign.
+Open work is S01, F01, F03, and F09 only. Everything else lives under the
+backlog's Deferred sections; leave it out of open-work summaries.
 
 ## Keeping this useful
 
