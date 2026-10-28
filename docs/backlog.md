@@ -518,7 +518,12 @@ a commitment to ship everything. Validate usefulness and simplicity first.
 - [x] L03 - Native mobile sharing and a selectable manual-link fallback.
   **Implemented in PR #7 (merged 2026-10-23):** uses the native share sheet
   where supported and reveals a selectable full link when sharing or clipboard
-  fails. Native share-sheet completion is not counted as a successful copy.
+  fails. Native share-sheet completion was originally not counted.
+  **Superseded 2026-10-28 by owner report:** a Share-sheet Copy left the
+  counter at 8, so completed native shares and manual-link copy events now
+  call the same once-per-gift-ID counter as the copy buttons. Cancelled or
+  failed shares and merely revealing the link still do not count. See
+  [counter policy](./counter.md).
   Eleven focused tests, type-check, targeted lint, production build, hosted PR
   verification, and Vercel Preview deployment passed. The desktop preview keeps
   the existing rounded style; at a 390px viewport, the manual-link fallback

@@ -80,6 +80,7 @@ export function BouquetShareStep({
         text: 'I made something for you.\nOpen this when you need a smile:',
         url: shareUrl,
       })
+      void recordBouquetSentOnce(state)
     } catch (error) {
       if (error instanceof DOMException && error.name === 'AbortError') {
         return
@@ -321,6 +322,7 @@ export function BouquetShareStep({
                     rows={3}
                     value={shareUrl}
                     onFocus={(event) => event.currentTarget.select()}
+                    onCopy={() => void recordBouquetSentOnce(state)}
                     className="w-full resize-y rounded-xl border border-bloom-rose/20 bg-surface px-3 py-2 text-xs leading-relaxed text-bloom-ink [overflow-wrap:anywhere] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bloom-ink"
                   />
                   <Button

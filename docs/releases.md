@@ -54,6 +54,12 @@ can be `v0.0.5`; substantial new Templates/discovery/sharing features may justif
 Each included PR still needs relevant tests, preview approval, and passing main
 CI/Docker; check production and existing gift links before publishing.
 
+### Unreleased - Count every share path (owner report 2026-10-28)
+
+Share bouquet (native share sheet) and copying from the manual-link box now
+count the bouquet, matching the copy buttons. Each bouquet still counts once
+regardless of which or how many share actions are used. No release is created.
+
 ### Unreleased - Catalog, brand, and share polish (PR #9, owner approved 2026-10-28)
 
 [PR #9](https://github.com/D-Kumar19/bloom/pull/9) closes L04-L08: removes
