@@ -81,6 +81,10 @@ reclassified under this policy.
    Do not throttle recipient gift pages or asset delivery using this rule.
    Verify actual plan capabilities and cost rather than assuming this rule
    has been deployed by repository changes.
+   **Configured 2026-10-28:** custom rule "Counter POST rate limit" (Path
+   equals `/api/count` AND Method equals POST; fixed window, 20 requests per
+   60 seconds, keyed by IP; 429). It is a dashboard setting, not code, and
+   applies to Production and Preview. GET is not rate-limited by it.
 4. Each valid API attempt still invokes one Redis operation, even if the
    script rejects it as limited. Only edge blocking prevents that upstream
    traffic. Watch request volume, Redis command/storage usage, and 429/503
