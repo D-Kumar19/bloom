@@ -23,7 +23,7 @@ export default function AboutPage() {
         <ol className="list-decimal space-y-4 pl-5">
           <li><strong>Make it theirs.</strong> Choose flowers and a note style.
             Prefer a starting point? Pick an editable template.</li>
-          <li><strong>Make it personal.</strong> Add your names and 2-200 words,
+          <li><strong>Make it personal.</strong> Add their name, 2-200 words, and your name if you like,
             then choose a backdrop. Sound is optional.</li>
           <li><strong>Send a little joy.</strong> Preview the gift, then share its link.
             They can open it without an account.</li>

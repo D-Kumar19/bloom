@@ -236,7 +236,7 @@ export function useBouquetState() {
   const canProceed =
     (step === 'bouquet' && Boolean(state.bouquetId)) ||
     (step === 'card' && Boolean(state.cardStyle)) ||
-    (step === 'message' && canProceedMessageStep(state.to, state.from, state.message)) ||
+    (step === 'message' && canProceedMessageStep(state.to, state.message)) ||
     (step === 'theme' && Boolean(state.theme))
 
   const goNext = useCallback(() => {

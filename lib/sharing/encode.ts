@@ -47,8 +47,9 @@ export function isValidBouquetDraft(value: unknown): value is BouquetState {
   )
 }
 
+/** A shareable gift; the sender name may be blank (shown as "Someone"). */
 export function isValidBouquetState(value: unknown): value is BouquetState {
-  return isValidBouquetDraft(value) && value.from.trim().length > 0
+  return isValidBouquetDraft(value)
 }
 
 export function decodeBouquet(encoded: string): BouquetState | null {

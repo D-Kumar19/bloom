@@ -915,3 +915,66 @@ body {
     animation: candle-glowworm 8s ease-in-out infinite;
   }
 }
+
+/* F09: gentle, one-time completion moment on the share step. */
+@keyframes ready-bloom-bud {
+  0% {
+    transform: scale(0.55) rotate(-8deg);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.08) rotate(2deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes ready-bloom-glow {
+  0% {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  35% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+
+@keyframes ready-bloom-line {
+  from {
+    transform: translateY(4px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.ready-bloom-glow {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ready-bloom-bud {
+    animation: ready-bloom-bud 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .ready-bloom-glow {
+    animation: ready-bloom-glow 1.4s ease-out 0.25s both;
+  }
+
+  .ready-bloom-glow-late {
+    animation-delay: 0.6s;
+  }
+
+  .ready-bloom-line {
+    animation: ready-bloom-line 0.5s ease-out 0.55s both;
+  }
+}

@@ -1,4 +1,5 @@
 import { BouquetCounter } from '@/components/landing/BouquetCounter'
+import { TellAFriend } from '@/components/landing/TellAFriend'
 import { Button } from '@/components/ui/Button'
 import { getBouquetCount } from '@/lib/counter'
 import { HOME_PRIVACY_LINE, SITE_DESCRIPTION, SITE_NAME, SITE_TITLE } from '@/lib/site'
@@ -41,6 +42,7 @@ export default async function LandingPage() {
         <p className="mx-auto mt-5 max-w-sm text-xs leading-relaxed text-bloom-ink/70">
           {HOME_PRIVACY_LINE}
         </p>
+        <TellAFriend />
       </section>
     </main>
   )

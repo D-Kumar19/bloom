@@ -54,6 +54,26 @@ can be `v0.0.5`; substantial new Templates/discovery/sharing features may justif
 Each included PR still needs relevant tests, preview approval, and passing main
 CI/Docker; check production and existing gift links before publishing.
 
+## v0.0.6 - final features (unreleased)
+
+The last planned features before Bloom is parked: S01, F01, F03 and F09.
+Older gift links keep working; decoding only became more permissive.
+
+### v0.0.6 - Email sharing, optional sender, tell a friend, ready moment
+
+- **Email sharing (S01):** "More ways to share" adds Send by email plus Gmail
+  and Outlook compose links with a prepared subject and a short personal note
+  ("Hi {name}," … sign-off) around the link. Mail goes from the sender's own
+  account, so the UI suggests checking Spam if it does not arrive. Counts once
+  per gift like copying; long links get a hint to copy instead.
+- **Optional sender (F01):** leave "From" blank and the gift arrives from
+  "Someone", signed "With love".
+- **Tell a friend (F03):** a quiet homepage link shares Bloom itself; no
+  counter, never on gift pages.
+- **Ready moment (F09):** a gentle rosebud bloom when the share step opens,
+  static for reduced motion.
+- **Version:** `package.json` now reads `0.0.6` to match the release tag.
+
 ## v0.0.5 - published 2026-10-28
 
 [Bloom v0.0.5](https://github.com/D-Kumar19/bloom/releases/tag/v0.0.5) groups
@@ -138,9 +158,10 @@ The latest published release is **`v0.0.5`** (above). **`v0.0.4`**, published
 by the owner on 2026-10-22, contains reliability, counter-protection,
 documentation, and CI changes following `v0.0.3`.
 See the [published release](https://github.com/D-Kumar19/bloom/releases/tag/v0.0.4).
-The private application's existing package version is `0.1.0`; it predates
-this release decision and is not the source of truth for GitHub release tags.
-The draft workflow takes an explicit version and does not change that field.
+The private application's package version was aligned to `0.0.6` with the
+final-features release (it previously read `0.1.0`). GitHub release tags remain
+the source of truth; the draft workflow takes an explicit version and does not
+change that field.
 
 Pushing a feature branch is safe before Redis setup; opening a PR does not
 require production credentials. Before merging to a branch that Vercel

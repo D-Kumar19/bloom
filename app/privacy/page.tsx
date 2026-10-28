@@ -38,6 +38,9 @@ export default function PrivacyPage() {
           mean its contents never reach a server: current links use a query parameter sent
           to the hosting service. Hosting logs, browser history, clipboard apps, and messaging
           services may retain links. HTTPS protects transport, not everyone who receives the URL.</p>
+        <p>Bloom never sends email for you. Send by email opens your own mail app;
+          the Gmail and Outlook options open that provider&apos;s compose page with the
+          message and gift link already in the address, so that provider receives them.</p>
       </section>
       <section className="space-y-2">
         <h2 className="font-display text-2xl"><span aria-hidden="true">📝 </span>What happens to my draft?</h2>

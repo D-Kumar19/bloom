@@ -43,10 +43,12 @@ yours to change.
 
 One main button does the work: **Share bouquet** opens your phone's share sheet,
 or **Copy message + link** where a share sheet isn't available. **More ways to share**
-tucks away the other copy options. If sharing or copying fails, a selectable link
-appears so you are never stuck.
+tucks away the other options, including **Send by email**, which opens your mail app
+(or Gmail or Outlook on the web) with the subject and link ready. If sharing or
+copying fails, a selectable link appears so you are never stuck. Signing it is
+optional: leave your name blank and the gift arrives from "Someone".
 
-Bloom creates the gift link; it doesn't send an email or confirm that someone
+Bloom creates the gift link; it doesn't send the email itself or confirm that someone
 received it. Shared links show a proper preview card in chat apps. 🖼️
 
 ### On the other side of the link…
@@ -182,16 +184,17 @@ missing or unavailable. Use a separate Redis store for Preview deployments.
 
 </details>
 
-## 🧭 Where Bloom goes next
+## 🧭 Where Bloom is now
 
-The core experience is shipped and verified in production. What comes next is
-deliberately small and optional. More choices are not automatically a better gift.
+Bloom is complete for now: everything planned has shipped and is verified in
+production. Other ideas stay parked in the backlog on purpose. More choices are
+not automatically a better gift.
 
-| ✅ Shipped | 🌱 Planned next, not built yet |
+| ✅ Shipped | ✅ Shipped last |
 | :--- | :--- |
-| Draft recovery, faithful notes and PNGs, accessible soft UI | 📧 Email-ready sharing: open your email app with the link ready |
-| Templates and the Wander discovery pages | 🕊️ An optional sender name, for gifts from "someone" |
-| One-tap sharing, link previews, lighter pages | 💌 Share Bloom itself with a friend |
+| Draft recovery, faithful notes and PNGs, accessible soft UI | 📧 Email-ready sharing: your email app opens with the link ready |
+| Templates and the Wander discovery pages | 🕊️ An optional sender name, for gifts from "Someone" |
+| One-tap sharing, link previews, lighter pages | 💌 Tell a friend about Bloom from the homepage |
 | A persistent, abuse-limited share counter | ✨ A gentle moment when your bouquet is ready to send |
 
 Bloom stays account-free: no sign-ins, uploads, or emails sent on your behalf.

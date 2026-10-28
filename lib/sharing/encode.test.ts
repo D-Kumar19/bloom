@@ -55,9 +55,9 @@ describe('encodeBouquet', () => {
     expect(decodeBouquet(encodeBouquet(withPhoto))).toBeNull()
   })
 
-  it('returns null when sender name is missing', () => {
-    const anonymous: BouquetState = { ...sampleState, from: '   ' }
-    expect(decodeBouquet(encodeBouquet(anonymous))).toBeNull()
+  it('accepts an anonymous gift with a blank sender name', () => {
+    const anonymous: BouquetState = { ...sampleState, from: '' }
+    expect(decodeBouquet(encodeBouquet(anonymous))).toEqual(anonymous)
   })
 
   it('round-trips note border customization', () => {

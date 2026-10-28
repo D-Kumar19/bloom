@@ -20,6 +20,7 @@ Implementation remains subject to Preview approval; see the [backlog](./backlog.
   framework/root configuration. Unmounted flower/search, example-gallery, and
   sharing candidates are not shipped UI; retain for the explicitly open
   F03/F10 and future entry-point evaluation rather than deleting speculatively.
+  (F03 later reused the sharing component as the homepage "Tell a friend" link.)
 - **Descriptions:** all 15 thumbnail/portrait pairs were visually reviewed.
   Copy describes visible color, form, and wrapping before suggesting an occasion.
   Remove unsupported exact quantities, materials, botanical trivia, universal
@@ -294,7 +295,8 @@ authentication is needed only if Bloom later sends mail itself.
 | Conditional media | Photo/voice prototype, then constrained upload capability | Evidence of value, privacy/cost/retention decisions |
 
 **Owner backlog triage, 2026-10-28:** only S01, F01, F03, and F09 remain
-planned. S02, S03, R01, and R02 are not planned; F02, F04-F08,
+planned. All four then shipped as the final features (v0.0.6), and the project
+is parked. S02, S03, R01, and R02 are not planned; F02, F04-F08,
 and F10 are not prioritized. See the backlog's Deferred sections.
 Rows below that mention accounts, journals, the domain, or media are historical.
 

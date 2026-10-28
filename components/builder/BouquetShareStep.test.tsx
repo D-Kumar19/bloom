@@ -216,4 +216,47 @@ describe('BouquetShareStep', () => {
     ).not.toBeInTheDocument()
     expect(recordBouquetSentOnce).not.toHaveBeenCalled()
   })
+
+  it('shows a decorative, non-blocking ready moment', () => {
+    render(<BouquetShareStep state={baseState} onCreateAnother={vi.fn()} />)
+    const bloom = screen.getByTestId('ready-bloom')
+    expect(bloom).toHaveAttribute('aria-hidden', 'true')
+    expect(bloom).toHaveClass('pointer-events-none')
+    expect(screen.getByRole('heading', { name: 'Preview and share' })).toBeInTheDocument()
+  })
+
+  it('offers email compose links that count the gift once', () => {
+    vi.mocked(recordBouquetSentOnce).mockClear()
+    render(<BouquetShareStep state={baseState} onCreateAnother={vi.fn()} />)
+    expect(screen.queryByTestId('email-share-link')).not.toBeInTheDocument()
+    fireEvent.click(screen.getByTestId('more-share-options-toggle'))
+
+    const email = screen.getByRole('link', { name: 'Send by email' })
+    expect(email.getAttribute('href')).toMatch(/^mailto:\?subject=A%20bouquet%20from%20Sam&body=/)
+    const gmail = screen.getByRole('link', { name: 'Gmail' })
+    const outlook = screen.getByRole('link', { name: 'Outlook' })
+    for (const link of [gmail, outlook]) {
+      expect(link).toHaveAttribute('target', '_blank')
+      expect(link).toHaveAttribute('rel', 'noopener noreferrer')
+      expect(link.getAttribute('href')).toContain('bouquet%3Fb%3D')
+    }
+    expect(screen.queryByTestId('email-long-link-hint')).not.toBeInTheDocument()
+
+    const stopNavigation = (event: Event) => event.preventDefault()
+    document.addEventListener('click', stopNavigation)
+    fireEvent.click(email)
+    fireEvent.click(gmail)
+    document.removeEventListener('click', stopNavigation)
+    expect(recordBouquetSentOnce).toHaveBeenCalledTimes(2)
+    expect(recordBouquetSentOnce).toHaveBeenCalledWith(baseState)
+  })
+
+  it('suggests copying the link when an email link may be too long', () => {
+    const message = Array.from({ length: 200 }, (_, i) => `${(i * 7919).toString(36)}q${i}`).join(' ')
+    render(
+      <BouquetShareStep state={{ ...baseState, message }} onCreateAnother={vi.fn()} />
+    )
+    fireEvent.click(screen.getByTestId('more-share-options-toggle'))
+    expect(screen.getByTestId('email-long-link-hint')).toHaveTextContent('Copy link only')
+  })
 })

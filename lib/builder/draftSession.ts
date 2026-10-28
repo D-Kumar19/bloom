@@ -149,7 +149,6 @@ export function restoreBuilderDraft(
     (step === 'theme' || step === 'share') &&
     !canProceedMessageStep(
       draft.state.to,
-      draft.state.from,
       draft.state.message
     )
   ) {
