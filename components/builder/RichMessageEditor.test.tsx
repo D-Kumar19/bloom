@@ -33,7 +33,7 @@ function caretAtEnd(editor: HTMLElement) {
 describe('message editor integrity', () => {
   it('keeps the prompt separator before a continuation typed at the focused caret', () => {
     render(<Editor />)
-    const editor = screen.getByTestId('message-editor')
+    const editor = screen.getByTestId<HTMLDivElement>('message-editor')
     focusMessageEditorEnd(editor, '<b>Love you.</b><br><br>I chose these flowers because ')
     expect(editor.innerHTML).toBe('<b>Love you.</b><br><br>I chose these flowers because&nbsp;')
     expect(editor).toHaveFocus()

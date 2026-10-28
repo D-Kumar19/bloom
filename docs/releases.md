@@ -54,6 +54,16 @@ can be `v0.0.5`; substantial new Templates/discovery/sharing features may justif
 Each included PR still needs relevant tests, preview approval, and passing main
 CI/Docker; check production and existing gift links before publishing.
 
+### Unreleased - Catalog, brand, and share polish (PR #9, owner approved 2026-10-28)
+
+[PR #9](https://github.com/D-Kumar19/bloom/pull/9) closes L04-L08: removes
+verified-unused components, rewrites bouquet descriptions to match the actual
+artwork, adds an optional "Why I chose these" prompt that appends to the note,
+records a no-addition catalog decision, and replaces the default Vercel favicon
+with Bloom rosebud icons. It also simplifies the final share step to one
+primary action with a collapsed "More ways to share", and fixes a test type
+error that failed hosted CI. No release is created by this entry.
+
 ### Unreleased - Experience polish (owner approved 2026-10-23)
 
 [PR #6](https://github.com/D-Kumar19/bloom/pull/6) improves the existing UI,

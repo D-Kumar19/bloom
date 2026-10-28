@@ -525,6 +525,14 @@ a commitment to ship everything. Validate usefulness and simplicity first.
   appeared and its Select link action selected the full 442-character URL.
   This browser did not expose the native share sheet, so the real-device
   interaction remains unverified.
+  **Share-step simplification, 2026-10-28, PR #9:** owner flagged five
+  stacked equal-weight actions on the final step. It now shows one primary
+  action (Share bouquet where native sharing exists, otherwise Copy message +
+  link), a collapsed "More ways to share" disclosure holding the remaining copy
+  and manual-link options, and a quiet Create another bouquet link. Share or
+  clipboard failures still open the selectable link automatically. A focused
+  test covers the collapsed default and disclosure; 390px dark-mode browser
+  check confirmed both states. Behavior and counting rules are unchanged.
 - [x] L04 - Reassess unused code and root cleanup after feature decisions.
   **Implemented for Preview review, 2026-10-28:** audited route/static/dynamic
   imports and root files. Removed five obsolete unmounted wrappers/components,
@@ -571,8 +579,12 @@ a commitment to ship everything. Validate usefulness and simplicity first.
   icon metadata, personal prompt append/edit/reload, recipient reveal, and an
   actual PNG download retaining the exact note. Browser testing found and fixed
   a prompt-spacing/caret race; regression tests cover immediate continuation.
-  **Closed by owner, 2026-10-28, PR #9:** owner marked L04-L08 done for
-  final Preview review on the PR branch; merge follows that review.
+  **Closed by owner, 2026-10-28, PR #9:** owner marked L04-L08 done and
+  authorized merge. **CI fix:** hosted type-check failed on a test helper typed
+  as `HTMLElement` instead of `HTMLDivElement` (`RichMessageEditor.test.tsx`);
+  `next build` skips test files, so the earlier local build missed it. Fixed
+  with a typed query. Local note: run the suite on Node 20 to match CI; Node 26
+  produced unrelated environment failures (341/341 pass on Node 20).
 - [ ] L09 - Review metadata for actual public routes.
   Extend B06/B07 rather than creating indexable recipient gift content by default.
   Verify titles/descriptions and OG previews on shipped pages; evaluate a proper

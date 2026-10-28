@@ -61,7 +61,9 @@ bouquet descriptions, an optional personal-reason writing prompt, evidence-led
 catalog curation, and the Bloom icon assets. No extra personal field/step and no
 catalog expansion without a concrete gap. See the
 [catalog and brand decisions](./product-direction.md#catalog-and-brand-review---2026-10-28).
-Owner marked L04-L08 done on 2026-10-28 (PR #9). O01, L02, and L09 remain open.
+Owner marked L04-L08 done on 2026-10-28 (PR #9). PR #9 also fixes a CI test
+type error and simplifies the final share step to one primary action plus a
+collapsed "More ways to share". O01, L02, and L09 remain open.
 The last main CI after PR #8 passed 331 tests and Docker; production deployed.
 No release after v0.0.4 has been published. DOC02 public README cleanup remains
 at the release checkpoint where development pauses. Do not repeat the redesign.
