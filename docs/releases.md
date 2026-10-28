@@ -54,45 +54,53 @@ can be `v0.0.5`; substantial new Templates/discovery/sharing features may justif
 Each included PR still needs relevant tests, preview approval, and passing main
 CI/Docker; check production and existing gift links before publishing.
 
-### Unreleased - Public README rewrite (DOC02, 2026-10-28)
+## v0.0.5 - published 2026-10-28
+
+[Bloom v0.0.5](https://github.com/D-Kumar19/bloom/releases/tag/v0.0.5) groups
+D01-D06, L01-L10, O01 and DOC02, targeting `ae4710a`. The owner chose
+`v0.0.5` over the `v0.1.0` suggested above. Before publishing: main CI and
+Docker passed, Vercel deployed the commit, and older gift links (no gift ID,
+`#` fragment, and v0.0.4 rich-text/border/sound) opened on production.
+
+### v0.0.5 - Public README rewrite (DOC02, 2026-10-28)
 
 The public README now describes what shipped: Templates, the discovery pages,
 one-button sharing, link previews, lighter pages, and the protected counter.
 The outdated pre-release banner and roadmap are replaced. Docs only.
 
-### Unreleased - Counter Firewall rule (O01, 2026-10-28)
+### v0.0.5 - Counter Firewall rule (O01, 2026-10-28)
 
 A Vercel Firewall rule now limits POST `/api/count` to 20 requests per minute
 per IP before requests reach the function or Redis, on top of the app's own
 10/minute and 50/hour limits. Verified on Preview; no code change.
 
-### Unreleased - Lighter pages (PR #12, L02)
+### v0.0.5 - Lighter pages (PR #12, L02)
 
 Bouquet images in the builder and gift page now use Next image optimization,
 and note-only fonts load on demand. Measured at 390px on a production build:
 the create page drops from about 6.5 MB to 450 KB, and home and gift links
 from about 610 KB to 310 KB. Exported images are unchanged. See
-[L02](./backlog.md). No release is created by this entry.
+[L02](./backlog.md).
 
-### Unreleased - Link previews and page metadata (PR #11, L09)
+### v0.0.5 - Link previews and page metadata (PR #11, L09)
 
 Shared links now show a preview image: production previously pointed
 `og:image` at a login-protected deployment URL. Each public page has its own
 title, description, and canonical URL, `/create` has metadata, the result page
 and gift links stay noindex, and robots.txt and a sitemap are served. Owner
-approved 2026-10-28. No release is created by this entry.
+approved 2026-10-28.
 
-### Unreleased - Count every share path (owner report 2026-10-28)
+### v0.0.5 - Count every share path (owner report 2026-10-28)
 
 Share bouquet (native share sheet) and copying from the manual-link box now
 count the bouquet, matching the copy buttons. Each bouquet still counts once
-regardless of which or how many share actions are used. No release is created.
+regardless of which or how many share actions are used.
 
 The "Show link to copy manually" button is removed from More ways to share
 (owner request 2026-10-28). The selectable link still appears automatically
 when sharing or copying fails.
 
-### Unreleased - Catalog, brand, and share polish (PR #9, owner approved 2026-10-28)
+### v0.0.5 - Catalog, brand, and share polish (PR #9, owner approved 2026-10-28)
 
 [PR #9](https://github.com/D-Kumar19/bloom/pull/9) closes L04-L08: removes
 verified-unused components, rewrites bouquet descriptions to match the actual
@@ -100,9 +108,9 @@ artwork, adds an optional "Why I chose these" prompt that appends to the note,
 records a no-addition catalog decision, and replaces the default Vercel favicon
 with Bloom rosebud icons. It also simplifies the final share step to one
 primary action with a collapsed "More ways to share", and fixes a test type
-error that failed hosted CI. No release is created by this entry.
+error that failed hosted CI.
 
-### Unreleased - Experience polish (owner approved 2026-10-23)
+### v0.0.5 - Experience polish (owner approved 2026-10-23)
 
 [PR #6](https://github.com/D-Kumar19/bloom/pull/6) improves the existing UI,
 not the rejected replacement design:
@@ -121,15 +129,14 @@ and Vercel preview passed; the owner approved the preview and closed D01-D06.
 Exhaustive device/state and manual accessibility coverage is not claimed.
 Main CI/production acceptance is checked after merge.
 
-The owner chose to group this shipped polish with upcoming L work rather than
-tag D alone. Choose the version against the completed scope above.
-No release is created or published by this changelog entry.
+The owner chose to group this shipped polish with the L work rather than
+tag D alone.
 
 ## Published reliability release
 
-The latest published release is **`v0.0.4`**, published by the owner on
-2026-10-22. It contains reliability, counter-protection, documentation, and
-CI changes following `v0.0.3`.
+The latest published release is **`v0.0.5`** (above). **`v0.0.4`**, published
+by the owner on 2026-10-22, contains reliability, counter-protection,
+documentation, and CI changes following `v0.0.3`.
 See the [published release](https://github.com/D-Kumar19/bloom/releases/tag/v0.0.4).
 The private application's existing package version is `0.1.0`; it predates
 this release decision and is not the source of truth for GitHub release tags.
